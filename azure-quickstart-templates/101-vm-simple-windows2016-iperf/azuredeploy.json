@@ -20,18 +20,6 @@
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine. DNS name: <dnsLabelPrefix>.<Region>.cloudapp.azure.com"
       }
     },
-    "centosOSVersion": {
-      "type": "string",
-      "defaultValue": "7.2",
-      "allowedValues": [
-        "7.0",
-        "7.1",
-        "7.2"
-      ],
-      "metadata": {
-        "description": "The Centos version for the VM. This will pick a fully patched image of this given Ubuntu version. Allowed values: 7.2.20160303, 7.2.20160308."
-      }
-    },
     "vmSize": {
       "type": "string",
       "metadata": {
@@ -41,24 +29,25 @@
     },
     "initscriptUrl": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-centos-iperf/install-iperf-test.sh"
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows2016-iperf/install-iperf-test.ps1"
     },
     "initScriptFileName": {
       "type": "string",
       "metadata": {
-        "description": "sh [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "description": "powershell.exe -ExecutionPolicy Unrestricted -File [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
       },
-      "defaultValue": "install-iperf-test.sh"
+      "defaultValue": "install-iperf-test.ps1"
     }
   },
   "variables": {
     "storageAccountName": "[concat(parameters('dnsLabelPrefix'), 'storage')]",
     "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'), 'nsg')]",
     "dataDisk1VhdName": "datadisk1",
-    "imagePublisher": "openlogic",
-    "imageOffer": "centos",
+    "imagePublisher": "MicrosoftWindowsServer", 
+    "imageOffer": "WindowsServer", 
+    "imageSKU": "2012-R2-Datacenter", 
     "OSDiskName": "osdiskforcentossimple",
-    "nicName": "myCentosVMNic",
+    "nicName": "myWindows2012R2VMNic",
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "Subnet",
     "subnetPrefix": "10.0.0.0/24",
@@ -66,7 +55,7 @@
     "publicIPAddressName": "myPublicIP",
     "publicIPAddressType": "Dynamic",
     "vmStorageAccountContainerName": "vhds",
-    "vmName": "CentosIperfVM",
+    "vmName": "Windows2012R2IperfVM",
     "vmSize": "Standard_A1",
     "virtualNetworkName": "MyVNET",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
@@ -236,7 +225,7 @@
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('centosOSVersion')]",
+            "sku": "[variables('imageSKU')]",
             "version": "latest"
           },
           "osDisk": {
@@ -286,15 +275,15 @@
             "displayName": "init"
           },
           "properties": {
-            "publisher": "Microsoft.OSTCExtensions",
-            "type": "CustomScriptForLinux",
-            "typeHandlerVersion": "1.4",
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.7",
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
                 "[parameters('initscriptUrl')]"
               ],
-              "commandToExecute": "[concat('sh ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
             }
           }
         }
@@ -308,11 +297,11 @@
     },
     "sshCommand": {
       "type": "string",
-      "value": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('mstsc /admin ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "resultScript": {
       "type": "string",
-      "value": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout" 
+      "value": "type /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout" 
     }
   }
 }

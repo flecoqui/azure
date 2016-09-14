@@ -11,17 +11,14 @@
     "dnsLabelPrefix": {
       "value": "iperftestvm001"
     },
-    "centosOSVersion": {
-      "value": "7.2"
-    },
     "vmSize": {
       "value": "Standard_D1_v2"
     },
     "initscriptUrl": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-centos-iperf/install-iperf-test.sh"
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows2016-iperf/install-iperf-test.ps1"
     },
     "initScriptFileName": {
-      "value": "install-iperf-test.sh"
+      "value": "install-iperf-test.ps1"
     }
   }
 }
