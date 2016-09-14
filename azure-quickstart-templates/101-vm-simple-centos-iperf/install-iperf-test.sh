@@ -74,8 +74,8 @@ cat <<EOF > $directory/index.html
     <p>Launch the command line from your client: </p>
     <p>     iperf3 -c $usp_hostname -p 5201 --parallel 32  </p> 
     <ul>
-      <li>To a <a href="http://www.microsoft.com">Microsoft</a>.
-      <li>To a <a href="https://portal.azure.com">Azure</a>.
+      <li>To <a href="http://www.microsoft.com">Microsoft</a>
+      <li>To <a href="https://portal.azure.com">Azure</a>
     </ul>
   </body>
 </html>
