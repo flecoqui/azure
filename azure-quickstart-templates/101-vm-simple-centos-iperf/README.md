@@ -12,19 +12,22 @@ This template allows you to deploy a simple Centos VM running Apache and iPerf3,
 With Azure CLI you can deploy this VM with 2 command lines:
 
 ##CREATE RESOURCE GROUP:
-azure group create <ResourceGroupName> <DataCenterName>
+azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
+
     azure group create iperfgrpeu2 eastus2
 
 ##DEPLOY THE VM:
-azure group deployment create <ResourceGroupName> <DeploymentName>  -f azuredeploy.json -e azuredeploy.parameters.json
+azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
+
     azure group deployment create iperfgrpeu2 depiperftest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
 ##DELETE THE RESOURCE GROUP:
-azure group delete <ResourceGroupName> <DataCenterName>
+azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:
+
     azure group delete iperfgrpeu2 eastus2
