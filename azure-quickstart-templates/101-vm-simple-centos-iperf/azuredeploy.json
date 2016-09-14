@@ -52,7 +52,8 @@
     }
   },
   "variables": {
-    "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'sacentosvm')]",
+    "storageAccountName": "[parameters('dnsLabelPrefix'), 'storage')]",
+    "networkSecurityGroupName": "[parameters('dnsLabelPrefix'), 'nsg')]",
     "dataDisk1VhdName": "datadisk1",
     "imagePublisher": "openlogic",
     "imageOffer": "centos",
@@ -82,6 +83,72 @@
         "accountType": "[variables('storageAccountType')]"
       }
     },
+    { 
+       "apiVersion": "[variables('apiVersion')]", 
+       "type": "Microsoft.Network/networkSecurityGroups", 
+       "name": "[variables('networkSecurityGroupName')]", 
+       "location": "[resourceGroup().location]", 
+       "properties": { 
+         "securityRules": [ 
+           { 
+             "name": "ssh", 
+             "properties": { 
+               "description": "SSH port", 
+               "protocol": "Tcp", 
+               "sourcePortRange": "*", 
+               "destinationPortRange": "22", 
+               "sourceAddressPrefix": "Internet", 
+               "destinationAddressPrefix": "*", 
+               "access": "Allow", 
+               "priority": 100, 
+               "direction": "Inbound" 
+             } 
+           }, 
+           { 
+             "name": "http", 
+             "properties": { 
+               "description": "http server port", 
+               "protocol": "Tcp", 
+               "sourcePortRange": "*", 
+               "destinationPortRange": "80", 
+               "sourceAddressPrefix": "Internet", 
+               "destinationAddressPrefix": "*", 
+               "access": "Allow", 
+               "priority": 101, 
+               "direction": "Inbound" 
+             } 
+           },
+           { 
+             "name": "iperf3-udp", 
+             "properties": { 
+               "description": "iperf3 udp port", 
+               "protocol": "Udp", 
+               "sourcePortRange": "*", 
+               "destinationPortRange": "5201", 
+               "sourceAddressPrefix": "Internet", 
+               "destinationAddressPrefix": "*", 
+               "access": "Allow", 
+               "priority": 102, 
+               "direction": "Inbound" 
+             } 
+           },
+           { 
+             "name": "iperf3-tcp", 
+             "properties": { 
+               "description": "iperf3 tcp port", 
+               "protocol": "Tcp", 
+               "sourcePortRange": "*", 
+               "destinationPortRange": "5201", 
+               "sourceAddressPrefix": "Internet", 
+               "destinationAddressPrefix": "*", 
+               "access": "Allow", 
+               "priority": 102, 
+               "direction": "Inbound" 
+             } 
+           }             
+         ] 
+       } 
+     },     
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/publicIPAddresses",
@@ -99,6 +166,9 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[resourceGroup().location]",
+      "dependsOn": [ 
+     "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]" 
+       ], 
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -109,7 +179,10 @@
           {
             "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefix": "[variables('subnetPrefix')]"
+            "addressPrefix": "[variables('subnetPrefix')]",
+            "networkSecurityGroup": { 
+                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]" 
+               }               
             }
           }
         ]

@@ -112,10 +112,10 @@ namespace myapplication {
 									res.clear();
 								}
 								//input_stream.streambuf.m_rdpos;
-								utility::string_t sdxt = TEXT("Number of bytes being transmitted:");
+								utility::string_t s = TEXT("Number of bytes being transmitted:");
 								s += res;
 								s += TEXT(" bytes");
-								utility::size64_t s64.
+								counter += atol(res);
 								DumpMessage(s);
 
 								//res = TEXT("res");
