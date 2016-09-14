@@ -52,8 +52,8 @@
     }
   },
   "variables": {
-    "storageAccountName": "[parameters('dnsLabelPrefix'), 'storage')]",
-    "networkSecurityGroupName": "[parameters('dnsLabelPrefix'), 'nsg')]",
+    "storageAccountName": "[concat(parameters('dnsLabelPrefix'), 'storage')]",
+    "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'), 'nsg')]",
     "dataDisk1VhdName": "datadisk1",
     "imagePublisher": "openlogic",
     "imageOffer": "centos",
