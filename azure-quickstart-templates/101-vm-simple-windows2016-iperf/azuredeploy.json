@@ -55,7 +55,7 @@
     "publicIPAddressName": "myPublicIP",
     "publicIPAddressType": "Dynamic",
     "vmStorageAccountContainerName": "vhds",
-    "vmName": "Windows2016IperfVM",
+    "vmName": "WS2016IperfVM",
     "vmSize": "Standard_A1",
     "virtualNetworkName": "MyVNET",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
@@ -80,13 +80,13 @@
        "properties": { 
          "securityRules": [ 
            { 
-             "name": "ssh", 
+             "name": "RDP", 
              "properties": { 
-               "description": "SSH port", 
+               "description": "RDP", 
                "protocol": "Tcp", 
                "sourcePortRange": "*", 
-               "destinationPortRange": "22", 
-               "sourceAddressPrefix": "Internet", 
+               "destinationPortRange": "3389", 
+               "sourceAddressPrefix": "*", 
                "destinationAddressPrefix": "*", 
                "access": "Allow", 
                "priority": 100, 
@@ -297,7 +297,7 @@
     },
     "sshCommand": {
       "type": "string",
-      "value": "[concat('mstsc /admin ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('mstsc /admin /v:', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "resultScript": {
       "type": "string",
