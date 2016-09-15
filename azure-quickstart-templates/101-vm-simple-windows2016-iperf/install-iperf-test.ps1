@@ -23,9 +23,22 @@ $webClient = New-Object System.Net.WebClient
 $webClient.DownloadFile($url,$source + "\iperf3.zip" ) 
 
 Write-Host "Installing iperf3" 
-Add-Type -assembly “system.io.compression.filesystem”
+# Function to unzip file contents
+function Expand-ZIPFile($file, $destination)
+{
+    $shell = new-object -com shell.application
+    $zip = $shell.NameSpace($file)
+    foreach($item in $zip.items())
+    {
+        # Unzip the file with 0x14 (overwrite silently)
+        $shell.Namespace($destination).copyhere($item, 0x14)
+    }
+}
+Expand-ZIPFile -file "$source\iperf3.zip" -destination $source
+#Add-Type -assembly “system.io.compression.filesystem”
+#[io.compression.zipfile]::ExtractToDirectory($source + "\iperf3.zip",$source)
 
-[io.compression.zipfile]::ExtractToDirectory($source + "\iperf3.zip",$source)
+
 
 
 Write-Host "Configuring firewall" 
