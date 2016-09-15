@@ -289,9 +289,9 @@
             "displayName": "dsc"
           },
           "properties": {
-            "publisher": "Microsoft.Compute",
+            "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.19",
+            "typeHandlerVersion": "2.8",
             "autoUpgradeMinorVersion": true,
             "settings": {
                     "ModulesUrl": "[parameters('initdscUrl')]", 
