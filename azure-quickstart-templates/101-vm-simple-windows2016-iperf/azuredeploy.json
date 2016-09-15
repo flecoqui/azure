@@ -37,7 +37,21 @@
         "description": "powershell.exe -ExecutionPolicy Unrestricted -File [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
       },
       "defaultValue": "install-iperf-test.ps1"
-    }
+    },
+    "initdscUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "url to the DSC File"
+      },
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows2016-iperf/iperfWebSite.ps1"
+    },
+    "initdscFileName": {
+      "type": "string",
+      "metadata": {
+        "description": "File containing the configuration"
+      },
+      "defaultValue": "iperfWebSite.ps1\\iperfWebSite"
+    }    
   },
   "variables": {
     "storageAccountName": "[concat(parameters('dnsLabelPrefix'), 'storage')]",
@@ -264,6 +278,32 @@
       },
       "resources": [
         {
+          "name": "dsc",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2015-06-15",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+          ],
+          "tags": {
+            "displayName": "dsc"
+          },
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "DSC",
+            "typeHandlerVersion": "2.19",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+                    "ModulesUrl": "[parameters('initdscUrl')]", 
+           "ConfigurationFunction": "[parameters('initdscFileName')]", 
+           "Properties": { 
+             "MachineName": "[variables('vmName')]" 
+           } 
+            },
+             "protectedSettings": null
+          }
+        },
+        {
           "name": "init",
           "type": "extensions",
           "location": "[resourceGroup().location]",
@@ -286,7 +326,7 @@
               "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
             }
           }
-        }
+        }        
       ]
     }
   ],
