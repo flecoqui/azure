@@ -43,7 +43,7 @@
       "metadata": {
         "description": "url to the DSC File"
       },
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows2016-iperf/iperfWebSite.ps1"
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows2016-iperf/iperfWebsite.ps1"
     },
     "initdscFileName": {
       "type": "string",
