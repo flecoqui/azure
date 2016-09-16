@@ -9,20 +9,23 @@ param
 if(!$dnsName) {
  throw "DNSName not specified"
 }
-#IIS installation
 
-#iperf Installation
-
+#Create Source folder
 $source = 'C:\source' 
  
 If (!(Test-Path -Path $source -PathType Container)) {New-Item -Path $source -ItemType Directory | Out-Null} 
+function WriteLog($msg)
+{
+Write-Host $msg
+$msg >> c:\source\test.log
+}
 
-Write-Host "Downloading iperf3" 
+WriteLog "Downloading iperf3" 
 $url = 'https://iperf.fr/download/windows/iperf-3.1.3-win64.zip'
 $webClient = New-Object System.Net.WebClient 
 $webClient.DownloadFile($url,$source + "\iperf3.zip" ) 
 
-Write-Host "Installing iperf3" 
+WriteLog "Installing iperf3" 
 # Function to unzip file contents
 function Expand-ZIPFile($file, $destination)
 {
@@ -35,13 +38,10 @@ function Expand-ZIPFile($file, $destination)
     }
 }
 Expand-ZIPFile -file "$source\iperf3.zip" -destination $source
-#Add-Type -assembly “system.io.compression.filesystem”
-#[io.compression.zipfile]::ExtractToDirectory($source + "\iperf3.zip",$source)
+WriteLog "iperf3 Installed" 
 
 
-
-
-Write-Host "Configuring firewall" 
+WriteLog "Configuring firewall" 
 function Add-FirewallRules
 {
 netsh advfirewall firewall add rule name="iperfudp" dir=in action=allow protocol=UDP localport=5201
@@ -49,15 +49,12 @@ netsh advfirewall firewall add rule name="iperftcp" dir=in action=allow protocol
 netsh advfirewall firewall add rule name="http" dir=in action=allow protocol=TCP localport=80
 }
 Add-FirewallRules
-#Import-Module NetSecurity
-#New-NetFirewallRule -Name http -DisplayName “Allow http” -Description “Allow http” -Protocol TCP -LocalPort 80 -Enabled True -Profile Any -Action Allow 
-#New-NetFirewallRule -Name iperf3tcp -DisplayName “Allow iperf3 tcp” -Description “Allow iperf3 tcp” -Protocol TCP -LocalPort 5201 -Enabled True -Profile Any -Action Allow 
-#New-NetFirewallRule -Name iperf3udp -DisplayName “Allow iperf3 udp” -Description “Allow iperf3 udp” -Protocol UDP -LocalPort 5201 -Enabled True -Profile Any -Action Allow 
+WriteLog "Firewall configured" 
 
 
-
-Write-Host "Creating Home Page" 
-$dnsName="toot.ttott.com"
+WriteLog "Creating Home Page" 
+If (!(Test-Path -Path C:\inetpub -PathType Container)) {New-Item -Path C:\inetpub -ItemType Directory | Out-Null} 
+If (!(Test-Path -Path C:\inetpub\wwwroot -PathType Container)) {New-Item -Path C:\inetpub\wwwroot -ItemType Directory | Out-Null} 
 $content = @'
 <html>
   <head>
@@ -86,8 +83,7 @@ $content = $content -replace "\{0\}",$dnsName
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 
 function bg() {Start-Job -scriptblock { c:\source\iperf-3.1.3-win64\iperf3.exe -s }}
-Write-Host "Launching iperf3" 
+WriteLog "Launching iperf3" 
 bg 
-
-Write-Host "Initialization completed!" 
+WriteLog "Initialization completed!" 
  
