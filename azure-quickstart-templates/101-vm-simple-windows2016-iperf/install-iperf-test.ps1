@@ -54,11 +54,7 @@ Add-FirewallRules
 #New-NetFirewallRule -Name iperf3tcp -DisplayName “Allow iperf3 tcp” -Description “Allow iperf3 tcp” -Protocol TCP -LocalPort 5201 -Enabled True -Profile Any -Action Allow 
 #New-NetFirewallRule -Name iperf3udp -DisplayName “Allow iperf3 udp” -Description “Allow iperf3 udp” -Protocol UDP -LocalPort 5201 -Enabled True -Profile Any -Action Allow 
 
-function bg() {Start-Job -scriptblock { @args }}
 
-Write-Host "Launching iperf3" 
-$exe = $source + "\iperf-3.1.3-win64\iperf3.exe" 
-bg $exe "-s" 
 
 Write-Host "Creating Home Page" 
 $dnsName="toot.ttott.com"
@@ -88,3 +84,10 @@ $content = @'
 '@
 $content = $content -replace "\{0\}",$dnsName
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
+
+function bg() {Start-Job -scriptblock { c:\source\iperf-3.1.3-win64\iperf3.exe -s }}
+Write-Host "Launching iperf3" 
+bg 
+
+Write-Host "Initialization completed!" 
+ 
