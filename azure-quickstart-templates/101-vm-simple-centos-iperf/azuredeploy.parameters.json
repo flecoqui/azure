@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "iperftestvm001"
+      "value": "iperfvm001"
     },
     "centosOSVersion": {
       "value": "7.2"
