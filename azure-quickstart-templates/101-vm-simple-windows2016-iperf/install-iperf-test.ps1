@@ -82,7 +82,7 @@ $content = @'
 $content = $content -replace "\{0\}",$dnsName
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 
-function bg() {Start-Job -scriptblock { c:\source\iperf-3.1.3-win64\iperf3.exe -s }}
+function bg() {Start-Job -scriptblock { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D -o iperflog.txt }}
 WriteLog "Launching iperf3" 
 bg 
 WriteLog "Initialization completed!" 
