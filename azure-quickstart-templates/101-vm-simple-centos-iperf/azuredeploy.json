@@ -313,6 +313,14 @@
     "resultScript": {
       "type": "string",
       "value": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout" 
+    },
+    "httpClient": {
+      "type": "string",
+      "value": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+    },
+    "iperf3client": {
+      "type": "string",
+      "value": "[concat('iperf3 -c ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com'), ' -p 5201 --parallel 32' ]"
     }
   }
 }
