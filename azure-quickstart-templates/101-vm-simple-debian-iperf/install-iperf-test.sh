@@ -51,7 +51,7 @@ systemctl start apache2
 systemctl enable apache2
 systemctl status apache2
 
-directory=/var/www/test-web
+directory=/var/www/html
 if [ ! -d $directory ]; then
 mkdir $directory
 fi
