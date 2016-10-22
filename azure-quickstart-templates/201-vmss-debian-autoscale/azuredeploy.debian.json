@@ -79,7 +79,7 @@
       "metadata": {
         "description": "The path used for the load balancer health probe"
       },
-      "defaultValue": "/iisstart.htm"
+      "defaultValue": "/html/index.html"
     },
     "initscriptUrl": {
       "type": "string",
@@ -144,7 +144,6 @@
 		"lbWebProbeName": "loadBalancerWebProbe",
 		"lbBEAddressPool": "loadBalancerBEAddressPool",
 		"lbFEIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/',variables('lbFEName'))]",
-		"lbBEAddressPoolID": "[concat(variables('lbID'),'/backendAddressPools/',variables('lbBEAddressPool'))]",
 		"lbWebProbeID": "[concat(variables('lbID'),'/probes/',variables('lbWebProbeName'))]",
     "computeApiVersion": "2016-03-30",
     "networkApiVersion": "2016-03-30",
@@ -244,7 +243,7 @@
                 "id": "[variables('lbFEIPConfigID')]"
               },
               "backendAddressPool": {
-                "id": "[variables('lbBEAddressPoolID')]"
+                "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('loadBalancerName'), '/backendAddressPools/', variables('bePoolName'))]"
               },
               "probe": {
                 "id": "[variables('lbWebProbeID')]"
@@ -349,25 +348,17 @@
             "extensions": [
               {
                 "name": "init",
-                "type": "extensions",
-                "location": "[resourceGroup().location]",
-                "apiVersion": "2015-06-15",
-                "dependsOn": [
-                  "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('namingInfix'))]"
-
-                ],
-                "tags": {
-                  "displayName": "init"
-                },
                 "properties": {
-                  "publisher": "Microsoft.OSTCExtensions",
-                  "type": "CustomScriptForLinux",
-                  "typeHandlerVersion": "1.4",
-                  "autoUpgradeMinorVersion": true,
+                  "publisher": "Microsoft.Azure.Extensions",
+                  "type": "CustomScript",
+                  "typeHandlerVersion": "2.0",
+                  "autoUpgradeMinorVersion": false,
                   "settings": {
                     "fileUris": [
                       "[parameters('initscriptUrl')]"
-                    ],
+                    ]
+                  },
+                  "protectedSettings": {
                     "commandToExecute": "[concat('sh ', parameters('initScriptFileName'),' \"',  parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
                   }
                 }

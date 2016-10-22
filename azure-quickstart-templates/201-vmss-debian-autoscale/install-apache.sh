@@ -1,15 +1,15 @@
 #!/bin/bash
 # This bash file install iperf3 demonstration on centos
 # Parameter 1 hostname 
-usp_hostname=$1
-
+wm_hostname=$1
+wm_ipaddr=`ip addr show  eth0 | grep global`
 
 environ=`env`
 echo "Environment before installation: $environ"
 
 echo "Installation script start : $(date)"
 echo "Apache Installation: $(date)"
-echo "#####  usp_hostname: $usp_hostname"
+echo "#####  wm_hostname: $wm_hostname"
 echo "Installation script start : $(date)"
 # Apache installation 
 apt-get -y update
@@ -47,9 +47,6 @@ sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 #
 # Start Apache server
 #
-systemctl start apache2
-systemctl enable apache2
-systemctl status apache2
 
 directory=/var/www/html
 if [ ! -d $directory ]; then
@@ -59,21 +56,21 @@ fi
 cat <<EOF > $directory/index.html 
 <html>
   <head>
-    <title>Sample "Hello from $usp_hostname" </title>
+    <title>Sample "Hello from Azure Debian VM scaleset $wm_hostname" </title>
   </head>
   <body bgcolor=white>
 
     <table border="0" cellpadding="10">
       <tr>
         <td>
-          <h1>Hello from $usp_hostname</h1>
+          <h1>Hello from Azure Debian VM scaleset $wm_hostname</h1>
         </td>
       </tr>
     </table>
 
-    <p>This is the home page for the iperf3 test on Azure VM</p>
-    <p>Launch the command line from your client: </p>
-    <p>     iperf3 -c $usp_hostname -p 5201 --parallel 32  </p> 
+    <p>This is the home page for the Apache test on Azure VM</p>
+    <p>Local IP address:</p>
+    <p>   $wm_ipaddr</p> 
     <ul>
       <li>To <a href="http://www.microsoft.com">Microsoft</a>
       <li>To <a href="https://portal.azure.com">Azure</a>
@@ -83,34 +80,34 @@ cat <<EOF > $directory/index.html
 EOF
 
 
-echo "Configuring Web Site for Apache: $(date)"
-cat <<EOF > /etc/apache2/conf-available/test-web.conf 
-ServerName "$usp_hostname"
-<VirtualHost *:80>
-        ServerAdmin webmaster@localhost
-        ServerName "$usp_hostname"
+# echo "Configuring Web Site for Apache: $(date)"
+# cat <<EOF > /etc/apache2/conf-available/test-web.conf 
+#ServerName "$wm_hostname"
+#<VirtualHost *:80>
+#        ServerAdmin webmaster@localhost
+#        ServerName "$wm_hostname"
 
-        DocumentRoot /var/www/test-web
-        <Directory />
-                Options FollowSymLinks
-                AllowOverride None
-        </Directory>
+#        DocumentRoot /var/www/test-web
+#        <Directory />
+#                Options FollowSymLinks
+#                AllowOverride None
+#        </Directory>
 
-       # Add CORS headers for HTML5 players
-        Header always set Access-Control-Allow-Headers "origin, range"
-        Header always set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-        Header always set Access-Control-Allow-Origin "*"
-        Header always set Access-Control-Expose-Headers "Server,range"
+#       # Add CORS headers for HTML5 players
+#        Header always set Access-Control-Allow-Headers "origin, range"
+#        Header always set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+#        Header always set Access-Control-Allow-Origin "*"
+#        Header always set Access-Control-Expose-Headers "Server,range"
 
-        # Possible values include: debug, info, notice, warn, error, crit,
-        # alert, emerg.
-        LogLevel warn
-        ErrorLog /var/log/httpd/usp-evaluation-error.log
-        CustomLog /var/log/httpd/usp-evaluation-access.log combined
-</VirtualHost>
-EOF
+#        # Possible values include: debug, info, notice, warn, error, crit,
+#        # alert, emerg.
+#        LogLevel warn
+#        ErrorLog /var/log/httpd/usp-evaluation-error.log
+#        CustomLog /var/log/httpd/usp-evaluation-access.log combined
+#</VirtualHost>
+#EOF
 apachectl restart
-systemctl enable iperf3
-systemctl start iperf3
+#systemctl enable iperf3
+#systemctl start iperf3
 exit 0 
 
