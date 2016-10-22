@@ -462,7 +462,7 @@
     },
     "resultScript": {
       "type": "string",
-      "value": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.1/download/0/stdout" 
+      "value": "sudo cat /var/lib/waagent/custom-script/download/0/stdout" 
     },
     "httpClient": {
       "type": "string",
