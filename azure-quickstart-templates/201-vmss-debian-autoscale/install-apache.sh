@@ -1,5 +1,5 @@
 #!/bin/bash
-# This bash file install iperf3 demonstration on centos
+# This bash file install apache on debian
 # Parameter 1 hostname 
 wm_hostname=$1
 wm_ipaddr=`ip addr show  eth0 | grep global`
@@ -15,38 +15,8 @@ echo "Installation script start : $(date)"
 apt-get -y update
 apt-get -y install apache2
 # firewall configuration 
-sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-# sudo iptables -A INPUT -p tcp --dport 5201 -j ACCEPT
-# sudo iptables -A INPUT -p udp --dport 5201 -j ACCEPT
-#
-# install iperf3
-#  
-# apt-get remove iperf3 libiperf0
-# wget https://iperf.fr/download/ubuntu/libiperf0_3.1.3-1_amd64.deb
-# wget https://iperf.fr/download/ubuntu/iperf3_3.1.3-1_amd64.deb
-# dpkg -i libiperf0_3.1.3-1_amd64.deb iperf3_3.1.3-1_amd64.deb
-# rm libiperf0_3.1.3-1_amd64.deb iperf3_3.1.3-1_amd64.deb
-
-# adduser iperf --disabled-login
-# cat <<EOF > /etc/systemd/system/iperf3.service
-# [Unit]
-# Description=iperf3 Service
-# After=network.target
-
-# [Service]
-# Type=simple
-# User=iperf
-# ExecStart=/usr/bin/iperf3 -s
-# Restart=on-abort
-
-
-# [Install]
-# WantedBy=multi-user.target
-# EOF
-#
-# Start Apache server
-#
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 directory=/var/www/html
 if [ ! -d $directory ]; then
@@ -71,6 +41,9 @@ cat <<EOF > $directory/index.html
     <p>This is the home page for the Apache test on Azure VM</p>
     <p>Local IP address:</p>
     <p>   $wm_ipaddr</p> 
+    <ul>
+      <li>To <a href="http://$wm_hostname">the VM Scale Set: $wm_hostname</a>
+    </ul>
     <ul>
       <li>To <a href="http://www.microsoft.com">Microsoft</a>
       <li>To <a href="https://portal.azure.com">Azure</a>
