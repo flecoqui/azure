@@ -450,5 +450,23 @@
         ]
       }
     }
-  ]
+  ],
+  "outputs": {
+    "hostname": {
+      "type": "string",
+      "value": "[concat(parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+    },
+    "sshCommand": {
+      "type": "string",
+      "value": "[concat('ssh -p 50000 ', parameters('adminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+    },
+    "resultScript": {
+      "type": "string",
+      "value": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.1/download/0/stdout" 
+    },
+    "httpClient": {
+      "type": "string",
+      "value": "[concat('http://', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com','/html/index.html')]"
+    }
+  }
 }

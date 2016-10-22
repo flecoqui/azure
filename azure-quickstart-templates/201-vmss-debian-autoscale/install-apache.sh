@@ -42,7 +42,7 @@ cat <<EOF > $directory/index.html
     <p>Local IP address:</p>
     <p>   $wm_ipaddr</p> 
     <ul>
-      <li>To <a href="http://$wm_hostname">the VM Scale Set: $wm_hostname</a>
+      <li>To the VM Scale Set: <a href="http://$wm_hostname/html/index.html">http://$wm_hostname/html/index.html</a>
     </ul>
     <ul>
       <li>To <a href="http://www.microsoft.com">Microsoft</a>
@@ -53,34 +53,6 @@ cat <<EOF > $directory/index.html
 EOF
 
 
-# echo "Configuring Web Site for Apache: $(date)"
-# cat <<EOF > /etc/apache2/conf-available/test-web.conf 
-#ServerName "$wm_hostname"
-#<VirtualHost *:80>
-#        ServerAdmin webmaster@localhost
-#        ServerName "$wm_hostname"
-
-#        DocumentRoot /var/www/test-web
-#        <Directory />
-#                Options FollowSymLinks
-#                AllowOverride None
-#        </Directory>
-
-#       # Add CORS headers for HTML5 players
-#        Header always set Access-Control-Allow-Headers "origin, range"
-#        Header always set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-#        Header always set Access-Control-Allow-Origin "*"
-#        Header always set Access-Control-Expose-Headers "Server,range"
-
-#        # Possible values include: debug, info, notice, warn, error, crit,
-#        # alert, emerg.
-#        LogLevel warn
-#        ErrorLog /var/log/httpd/usp-evaluation-error.log
-#        CustomLog /var/log/httpd/usp-evaluation-access.log combined
-#</VirtualHost>
-#EOF
 apachectl restart
-#systemctl enable iperf3
-#systemctl start iperf3
 exit 0 
 
