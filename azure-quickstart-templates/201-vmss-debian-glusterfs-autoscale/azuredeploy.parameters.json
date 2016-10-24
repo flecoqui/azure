@@ -1,0 +1,89 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmssVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "vmssDebianOSVersion": {
+      "value": "7"
+    },
+    "vmssName": {
+      "value": "vmssdebian"
+    },
+    "vmssInstanceCount": {
+      "value": 2
+    },
+    "vmssAdminUsername": {
+      "value": "VMAdmin"
+    },
+    "vmssAdminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "vmssFrontEndLBPort": {
+			"value": 80
+		},
+		"vmssBackEndLBPort": {
+			"value": 80
+		},
+		"vmssProbeIntervalInSeconds": {
+			"value": 15
+		},
+		"vmssNumberOfProbes": {
+			"value": 5
+		},
+    "vmssProbeRequestPath": {
+      "value": "/html/index.html"
+    },
+    "vmssInitscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-autoscale/install-apache.sh"
+    },
+    "vmssInitScriptFileName": {
+      "value": "install-apache.sh"
+    },
+    "gfs1HostOs": {
+      "value": "Ubuntu"
+    },
+    "gfs1StorageAccountName": {
+      "value": "gfs1sto"
+    },
+    "gfs1ScaleNumber": {
+      "value": 2
+    },
+    "gfs1AdminUsername": {
+      "value": "VMAdmin"
+    },
+    "gfs1AdminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "gfs1VmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "gfs1VmNamePrefix": {
+      "value": "gfs1vm"
+    },
+    "gfs1VmIPPrefix": {
+      "value": "10.0.0.1"
+    },
+    "gfs1VnetAddressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "gfs1GfsSubnetName": {
+      "value": "gfs1Subnet-1"
+    },
+    "gfs1GfsSubnetPrefix": {
+      "value": "10.0.0.0/24"
+    },
+    "gfs1CustomScriptFilePath": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-autoscale/azuregfs.sh"
+    },
+    "gfs1CustomScriptCommandToExecute": {
+      "value": "bash azuregfs.sh"
+    },
+    "gfs1VolumeName": {
+      "value": "gfs1vol"
+    }
+
+
+  }
+}
