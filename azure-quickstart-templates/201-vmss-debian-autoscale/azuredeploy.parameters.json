@@ -2,43 +2,43 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vmSize": {
+    "vmssVmSize": {
       "value": "Standard_D1_v2"
     },
-    "debianOSVersion": {
+    "vmssDebianOSVersion": {
       "value": "7"
     },
     "vmssName": {
       "value": "vmssdebian"
     },
-    "instanceCount": {
+    "vmssInstanceCount": {
       "value": 2
     },
-    "adminUsername": {
+    "vmssAdminUsername": {
       "value": "VMAdmin"
     },
-    "adminPassword": {
+    "vmssAdminPassword": {
       "value": "VMP@ssw0rd"
     },
-    "frontEndLBPort": {
+    "vmssFrontEndLBPort": {
 			"value": 80
 		},
-		"backEndLBPort": {
+		"vmssBackEndLBPort": {
 			"value": 80
 		},
-		"probeIntervalInSeconds": {
+		"vmssProbeIntervalInSeconds": {
 			"value": 15
 		},
-		"numberOfProbes": {
+		"vmssNumberOfProbes": {
 			"value": 5
 		},
-    "probeRequestPath": {
+    "vmssProbeRequestPath": {
       "value": "/html/index.html"
     },
-    "initscriptUrl": {
+    "vmssInitscriptUrl": {
       "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-autoscale/install-apache.sh"
     },
-    "initScriptFileName": {
+    "vmssInitScriptFileName": {
       "value": "install-apache.sh"
     }
   }

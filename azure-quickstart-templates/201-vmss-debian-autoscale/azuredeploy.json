@@ -2,14 +2,14 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vmSize": {
+    "vmssVmSize": {
       "type": "string",
       "defaultValue": "Standard_D1_v2",
       "metadata": {
         "description": "Size of VMs in the VM Scale Set."
       }
     },
-    "debianOSVersion": {
+    "vmssDebianOSVersion": {
       "type": "string",
       "defaultValue": "8",
       "allowedValues": [
@@ -27,68 +27,68 @@
       },
       "maxLength": 61
     },
-    "instanceCount": {
+    "vmssInstanceCount": {
       "type": "int",
       "metadata": {
         "description": "Number of VM instances (100 or less)."
       },
       "maxValue": 100
     },
-    "adminUsername": {
+    "vmssAdminUsername": {
       "type": "string",
       "metadata": {
         "description": "Admin username on all VMs."
       }
     },
-    "adminPassword": {
+    "vmssAdminPassword": {
       "type": "securestring",
       "metadata": {
         "description": "Admin password on all VMs."
       }
     },
-		"frontEndLBPort": {
+		"vmssFrontEndLBPort": {
 			"type": "int",
 			"metadata": {
 				"description": "The front end port to load balance"
 			},
 			"defaultValue": 80
 		},
-		"backEndLBPort": {
+		"vmssBackEndLBPort": {
 			"type": "int",
 			"metadata": {
 				"description": "The front end port to load balance"
 			},
 			"defaultValue": 80
 		},
-		"probeIntervalInSeconds": {
+		"vmssProbeIntervalInSeconds": {
 			"type": "int",
 			"metadata": {
 				"description": "The interval between load balancer health probes"
 			},
 			"defaultValue": 15
 		},
-		"numberOfProbes": {
+		"vmssNumberOfProbes": {
 			"type": "int",
 			"metadata": {
 				"description": "The number of probes that need to fail before a VM instance is deemed unhealthy"
 			},
 			"defaultValue": 5
 		},
-    "probeRequestPath": {
+    "vmssProbeRequestPath": {
       "type": "string",
       "metadata": {
         "description": "The path used for the load balancer health probe"
       },
       "defaultValue": "/html/index.html"
     },
-    "initscriptUrl": {
+    "vmssInitscriptUrl": {
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-autoscale/install-apache.sh"
     },
-    "initScriptFileName": {
+    "vmssInitScriptFileName": {
       "type": "string",
       "metadata": {
-        "description": "sh [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "description": "sh [vmssInitScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
       },
       "defaultValue": "install-apache.sh"
     }
@@ -136,7 +136,7 @@
     "osType": {
       "publisher": "credativ",
       "offer": "Debian",
-      "sku": "[parameters('debianOSVersion')]",
+      "sku": "[parameters('vmssDebianOSVersion')]",
       "version": "latest"
     },
     "imageReference": "[variables('osType')]",
@@ -249,8 +249,8 @@
                 "id": "[variables('lbWebProbeID')]"
               },
               "protocol": "tcp",
-              "frontendPort": "[parameters('frontEndLBPort')]",
-              "backendPort": "[parameters('backEndLBPort')]",
+              "frontendPort": "[parameters('vmssFrontEndLBPort')]",
+              "backendPort": "[parameters('vmssBackEndLBPort')]",
               "enableFloatingIP": false
             }
           }
@@ -260,10 +260,10 @@
             "name": "[variables('lbWebProbeName')]",
             "properties": {
               "protocol": "http",
-              "port": "[parameters('backEndLBPort')]",
-              "intervalInSeconds": "[parameters('probeIntervalInSeconds')]",
-              "numberOfProbes": "[parameters('numberOfProbes')]",
-              "requestPath": "[parameters('probeRequestPath')]"
+              "port": "[parameters('vmssBackEndLBPort')]",
+              "intervalInSeconds": "[parameters('vmssProbeIntervalInSeconds')]",
+              "numberOfProbes": "[parameters('vmssNumberOfProbes')]",
+              "requestPath": "[parameters('vmssProbeRequestPath')]"
             }
           }
         ]
@@ -284,9 +284,9 @@
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "sku": {
-        "name": "[parameters('vmSize')]",
+        "name": "[parameters('vmssVmSize')]",
         "tier": "Standard",
-        "capacity": "[parameters('instanceCount')]"
+        "capacity": "[parameters('vmssInstanceCount')]"
       },
       "properties": {
         "overprovision": "true",
@@ -311,8 +311,8 @@
           },
           "osProfile": {
             "computerNamePrefix": "[variables('namingInfix')]",
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]"
+            "adminUsername": "[parameters('vmssAdminUsername')]",
+            "adminPassword": "[parameters('vmssAdminPassword')]"
           },
           "networkProfile": {
             "networkInterfaceConfigurations": [
@@ -355,11 +355,11 @@
                   "autoUpgradeMinorVersion": false,
                   "settings": {
                     "fileUris": [
-                      "[parameters('initscriptUrl')]"
+                      "[parameters('vmssInitscriptUrl')]"
                     ]
                   },
                   "protectedSettings": {
-                    "commandToExecute": "[concat('sh ', parameters('initScriptFileName'),' \"',  parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
+                    "commandToExecute": "[concat('sh ', parameters('vmssInitScriptFileName'),' \"',  parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
                   }
                 }
               },
@@ -458,7 +458,7 @@
     },
     "sshCommand": {
       "type": "string",
-      "value": "[concat('ssh -p 50000 ', parameters('adminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('ssh -p 50000 ', parameters('vmssAdminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "resultScript": {
       "type": "string",
