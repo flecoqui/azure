@@ -30,8 +30,7 @@ iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 # glusterfs mount
 mkdir /shareddata
 mount -t glusterfs gfs1vm0:gfs1vol /shareddata
-wm_nfs= `df -h /shareddata`
-
+wm_nfs=`df -h /shareddata`
 
 directory=/var/www/html
 if [ ! -d $directory ]; then
