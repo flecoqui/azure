@@ -11,7 +11,7 @@
     },
     "vmssDebianOSVersion": {
       "type": "string",
-      "defaultValue": "8",
+      "defaultValue": "7",
       "allowedValues": [
         "7",
         "8"
@@ -396,7 +396,7 @@
         "storageLoop",
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "gfs1vmloop"
+        "gfs1extensionloop"
       ],
       "sku": {
         "name": "[parameters('vmssVmSize')]",
@@ -623,7 +623,6 @@
       },
       "dependsOn": [       
         "gfs1storageloop",
-        "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
         "gfs1nicloop",
         "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
