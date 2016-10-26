@@ -15,10 +15,10 @@ echo "Installation script start : $(date)"
 apt-get -y update
 apt-get -y install apache2
 # GlusterFS client  installation 
-wget -O - http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub | apt-key add -
-echo deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/jessie/apt jessie main > /etc/apt/sources.list.d/gluster.list
-apt-get update -y
-apt-get install glusterfs-client -y
+#wget -O - http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub | apt-key add -
+#echo deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/jessie/apt jessie main > /etc/apt/sources.list.d/gluster.list
+#apt-get update -y
+#apt-get install glusterfs-client -y
 
 # firewall configuration 
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
@@ -26,7 +26,7 @@ iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 # glusterfs mount
 mkdir /shareddata
-mount -t glusterfs gfs1vm0:gfs1vol /shareddata
+#mount -t glusterfs gfs1vm0:gfs1vol /shareddata
 wm_nfs= `df -h /shareddata`
 
 

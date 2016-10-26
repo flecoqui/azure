@@ -625,6 +625,8 @@
         "count": "[parameters('gfs1ScaleNumber')]"
       },
       "dependsOn": [
+        "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
         "[concat('Microsoft.Network/networkInterfaces/', variables('gfs1nicName'), copyindex())]",
         "[concat('Microsoft.Storage/storageAccounts/', parameters('gfs1StorageAccountName'), copyindex())]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
@@ -720,7 +722,7 @@
     },
     "sshCommand": {
       "type": "string",
-      "value": "[concat('ssh -p 50000 ', parameters('vmssAdminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('ssh -p 5000X ', parameters('vmssAdminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "resultScript": {
       "type": "string",
