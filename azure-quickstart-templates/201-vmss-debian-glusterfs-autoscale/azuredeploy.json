@@ -393,13 +393,10 @@
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('computeApiVersion')]",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueStringArray')[0], variables('newStorageAccountSuffix'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueStringArray')[1], variables('newStorageAccountSuffix'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueStringArray')[2], variables('newStorageAccountSuffix'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueStringArray')[3], variables('newStorageAccountSuffix'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueStringArray')[4], variables('newStorageAccountSuffix'))]",
+        "storageLoop",
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "gfs1vmloop"
       ],
       "sku": {
         "name": "[parameters('vmssVmSize')]",
@@ -574,7 +571,7 @@
       "apiVersion": "2015-05-01-preview",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "gfs",
+        "name": "gfs1storageloop",
         "count": "[parameters('gfs1ScaleNumber')]"
       },
       "properties": {
@@ -621,14 +618,14 @@
       "name": "[concat(parameters('gfs1VmNamePrefix'), copyindex())]",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "gfs",
+        "name": "gfs1vmloop",
         "count": "[parameters('gfs1ScaleNumber')]"
       },
-      "dependsOn": [
+      "dependsOn": [       
+        "gfs1storageloop",
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('gfs1nicName'), copyindex())]",
-        "[concat('Microsoft.Storage/storageAccounts/', parameters('gfs1StorageAccountName'), copyindex())]",
+        "gfs1nicloop",
         "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
       ],
       "properties": {
@@ -694,7 +691,7 @@
       "apiVersion": "2015-05-01-preview",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "gfs",
+        "name": "gfs1extensionloop",
         "count": "[parameters('gfs1ScaleNumber')]"
       },
       "dependsOn": [
