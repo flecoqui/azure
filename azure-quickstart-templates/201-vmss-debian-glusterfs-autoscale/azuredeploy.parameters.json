@@ -6,7 +6,7 @@
       "value": "Standard_D1_v2"
     },
     "vmssDebianOSVersion": {
-      "value": "7"
+      "value": "8"
     },
     "vmssName": {
       "value": "vmssdebian"
@@ -45,7 +45,7 @@
       "value": "Ubuntu"
     },
     "gfs1StorageAccountName": {
-      "value": "gfs1sto"
+      "value": "gfs1sa"
     },
     "gfs1ScaleNumber": {
       "value": 2
@@ -63,7 +63,7 @@
       "value": "gfs1vm"
     },
     "gfs1VmIPPrefix": {
-      "value": "10.0.0.1"
+      "value": "10.0.0.8"
     },
     "gfs1VnetAddressPrefix": {
       "value": "10.0.0.0/16"

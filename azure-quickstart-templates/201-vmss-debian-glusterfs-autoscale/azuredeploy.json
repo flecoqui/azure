@@ -149,7 +149,7 @@
     },
     "gfs1VmIPPrefix": {
       "type": "string",
-      "defaultValue": "10.0.0.1",
+      "defaultValue": "10.0.0.8",
       "metadata": {
         "description": "VM IP prefix, a number will be appened for each node"
       }
@@ -216,7 +216,7 @@
     "subnetPrefix": "10.0.0.0/24",
     "virtualNetworkName": "[concat(variables('namingInfix'), 'vnet')]",
     "publicIPAddressName": "[concat(variables('namingInfix'), 'pip')]",
-    "subnetName": "[concat(variables('namingInfix'), 'subnet')]",
+    "subnetName": "[concat(variables('namingInfix'), '-subnet')]",
     "loadBalancerName": "[concat(variables('namingInfix'), 'lb')]",
     "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
     "lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName'))]",
@@ -252,7 +252,21 @@
     "computeApiVersion": "2016-03-30",
     "networkApiVersion": "2016-03-30",
     "storageApiVersion": "2015-06-15",
-    "insightsApiVersion": "2015-04-01"
+    "insightsApiVersion": "2015-04-01",
+    "gfs1AvailabilitySetName": "gfs1AvSet",
+    "gfs1nicName": "gfs1nic",
+    "gfs1OsImagePublisher": "[variables(concat('osImage', parameters('gfs1HostOs'), 'Publisher'))]",
+    "gfs1OsImageOffer": "[variables(concat('osImage', parameters('gfs1HostOs'), 'Offer'))]",
+    "gfs1OsImageSKU": "[variables(concat('osImage', parameters('gfs1HostOs'), 'SKU'))]",
+    "gfs1OsImageVersion": "[variables(concat('osImage', parameters('gfs1HostOs'), 'version'))]",
+    "osImageUbuntuPublisher": "Canonical",
+    "osImageUbuntuOffer": "UbuntuServer",
+    "osImageUbuntuSKU": "14.04.3-LTS",
+    "osImageUbuntuVersion": "latest",
+    "osImageCentosPublisher": "OpenLogic",
+    "osImageCentosOffer": "CentOS",
+    "osImageCentosSKU": "6.5",
+    "osImageCentosVersion": "latest"
   },
   "resources": [
     {
@@ -553,7 +567,151 @@
           }
         ]
       }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[concat(parameters('gfs1StorageAccountName'), copyIndex())]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "gfs",
+        "count": "[parameters('gfs1ScaleNumber')]"
+      },
+      "properties": {
+        "accountType": "Standard_LRS"
+      }
+    },
+    { 
+       "type": "Microsoft.Compute/availabilitySets", 
+       "name": "[variables('gfs1AvailabilitySetName')]", 
+       "apiVersion": "2015-05-01-preview", 
+       "location": "[resourceGroup().location]", 
+       "properties": {}
+     }, 
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('gfs1nicName'), copyindex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "gfs1nicloop",
+        "count": "[parameters('gfs1ScaleNumber')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[concat(parameters('gfs1VmIPPrefix'), copyindex())]",
+              "subnet": {
+                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(parameters('gfs1VmNamePrefix'), copyindex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "gfs",
+        "count": "[parameters('gfs1ScaleNumber')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('gfs1nicName'), copyindex())]",
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('gfs1StorageAccountName'), copyindex())]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
+      ],
+      "properties": {
+          "availabilitySet": { 
+           "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('gfs1AvailabilitySetName'))]" 
+         }, 
+        "hardwareProfile": {
+          "vmSize": "[parameters('gfs1VmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[concat(parameters('gfs1VmNamePrefix'), copyIndex())]",
+          "adminUsername": "[parameters('gfs1AdminUsername')]",
+          "adminPassword": "[parameters('gfs1AdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('gfs1OsImagePublisher')]",
+            "offer": "[variables('gfs1OsImageOffer')]",
+            "sku": "[variables('gfs1OsImageSKU')]",
+            "version": "[variables('gfs1OsImageVersion')]"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat('http://',parameters('gfs1StorageAccountName'), copyindex(), '.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'osdisk.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "name": "datadisk1",
+              "diskSizeGB": "1000",
+              "lun": 0,
+              "vhd": {
+                "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk1.vhd')]"
+              },
+              "createOption": "Empty"
+            },
+            {
+              "name": "datadisk2",
+              "diskSizeGB": "1000",
+              "lun": 1,
+              "vhd": {
+                "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk2.vhd')]"
+              },
+              "createOption": "Empty"
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('gfs1nicName'), copyindex()))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('gfs1VmNamePrefix'), copyindex(), '/extension')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "gfs",
+        "count": "[parameters('gfs1ScaleNumber')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('gfs1VmNamePrefix'), copyindex())]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[parameters('gfs1CustomScriptFilePath')]"
+          ],
+          "commandToExecute": "[concat(parameters('gfs1CustomScriptCommandToExecute'), ' ', parameters('gfs1VmNamePrefix'), ' ', parameters('gfs1VmIPPrefix'), ' ', parameters('gfs1VolumeName'), ' ', copyindex(), ' ', parameters('gfs1ScaleNumber'))]"
+        }
+      }
     }
+
   ],
   "outputs": {
     "hostname": {
