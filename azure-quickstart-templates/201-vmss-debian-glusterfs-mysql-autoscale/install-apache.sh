@@ -23,6 +23,10 @@ echo deb http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/Debian/whe
 apt-get update -y
 apt-get install glusterfs-client -y
 
+#install mysql client
+apt-get install mysql-client -y
+
+
 # firewall configuration 
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT

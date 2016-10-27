@@ -466,11 +466,11 @@
     "mysqlLbName": "[concat(parameters('mysqlName'), '-lb')]",
     "mysqlLbID": "[resourceId('Microsoft.Network/loadBalancers',variables('mysqlLbName'))]",
     "mysqlIlbBackendAddressPoolName": "[concat(parameters('mysqlName'), '-ilbBackendPool')]",
-    "mysqlIlbBackendAddressPoolID": "[concat(variables('lbID'),'/backendAddressPools/', variables('mysqlIlbBackendAddressPoolName'))]",
+    "mysqlIlbBackendAddressPoolID": "[concat(variables('mysqlLbID'),'/backendAddressPools/', variables('mysqlIlbBackendAddressPoolName'))]",
     "mysqlIlbRuleName": "[concat(parameters('mysqlName'), '-ilbRule')]",
-    "mysqlIlbRuleID": "[concat(variables('lbID'),'/loadBalancingRules/',variables('mysqlIlbRuleName'))]",
+    "mysqlIlbRuleID": "[concat(variables('mysqlLbID'),'/loadBalancingRules/',variables('mysqlIlbRuleName'))]",
     "mysqlSshIPConfigName": "[concat(parameters('mysqlName'), '-sshIPCfg')]",
-    "mysqlSshIPConfig": "[concat(variables('lbID'),'/frontendIPConfigurations/',variables('mysqlSshIPConfigName'))]",
+    "mysqlSshIPConfig": "[concat(variables('mysqlLbID'),'/frontendIPConfigurations/',variables('mysqlSshIPConfigName'))]",
     "mysqlNicName": "[concat(parameters('mysqlName'), '-nic')]",
     "mysqlAvailabilitySetName": "[concat(parameters('mysqlName'), '-set')]",
     "mysqlSingleQuote": "",
@@ -989,13 +989,13 @@
                 ],
                 "loadBalancerInboundNatRules": [
                   {
-                    "id": "[concat(variables('lbID'),'/inboundNatRules/',parameters('mysqlName'), 'NatRule', copyIndex())]"
+                    "id": "[concat(variables('mysqlLbID'),'/inboundNatRules/',parameters('mysqlName'), 'NatRule', copyIndex())]"
                   },
                   {
-                    "id": "[concat(variables('lbID'),'/inboundNatRules/',parameters('mysqlName'), 'ProbeNatRule', copyIndex())]"
+                    "id": "[concat(variables('mysqlLbID'),'/inboundNatRules/',parameters('mysqlName'), 'ProbeNatRule', copyIndex())]"
                   },
                   {
-                    "id": "[concat(variables('lbID'),'/inboundNatRules/',parameters('mysqlName'), 'MySQLNatRule', copyIndex())]"
+                    "id": "[concat(variables('mysqlLbID'),'/inboundNatRules/',parameters('mysqlName'), 'MySQLNatRule', copyIndex())]"
                   }
                 ]
               }
