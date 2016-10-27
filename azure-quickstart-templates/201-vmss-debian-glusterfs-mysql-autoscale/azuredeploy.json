@@ -460,11 +460,9 @@
     "osImageCentosSKU": "6.5",
     "osImageCentosVersion": "latest",
     "mysqlVnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('mysqlVirtualNetworkName'))]",
-    "mysqlDbSubnet": "[concat(variables('mysqlVnetID'),'/subnets/',parameters('mysqlDbSubnetName'))]"
+    "mysqlDbSubnet": "[concat(variables('mysqlVnetID'),'/subnets/',parameters('mysqlDbSubnetName'))]",
     "mysqlStorageAccountName": "[concat(uniquestring(resourceGroup().id),'storage')]",
     "mysqlNodeCount": 2,
-    "mysqlLbPublicIPName": "[parameters('mysqlName')]",
-    "mysqlLbPublicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses',variables('mysqlLbPublicIPName'))]",
     "mysqlLbName": "[concat(parameters('mysqlName'), '-lb')]",
     "mysqlLbID": "[resourceId('Microsoft.Network/loadBalancers',variables('mysqlLbName'))]",
     "mysqlIlbBackendAddressPoolName": "[concat(parameters('mysqlName'), '-ilbBackendPool')]",
@@ -971,7 +969,7 @@
           "count": "[variables('mysqlNodeCount')]"
         },
         "dependsOn": [
-          "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
+          "[concat('Microsoft.Network/virtualNetworks/', parameters('mysqlVirtualNetworkName'))]",
           "[concat('Microsoft.Network/loadBalancers/', variables('mysqlLbName'))]"
         ],
         "properties": {
@@ -982,7 +980,7 @@
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "[concat(variables('mysqlipOctet01'), add(variables('mysqlipOctet2'), div(copyIndex(variables('mysqlipOctet3')), 255)), '.', mod(copyIndex(variables('mysqlipOctet3')), 255))]",
                 "subnet": {
-                  "id": "[reference('Microsoft.Resources/deployments/SettingUpVirtualNetwork', variables('templateAPIVersion')).outputs.dbSubnetRef.value]"
+                     "id": "[variables('mysqlDBSubnet')]"
                 },
                 "loadBalancerBackendAddressPools": [
                   {
@@ -1110,7 +1108,7 @@
         "name": "[variables('mysqlLbName')]",
         "location": "[resourceGroup().location]",
         "dependsOn": [
-          "[concat('Microsoft.Network/publicIPAddresses/', variables('mysqlLbPublicIPName'))]"
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
         ],
         "properties": {
           "frontendIPConfigurations": [
@@ -1118,7 +1116,7 @@
               "name": "[variables('mysqlSshIPConfigName')]",
              "Properties": { 
                "subnet": { 
-                 "Id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'), '/subnets/', variables('subnetName')]" 
+                 "Id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]" 
                }, 
                "privateIPAddress": "[parameters('mysqlIlbIpAddress')]", 
                "privateIPAllocationMethod": "Static" 

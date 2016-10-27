@@ -157,9 +157,13 @@
         "mysqlCustomScriptFilePath": {
             "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-autoscale/azuremysql.sh"
         },
-        "mysqlCustomScriptCommandToExecute": {
-            "value": "bash azuremysql.sh"
+    "mysqlCustomScriptCommandToExecute": {
+      "value": "bash azuremysql.sh"
+    },
+            "mysqlConfigFilePath": {
+            "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-autoscale/my.cnf.template"
         }
+
 
 
 
