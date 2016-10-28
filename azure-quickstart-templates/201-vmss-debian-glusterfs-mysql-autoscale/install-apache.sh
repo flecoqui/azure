@@ -25,7 +25,7 @@ apt-get install glusterfs-client -y
 
 #install mysql client
 apt-get install mysql-client -y
-wn_mysql=`mysql --user=admin --password=VMP@ssw0rd -h 10.0.0.100 -e "show databases;"`
+wm_mysql=`mysql --user=admin --password=VMP@ssw0rd -h 10.0.0.100 -e "show databases;"`
 
 
 # firewall configuration 
