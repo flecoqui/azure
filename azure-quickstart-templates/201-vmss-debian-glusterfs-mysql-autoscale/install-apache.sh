@@ -25,6 +25,7 @@ apt-get install glusterfs-client -y
 
 #install mysql client
 apt-get install mysql-client -y
+wn_mysql=`mysql --user=admin --password=VMP@ssw0rd -h 10.0.0.100 -e "show databases;"`
 
 
 # firewall configuration 
@@ -59,7 +60,9 @@ cat <<EOF > $directory/index.html
     <p>This is the home page for the Apache test on Azure VM</p>
     <p>Local IP address:</p>
     <p>   $wm_ipaddr</p> 
-    <p>NFS partition:</p>
+    <p>MYSQL databses:</p>
+    <p>   $wm_mysql</p>
+	<p>NFS partition:</p>
     <p>   $wm_nfs</p> 
     <ul>
       <li>To the VM Scale Set: <a href="http://$wm_hostname/html/index.html">http://$wm_hostname/html/index.html</a>

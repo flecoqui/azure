@@ -253,20 +253,6 @@
           "description": "Storage account type for the cluster"
         }
       },
-      "mysqlVirtualNetworkName": {
-            "type": "string",
-            "defaultValue": "mysqlvnet",
-            "metadata": {
-                "description": "Virtual network name for the cluster"
-            }
-        },
-        "mysqlDbSubnetName": {
-            "type": "string",
-            "defaultValue": "dbsubnet",
-            "metadata": {
-                "description": "subnet name for the MySQL nodes"
-            }
-        },
         "mysqlVnetAddressPrefix": {
             "type": "string",
             "defaultValue": "10.0.0.0/16",
@@ -276,14 +262,14 @@
         },
         "mysqlDbSubnetAddressPrefix": {
             "type": "string",
-            "defaultValue": "10.0.1.0/24",
+            "defaultValue": "10.0.0.0/24",
             "metadata": {
                 "description": "IP address in CIDR for db subnet"
             }
         },
         "mysqlDbSubnetStartAddress": {
             "type": "string",
-            "defaultValue": "10.0.1.4",
+            "defaultValue": "10.0.0.104",
             "metadata": {
                 "description": "Start IP address in the subnet for the VMs"
             }
@@ -396,10 +382,7 @@
     "newStorageAccountSuffix": "[concat(variables('namingInfix'), 'sa')]",
     "uniqueStringArray": [
       "[concat(uniqueString(concat(resourceGroup().id, variables('newStorageAccountSuffix'), '0')))]",
-      "[concat(uniqueString(concat(resourceGroup().id, variables('newStorageAccountSuffix'), '1')))]",
-      "[concat(uniqueString(concat(resourceGroup().id, variables('newStorageAccountSuffix'), '2')))]",
-      "[concat(uniqueString(concat(resourceGroup().id, variables('newStorageAccountSuffix'), '3')))]",
-      "[concat(uniqueString(concat(resourceGroup().id, variables('newStorageAccountSuffix'), '4')))]"
+      "[concat(uniqueString(concat(resourceGroup().id, variables('newStorageAccountSuffix'), '1')))]"
     ],
     "vhdContainerName": "[concat(variables('namingInfix'), 'vhd')]",
     "osDiskName": "[concat(variables('namingInfix'), 'osdisk')]",
@@ -459,20 +442,19 @@
     "osImageCentosOffer": "CentOS",
     "osImageCentosSKU": "6.5",
     "osImageCentosVersion": "latest",
-    "mysqlVnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('mysqlVirtualNetworkName'))]",
-    "mysqlDbSubnet": "[concat(variables('mysqlVnetID'),'/subnets/',parameters('mysqlDbSubnetName'))]",
-    "mysqlStorageAccountName": "[concat(uniquestring(resourceGroup().id),'storage')]",
+    "mysqlStorageAccountName": "[concat(uniquestring(resourceGroup().id),'sa')]",
     "mysqlNodeCount": 2,
-    "mysqlLbName": "[concat(parameters('mysqlName'), '-lb')]",
+    "mysqlVMName": "[concat(parameters('mysqlName'), 'vm')]",
+    "mysqlLbName": "[concat(parameters('mysqlName'), 'lb')]",
     "mysqlLbID": "[resourceId('Microsoft.Network/loadBalancers',variables('mysqlLbName'))]",
     "mysqlIlbBackendAddressPoolName": "[concat(parameters('mysqlName'), '-ilbBackendPool')]",
     "mysqlIlbBackendAddressPoolID": "[concat(variables('mysqlLbID'),'/backendAddressPools/', variables('mysqlIlbBackendAddressPoolName'))]",
-    "mysqlIlbRuleName": "[concat(parameters('mysqlName'), '-ilbRule')]",
+    "mysqlIlbRuleName": "[concat(parameters('mysqlName'), 'ilbRule')]",
     "mysqlIlbRuleID": "[concat(variables('mysqlLbID'),'/loadBalancingRules/',variables('mysqlIlbRuleName'))]",
-    "mysqlSshIPConfigName": "[concat(parameters('mysqlName'), '-sshIPCfg')]",
+    "mysqlSshIPConfigName": "[concat(parameters('mysqlName'), 'sshIPCfg')]",
     "mysqlSshIPConfig": "[concat(variables('mysqlLbID'),'/frontendIPConfigurations/',variables('mysqlSshIPConfigName'))]",
-    "mysqlNicName": "[concat(parameters('mysqlName'), '-nic')]",
-    "mysqlAvailabilitySetName": "[concat(parameters('mysqlName'), '-set')]",
+    "mysqlNicName": "[concat(parameters('mysqlName'), 'nic')]",
+    "mysqlAvailabilitySetName": "[concat(parameters('mysqlName'), 'set')]",
     "mysqlSingleQuote": "",
     "mysqlSa": "[parameters('mysqlDbSubnetStartAddress')]",
     "mysqlIpOctet01": "[concat(split(variables('mysqlSa'), '.')[0], '.', split(variables('mysqlSa'), '.')[1], '.')]",
@@ -606,10 +588,11 @@
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('computeApiVersion')]",
       "dependsOn": [
-        "storageLoop",
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "gfs1extensionloop"
+        "storageLoop",
+        "gfs1extensionloop",
+        "mysqlExtLoop"
       ],
       "sku": {
         "name": "[parameters('vmssVmSize')]",
@@ -626,10 +609,7 @@
             "osDisk": {
               "vhdContainers": [
                 "[concat('https://', variables('uniqueStringArray')[0], variables('newStorageAccountSuffix'), '.blob.core.windows.net/', variables('vhdContainerName'))]",
-                "[concat('https://', variables('uniqueStringArray')[1], variables('newStorageAccountSuffix'), '.blob.core.windows.net/', variables('vhdContainerName'))]",
-                "[concat('https://', variables('uniqueStringArray')[2], variables('newStorageAccountSuffix'), '.blob.core.windows.net/', variables('vhdContainerName'))]",
-                "[concat('https://', variables('uniqueStringArray')[3], variables('newStorageAccountSuffix'), '.blob.core.windows.net/', variables('vhdContainerName'))]",
-                "[concat('https://', variables('uniqueStringArray')[4], variables('newStorageAccountSuffix'), '.blob.core.windows.net/', variables('vhdContainerName'))]"
+                "[concat('https://', variables('uniqueStringArray')[1], variables('newStorageAccountSuffix'), '.blob.core.windows.net/', variables('vhdContainerName'))]"
               ],
               "name": "[variables('osDiskName')]",
               "caching": "ReadOnly",
@@ -834,10 +814,11 @@
         "name": "gfs1vmloop",
         "count": "[parameters('gfs1ScaleNumber')]"
       },
-      "dependsOn": [       
+      "dependsOn": [
         "gfs1storageloop",
+        "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "gfs1nicloop",
+        "[concat('Microsoft.Network/networkInterfaces/',variables('gfs1nicName'), copyindex())]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
       ],
       "properties": {
@@ -922,27 +903,6 @@
         }
       }
     },
-    {
-      "apiVersion": "[variables('resourceAPIVersion')]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[parameters('mysqlVirtualNetworkName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('mysqlVnetAddressPrefix')]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[parameters('mysqlDbSubnetName')]",
-            "properties": {
-              "addressPrefix": "[parameters('mysqlDbSubnetAddressPrefix')]"
-            }
-          }
-        ]
-      }
-    },
       {
         "type": "Microsoft.Storage/storageAccounts",
         "name": "[variables('mysqlStorageAccountName')]",
@@ -965,11 +925,11 @@
         "name": "[concat(variables('mysqlNicName'), copyIndex())]",
         "location": "[resourceGroup().location]",
         "copy": {
-          "name": "nicLoop",
+          "name": "mysqlNicLoop",
           "count": "[variables('mysqlNodeCount')]"
         },
         "dependsOn": [
-          "[concat('Microsoft.Network/virtualNetworks/', parameters('mysqlVirtualNetworkName'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
           "[concat('Microsoft.Network/loadBalancers/', variables('mysqlLbName'))]"
         ],
         "properties": {
@@ -980,7 +940,7 @@
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "[concat(variables('mysqlipOctet01'), add(variables('mysqlipOctet2'), div(copyIndex(variables('mysqlipOctet3')), 255)), '.', mod(copyIndex(variables('mysqlipOctet3')), 255))]",
                 "subnet": {
-                     "id": "[variables('mysqlDBSubnet')]"
+                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
                 },
                 "loadBalancerBackendAddressPools": [
                   {
@@ -1005,18 +965,19 @@
       },
 
       {
-        "name": "[concat(parameters('mysqlName'), copyIndex())]",
+        "name": "[concat(variables('mysqlVMName'), copyIndex())]",
         "type": "Microsoft.Compute/virtualMachines",
         "apiVersion": "[variables('resourceAPIVersion')]",
         "location": "[resourceGroup().location]",
         "copy": {
-          "name": "vmLoop",
+          "name": "mysqlVmLoop",
           "count": "[variables('mysqlNodeCount')]"
         },
         "dependsOn": [
           "[concat('Microsoft.Compute/availabilitySets/', variables('mysqlAvailabilitySetName'))]",
           "[concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName'))]",
-          "[concat('Microsoft.Network/networkInterfaces/', variables('mysqlNicName'), copyIndex())]"
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+          "mysqlNicLoop"
         ],
         "properties": {
           "availabilitySet": {
@@ -1026,7 +987,7 @@
             "vmSize": "[parameters('mysqlVmSize')]"
           },
           "osProfile": {
-            "computerName": "[concat(parameters('mysqlName'), copyIndex())]",
+            "computerName": "[concat(variables('mysqlVMName'), copyIndex())]",
             "adminUsername": "[parameters('mysqlVmUserName')]",
             "adminPassword": "[parameters('mysqlVmPassword')]"
           },
@@ -1040,7 +1001,7 @@
             "osDisk": {
               "name": "osdisk",
               "vhd": {
-                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', parameters('mysqlName'), copyIndex(), 'osdisk.vhd')]"
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'osdisk.vhd')]"
               },
               "caching": "ReadWrite",
               "createOption": "FromImage"
@@ -1051,7 +1012,7 @@
                 "diskSizeGB": "1000",
                 "lun": 0,
                 "vhd": {
-                  "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', parameters('mysqlName'), copyIndex(), 'dataDisk1.vhd')]"
+                  "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk1.vhd')]"
                 },
                 "createOption": "Empty"
               },
@@ -1060,7 +1021,7 @@
                 "diskSizeGB": "1000",
                 "lun": 1,
                 "vhd": {
-                  "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', parameters('mysqlName'), copyIndex(), 'dataDisk2.vhd')]"
+                  "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk2.vhd')]"
                 },
                 "createOption": "Empty"
               }
@@ -1069,7 +1030,7 @@
           "networkProfile": {
             "networkInterfaces": [
               {
-                "id": "[concat(resourceId('Microsoft.Network/networkInterfaces',variables('mysqlNicName')), copyIndex())]"
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('mysqlNicName'), copyIndex()))]"
               }
             ]
           }
@@ -1077,15 +1038,15 @@
       },
       {
         "type": "Microsoft.Compute/virtualMachines/extensions",
-        "name": "[concat(parameters('mysqlName'), copyIndex(), '/setupMySQL')]",
+        "name": "[concat(variables('mysqlVMName'), copyIndex(), '/setupMySQL')]",
         "apiVersion": "[variables('resourceAPIVersion')]",
         "location": "[resourceGroup().location]",
         "copy": {
-          "name": "extLoop",
+          "name": "mysqlExtLoop",
           "count": "[variables('mysqlNodeCount')]"
         },
         "dependsOn": [
-          "[concat('Microsoft.Compute/virtualMachines/', parameters('mysqlName'), copyIndex())]"
+          "[concat('Microsoft.Compute/virtualMachines/', variables('mysqlVMName'), copyIndex())]"
         ],
         "properties": {
           "publisher": "Microsoft.Azure.Extensions",

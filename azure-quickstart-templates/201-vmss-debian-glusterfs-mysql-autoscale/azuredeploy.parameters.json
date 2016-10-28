@@ -112,26 +112,20 @@
           "value": "Standard_LRS"
 
         },
-      "mysqlVirtualNetworkName": {
-            "value": "mysqlvnet"
-        },
-        "mysqlDbSubnetName": {
-            "value": "dbsubnet"
-        },
         "mysqlVnetAddressPrefix": {
             "value": "10.0.0.0/16"
         },
         "mysqlDbSubnetAddressPrefix": {
-            "value": "10.0.1.0/24"
+            "value": "10.0.0.0/24"
         },
         "mysqlDbSubnetStartAddress": {
-            "value": "10.0.1.4"
+            "value": "10.0.0.104"
         },
         "mysqlImagePublisher": {
-            "value": "Canonical"
+            "value": "OpenLogic"
         },
         "mysqlImageOffer": {
-            "value": "UbuntuServer"
+            "value": "CentOS"
         },
         "mysqlImageSKU": {
             "value": "6.6"
