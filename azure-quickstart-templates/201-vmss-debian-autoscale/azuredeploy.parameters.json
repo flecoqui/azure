@@ -6,7 +6,7 @@
       "value": "Standard_D1_v2"
     },
     "vmssDebianOSVersion": {
-      "value": "7"
+      "value": "8"
     },
     "vmssName": {
       "value": "vmssdebian"
