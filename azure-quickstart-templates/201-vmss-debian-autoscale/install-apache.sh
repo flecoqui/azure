@@ -52,9 +52,9 @@ cat <<EOF > $directory/index.html
   </body>
 </html>
 EOF
-rm -f /etc/apache2/site-enabled/*.conf
+rm -f /etc/apache2/sites-enabled/*.conf
 echo "Configuring Web Site for Apache: $(date)"
-cat <<EOF > /etc/apache2/site-enabled/html.conf 
+cat <<EOF > /etc/apache2/sites-enabled/html.conf 
 ServerName "$wm_hostname"
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
