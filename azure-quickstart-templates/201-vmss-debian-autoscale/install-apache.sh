@@ -18,7 +18,6 @@ apt-get -y install apache2
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-iptables -P INPUT DROP
 
 directory=/var/www/html
 if [ ! -d $directory ]; then
