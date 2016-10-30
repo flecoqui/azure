@@ -32,13 +32,14 @@ echo "OS=$OS version $VER $ARCH"
 apt-get -y update
 apt-get -y install apache2
 # GlusterFS client  installation 
-if [ $VER -eq 7 ];
+NUM=`echo $VER |  sed 's/\(\.\)[0-9]*//g'`
+if [ $NUM -eq 7 ];
 then
 # install a version compliant with Debian 7 
 wget -O - http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/rsa.pub | apt-key add -
 echo deb http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/Debian/wheezy/apt wheezy main > /etc/apt/sources.list.d/gluster.list 
 fi
-if [ $VER -eq 8 ];
+if [ $NUM -eq 8 ];
 then
 wget -O - http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub | apt-key add -
 echo deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/jessie/apt jessie main > /etc/apt/sources.list.d/gluster.list
