@@ -11,15 +11,41 @@ echo "Installation script start : $(date)"
 echo "Apache Installation: $(date)"
 echo "#####  wm_hostname: $wm_hostname"
 echo "Installation script start : $(date)"
+ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+
+if [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+    VER=$DISTRIB_RELEASE
+elif [ -f /etc/debian_version ]; then
+    OS=Debian  # XXX or Ubuntu??
+    VER=$(cat /etc/debian_version)
+elif [ -f /etc/redhat-release ]; then
+    # TODO add code for Red Hat and CentOS here
+    ...
+else
+    OS=$(uname -s)
+    VER=$(uname -r)
+fi
+echo "OS=$OS version $VER $ARCH"
+
 # Apache installation 
 apt-get -y update
 apt-get -y install apache2
 # GlusterFS client  installation 
+NUM=`echo $VER |  sed 's/\(\.\)[0-9]*//g'`
+if [ $NUM -eq 7 ];
+then
 # install a version compliant with Debian 7 
 wget -O - http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/rsa.pub | apt-key add -
 echo deb http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/Debian/wheezy/apt wheezy main > /etc/apt/sources.list.d/gluster.list 
-#wget -O - http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub | apt-key add -
-#echo deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/jessie/apt jessie main > /etc/apt/sources.list.d/gluster.list
+fi
+# install a version compliant with Debian 8 
+if [ $NUM -eq 8 ];
+then
+wget -O - http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub | apt-key add -
+echo deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/jessie/apt jessie main > /etc/apt/sources.list.d/gluster.list
+fi
 apt-get update -y
 apt-get install glusterfs-client -y
 
@@ -74,7 +100,28 @@ cat <<EOF > $directory/index.html
   </body>
 </html>
 EOF
+rm -f /etc/apache2/sites-enabled/*.conf
+echo "Configuring Web Site for Apache: $(date)"
+cat <<EOF > /etc/apache2/sites-enabled/html.conf 
+ServerName "$wm_hostname"
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName "$wm_hostname"
 
+        DocumentRoot /var/www
+        <Directory  />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+        ErrorLog /var/log/apache2/evaluation-error.log
+        CustomLog /var/log/apache2/evaluation-access.log combined
+</VirtualHost>
+EOF
 apachectl restart
 exit 0 
 
