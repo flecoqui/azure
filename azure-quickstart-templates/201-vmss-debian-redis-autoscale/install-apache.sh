@@ -79,8 +79,8 @@ apt-get -y update
 apt-get -y install apache2
 
 # Redis installation & configuration 
-install_redis()
-configure_redis()
+install_redis
+configure_redis
 
 
 # firewall configuration 
