@@ -113,6 +113,15 @@ while getopts :n:v:c:m:s:i:p:lh optname; do
   esac
 done
 
+if [ "$INSTANCE_COUNT" -eq "$(($NODE_INDEX+1))" ];
+then
+  	log "Last node flag set"
+	IS_LAST_NODE=1
+	else
+  	log "Last node flag not set"
+	IS_LAST_NODE=0
+fi
+
 #############################################################################
 tune_system()
 {
@@ -310,6 +319,22 @@ configure_redis_cluster()
 	echo "cluster-node-timeout 5000" >> /etc/redis/redis.conf
 	echo "cluster-config-file ${CLUSTER_NAME}.conf" >> /etc/redis/redis.conf
 }
+#############################################################################
+# Expand a list of successive IP range defined by a starting address prefix (e.g. 10.0.0.1) and the number of machines in the range
+# 10.0.0.1-3 would be converted to "10.0.0.10 10.0.0.11 10.0.0.12"
+expand_ip_range() {
+    IFS='-' read -a HOST_IPS <<< "$1"
+
+    declare -a EXPAND_STATICIP_RANGE_RESULTS=()
+	
+    for (( n=0 ; n<("${HOST_IPS[1]}"+0) ; n++))
+    do
+        HOST="${HOST_IPS[0]}${n}:${REDIS_PORT}"
+		EXPAND_STATICIP_RANGE_RESULTS+=($HOST)
+    done
+	
+    echo "${EXPAND_STATICIP_RANGE_RESULTS[@]}"
+}
 
 #############################################################################
 initialize_redis_cluster()
@@ -317,7 +342,21 @@ initialize_redis_cluster()
 	# Cluster setup must run on the last node (a nasty workaround until ARM can recognize multiple custom script extensions)
 	if [ "$IS_LAST_NODE" -eq 1 ]; then
 		let REPLICA_COUNT=$SLAVE_NODE_COUNT/$MASTER_NODE_COUNT
-		sudo bash redis-cluster-setup.sh -c $INSTANCE_COUNT -s $REPLICA_COUNT -p $IP_PREFIX
+		SLAVE_COUNT=$REPLICA_COUNT
+
+#		sudo bash redis-cluster-setup.sh -c $INSTANCE_COUNT -s $REPLICA_COUNT -p $IP_PREFIX
+		log "Configuring Redis cluster on ${INSTANCE_COUNT} nodes with ${SLAVE_COUNT} slave(s) for every master node"
+
+		# Install the Ruby runtime that the cluster configuration script uses
+		apt-get -y install ruby-full
+
+		# Install the Redis client gem (a pre-requisite for redis-trib.rb)
+		gem install redis
+
+		# Create a cluster based upon the specified host list and replica count
+		echo "yes" | /usr/local/bin/redis-trib.rb create --replicas ${SLAVE_COUNT} $(expand_ip_range "${IP_PREFIX}-${INSTANCE_COUNT}")
+
+		log "Redis cluster was configured successfully"
 	fi
 }
 
