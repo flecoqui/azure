@@ -698,7 +698,7 @@
           "fileUris": [
             "[parameters('redisCustomScriptFilePath')]"
           ],
-          "commandToExecute": "[concat(parameters('redisCustomScriptCommandToExecute'), ' -n ', parameters('redisVmNamePrefix'), ' -v 3.0.0 -c 2 -m 1 -s 1 -p ', parameters('redisVmIPPrefix'),' -i ', copyindex())]"
+          "commandToExecute": "[concat(parameters('redisCustomScriptCommandToExecute'), ' -n ', parameters('redisVmNamePrefix'), ' -v 3.0.0 -c 6 -m 3 -s 3 -p ', parameters('redisVmIPPrefix'),' -i ', copyindex())]"
         }
       }
     }
