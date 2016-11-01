@@ -41,49 +41,44 @@
     "vmssInitScriptFileName": {
       "value": "install-apache.sh"
     },
-    "gfs1HostOs": {
+    "redisHostOs": {
       "value": "Ubuntu"
     },
-    "gfs1StorageAccountName": {
-      "value": "gfs1sa"
+    "redisStorageAccountName": {
+      "value": "redisdebiansa"
     },
-    "gfs1ScaleNumber": {
+    "redisScaleNumber": {
       "value": 2
     },
-    "gfs1AdminUsername": {
-      "value": "VMAdmin"
+    "redisAdminUsername": {
+       "value": "VMAdmin"
     },
-    "gfs1AdminPassword": {
-      "value": "VMP@ssw0rd"
+    "redisAdminPassword": {
+       "value": "VMP@ssw0rd"
     },
-    "gfs1VmSize": {
+    "redisVmSize": {
       "value": "Standard_D1_v2"
     },
-    "gfs1VmNamePrefix": {
-      "value": "gfs1vm"
+    "redisVmNamePrefix": {
+      "value": "redisvm"
     },
-    "gfs1VmIPPrefix": {
+    "redisVmIPPrefix": {
       "value": "10.0.0.8"
     },
-    "gfs1VnetAddressPrefix": {
+    "redisVnetAddressPrefix": {
       "value": "10.0.0.0/16"
     },
-    "gfs1GfsSubnetName": {
-      "value": "gfs1Subnet-1"
+    "redisSubnetName": {
+      "value": "redisSubnet-1"
     },
-    "gfs1GfsSubnetPrefix": {
+    "redisSubnetPrefix": {
       "value": "10.0.0.0/24"
     },
-    "gfs1CustomScriptFilePath": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-autoscale/azuregfs.sh"
+    "redisCustomScriptFilePath": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-redis-autoscale/redis-cluster-install.sh",
     },
-    "gfs1CustomScriptCommandToExecute": {
-      "value": "bash azuregfs.sh"
-    },
-    "gfs1VolumeName": {
-      "value": "gfs1vol"
+    "redisCustomScriptCommandToExecute": {
+      "value": "bash redis-cluster-install.sh"
     }
-
-
   }
 }
