@@ -36,8 +36,6 @@ LOGGING_KEY="[account-key]"
 REDIS_PORT=6379
 CURRENT_DIRECTORY=$(pwd)
 
-exit 0
-
 ########################################################
 # This script will install Redis from sources
 ########################################################
@@ -66,8 +64,7 @@ if [ "${UID}" -ne 0 ];
 then
     log "Script executed without root permissions"
     echo "You must be root to run this program." >&2
-    exit 0
-#    exit 3
+    exit 3
 fi
 
 # Parse script parameters
@@ -89,14 +86,12 @@ while getopts :n:c:i:p:h optname; do
 		;;			
     h)  # Helpful hints
 		help
-		exit 0
-#		exit 2
+		exit 2
 		;;
     \?) #unrecognized option - show help
 		echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
 		help
-		exit 0
-#		exit 2
+		exit 2
 		;;
   esac
 done
@@ -368,21 +363,21 @@ start_redis()
 
 
 # Step1
-#tune_system
-#tune_memory
-#tune_network
+tune_system
+tune_memory
+tune_network
 
 # Step 2
-#install_redis
+install_redis
 
 # Step 3
-#configure_redis
+configure_redis
 
 # Step 4
-#configure_redis_cluster
-#configure_redis_replication()
+configure_redis_cluster
+configure_redis_replication
 
 
 # Step 5
-#start_redis
+start_redis
 
