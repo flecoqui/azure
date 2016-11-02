@@ -36,7 +36,7 @@
       "value": "/html/index.html"
     },
     "vmssInitscriptUrl": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis- autoscale/install-apache.sh"
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis-autoscale/install-apache.sh"
     },
     "vmssInitScriptFileName": {
       "value": "install-apache.sh"
