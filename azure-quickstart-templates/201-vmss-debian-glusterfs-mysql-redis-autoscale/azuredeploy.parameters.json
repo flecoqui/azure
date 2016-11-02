@@ -1,0 +1,204 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmssVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "vmssDebianOSVersion": {
+      "value": "8"
+    },
+    "vmssName": {
+      "value": "vmssdebian"
+    },
+    "vmssInstanceCount": {
+      "value": 2
+    },
+    "vmssAdminUsername": {
+      "value": "VMAdmin"
+    },
+    "vmssAdminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "vmssFrontEndLBPort": {
+			"value": 80
+		},
+		"vmssBackEndLBPort": {
+			"value": 80
+		},
+		"vmssProbeIntervalInSeconds": {
+			"value": 15
+		},
+		"vmssNumberOfProbes": {
+			"value": 5
+		},
+    "vmssProbeRequestPath": {
+      "value": "/html/index.html"
+    },
+    "vmssInitscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis- autoscale/install-apache.sh"
+    },
+    "vmssInitScriptFileName": {
+      "value": "install-apache.sh"
+    },
+    "gfs1HostOs": {
+      "value": "Ubuntu"
+    },
+    "gfs1StorageAccountName": {
+      "value": "gfs1sa"
+    },
+    "gfs1ScaleNumber": {
+      "value": 2
+    },
+    "gfs1AdminUsername": {
+      "value": "VMAdmin"
+    },
+    "gfs1AdminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "gfs1VmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "gfs1VmNamePrefix": {
+      "value": "gfs1vm"
+    },
+    "gfs1VmIPPrefix": {
+      "value": "10.0.0.8"
+    },
+    "gfs1VnetAddressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "gfs1GfsSubnetName": {
+      "value": "gfs1Subnet-1"
+    },
+    "gfs1GfsSubnetPrefix": {
+      "value": "10.0.0.0/24"
+    },
+    "gfs1CustomScriptFilePath": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis-autoscale/azuregfs.sh"
+    },
+    "gfs1CustomScriptCommandToExecute": {
+      "value": "bash azuregfs.sh"
+    },
+    "gfs1VolumeName": {
+      "value": "gfs1vol"
+    },
+    "mysqlName": {
+      "value": "mysqldb"
+    },
+    "mysqlIlbIpAddress": {
+      "value": "10.0.0.100"
+    },
+
+        "mysqlVmUserName": {
+            "value": "VMAdmin"
+        },
+        "mysqlVmPassword": {
+            "value": "VMP@ssw0rd"
+        },
+        "mysqlRootPassword": {
+            "value": "VMP@ssw0rd"
+        },
+        "mysqlReplicationPassword": {
+            "value": "VMP@ssw0rd"
+        },
+        "mysqlProbePassword": {
+            "value": "VMP@ssw0rd"
+        },
+        "mysqlVmSize": {
+            "value": "Standard_D1_v2"
+        },
+        "mysqlStorageAccountType": {
+          "value": "Standard_LRS"
+
+        },
+        "mysqlVnetAddressPrefix": {
+            "value": "10.0.0.0/16"
+        },
+        "mysqlDbSubnetAddressPrefix": {
+            "value": "10.0.0.0/24"
+        },
+        "mysqlDbSubnetStartAddress": {
+            "value": "10.0.0.104"
+        },
+        "mysqlImagePublisher": {
+            "value": "OpenLogic"
+        },
+        "mysqlImageOffer": {
+            "value": "CentOS"
+        },
+        "mysqlImageSKU": {
+            "value": "6.6"
+        },
+        "mysqlFrontEndPort0": {
+            "value": 3306
+        },
+        "mysqlFrontEndPort1": {
+            "value": 3307
+        },
+        "mysqlSshNatRuleFrontEndPort0": {
+            "value": 64001
+        },
+        "mysqlSshNatRuleFrontEndPort1": {
+            "value": 64002
+        },
+        "mysqlProbePort0": {
+            "value": 9200
+        },
+        "mysqlProbePort1": {
+            "value": 9201
+        },
+        "mysqlCustomScriptFilePath": {
+            "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis-autoscale/azuremysql.sh"
+        },
+    "mysqlCustomScriptCommandToExecute": {
+      "value": "bash azuremysql.sh"
+    },
+            "mysqlConfigFilePath": {
+            "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis-autoscale/my.cnf.template"
+        },
+    "redisHostOs": {
+      "value": "Ubuntu"
+    },
+    "redisStorageAccountName": {
+      "value": "redisdebiansa"
+    },
+    "redisScaleNumber": {
+      "value": 2
+    },
+    "redisAdminUsername": {
+       "value": "VMAdmin"
+    },
+    "redisAdminPassword": {
+       "value": "VMP@ssw0rd"
+    },
+    "redisVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "redisVmNamePrefix": {
+      "value": "redisvm"
+    },
+    "redisVmIPPrefix": {
+      "value": "10.0.0.18"
+    },
+    "redisVnetAddressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "redisSubnetName": {
+      "value": "redisSubnet-1"
+    },
+    "redisSubnetPrefix": {
+      "value": "10.0.0.0/24"
+    },
+    "redisCustomScriptFilePath": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis-autoscale/install-redis.sh"
+    },
+    "redisCustomScriptCommandToExecute": {
+      "value": "bash install-redis.sh"
+    }
+
+
+
+
+  }
+}
