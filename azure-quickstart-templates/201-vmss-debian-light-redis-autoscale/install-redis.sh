@@ -371,16 +371,16 @@ start_redis()
 #tune_network
 
 # Step 2
-install_redis
+#install_redis
 
 # Step 3
-configure_redis
+#configure_redis
 
 # Step 4
-configure_redis_cluster
-configure_redis_replication()
+#configure_redis_cluster
+#configure_redis_replication()
 
 
 # Step 5
-start_redis
+#start_redis
 
