@@ -105,8 +105,8 @@ then
 	IS_LAST_NODE=0
 fi
 
-let MASTER_NODE_COUNT=$INSTANCE_COUNT%2
-let SLAVE_NODE_COUNT=$INSTANCE_COUNT%2
+let MASTER_NODE_COUNT=$INSTANCE_COUNT/2
+let SLAVE_NODE_COUNT=$INSTANCE_COUNT/2
 
 #############################################################################
 tune_system()
