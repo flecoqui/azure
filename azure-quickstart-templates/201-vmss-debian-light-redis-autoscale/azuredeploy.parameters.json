@@ -1,0 +1,84 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmssVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "vmssDebianOSVersion": {
+      "value": "8"
+    },
+    "vmssName": {
+      "value": "vmssdebian"
+    },
+    "vmssInstanceCount": {
+      "value": 2
+    },
+    "vmssAdminUsername": {
+      "value": "VMAdmin"
+    },
+    "vmssAdminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "vmssFrontEndLBPort": {
+			"value": 80
+		},
+		"vmssBackEndLBPort": {
+			"value": 80
+		},
+		"vmssProbeIntervalInSeconds": {
+			"value": 15
+		},
+		"vmssNumberOfProbes": {
+			"value": 5
+		},
+    "vmssProbeRequestPath": {
+      "value": "/html/index.html"
+    },
+    "vmssInitscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-light-redis-autoscale/install-apache.sh"
+    },
+    "vmssInitScriptFileName": {
+      "value": "install-apache.sh"
+    },
+    "redisHostOs": {
+      "value": "Ubuntu"
+    },
+    "redisStorageAccountName": {
+      "value": "redisdebiansa"
+    },
+    "redisScaleNumber": {
+      "value": 2
+    },
+    "redisAdminUsername": {
+       "value": "VMAdmin"
+    },
+    "redisAdminPassword": {
+       "value": "VMP@ssw0rd"
+    },
+    "redisVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "redisVmNamePrefix": {
+      "value": "redisvm"
+    },
+    "redisVmIPPrefix": {
+      "value": "10.0.0.8"
+    },
+    "redisVnetAddressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "redisSubnetName": {
+      "value": "redisSubnet-1"
+    },
+    "redisSubnetPrefix": {
+      "value": "10.0.0.0/24"
+    },
+    "redisCustomScriptFilePath": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-light-redis-autoscale/redis-install.sh"
+    },
+    "redisCustomScriptCommandToExecute": {
+      "value": "bash redis-cluster-install.sh"
+    }
+  }
+}
