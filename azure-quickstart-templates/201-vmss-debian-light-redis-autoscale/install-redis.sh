@@ -315,29 +315,6 @@ expand_ip_range() {
     echo "${EXPAND_STATICIP_RANGE_RESULTS[@]}"
 }
 
-#############################################################################
-initialize_redis_cluster()
-{
-	# Cluster setup must run on the last node (a nasty workaround until ARM can recognize multiple custom script extensions)
-	if [ "$IS_LAST_NODE" -eq 1 ]; then
-		let REPLICA_COUNT=$SLAVE_NODE_COUNT/$MASTER_NODE_COUNT
-		SLAVE_COUNT=$REPLICA_COUNT
-
-#		sudo bash redis-cluster-setup.sh -c $INSTANCE_COUNT -s $REPLICA_COUNT -p $IP_PREFIX
-		log "Configuring Redis cluster on ${INSTANCE_COUNT} nodes with ${SLAVE_COUNT} slave(s) for every master node"
-
-		# Install the Ruby runtime that the cluster configuration script uses
-		apt-get -y install ruby-full
-
-		# Install the Redis client gem (a pre-requisite for redis-trib.rb)
-		gem install redis
-
-		# Create a cluster based upon the specified host list and replica count
-		echo "yes" | /usr/local/bin/redis-trib.rb create --replicas ${SLAVE_COUNT} $(expand_ip_range "${IP_PREFIX}-${INSTANCE_COUNT}")
-
-		log "Redis cluster was configured successfully"
-	fi
-}
 
 #############################################################################
 configure_redis_replication()
@@ -389,9 +366,9 @@ start_redis()
 
 
 # Step1
-tune_system
-tune_memory
-tune_network
+#tune_system
+#tune_memory
+#tune_network
 
 # Step 2
 install_redis
