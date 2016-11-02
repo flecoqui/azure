@@ -78,7 +78,7 @@
       "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-light-redis-autoscale/redis-install.sh"
     },
     "redisCustomScriptCommandToExecute": {
-      "value": "bash redis-cluster-install.sh"
+      "value": "bash redis-install.sh"
     }
   }
 }
