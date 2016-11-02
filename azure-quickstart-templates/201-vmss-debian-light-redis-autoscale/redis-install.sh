@@ -68,7 +68,7 @@ then
 fi
 
 # Parse script parameters
-while getopts :n:v:c:m:s:i:p:lh optname; do
+while getopts :n:c:i:p:h optname; do
   log "Option $optname set with value ${OPTARG}"
   
   case $optname in
