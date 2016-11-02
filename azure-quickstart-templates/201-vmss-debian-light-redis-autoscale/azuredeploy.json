@@ -177,14 +177,14 @@
     },
     "redisCustomScriptFilePath": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-light-redis-autoscale/redis-install.sh",
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-light-redis-autoscale/install-redis.sh",
       "metadata": {
         "description": "GitHub location of the custom script that configures Gluster"
       }
     },
     "redisCustomScriptCommandToExecute": {
       "type": "string",
-      "defaultValue": "bash redis-install.sh",
+      "defaultValue": "bash install-redis.sh",
       "metadata": {
         "description": "command to run the custom script"
       }
@@ -646,27 +646,8 @@
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
-          },
-          "dataDisks": [
-            {
-              "name": "datadisk1",
-              "diskSizeGB": "1000",
-              "lun": 0,
-              "vhd": {
-                "Uri": "[concat('http://', parameters('redisStorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('redisVmNamePrefix'), copyIndex(), 'datadisk1.vhd')]"
-              },
-              "createOption": "Empty"
-            },
-            {
-              "name": "datadisk2",
-              "diskSizeGB": "1000",
-              "lun": 1,
-              "vhd": {
-                "Uri": "[concat('http://', parameters('redisStorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('redisVmNamePrefix'), copyIndex(), 'datadisk2.vhd')]"
-              },
-              "createOption": "Empty"
-            }
-          ]
+          }
+
         },
         "networkProfile": {
           "networkInterfaces": [

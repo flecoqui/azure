@@ -75,10 +75,10 @@
       "value": "10.0.0.0/24"
     },
     "redisCustomScriptFilePath": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-light-redis-autoscale/redis-install.sh"
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-light-redis-autoscale/install-redis.sh"
     },
     "redisCustomScriptCommandToExecute": {
-      "value": "bash redis-install.sh"
+      "value": "bash install-redis.sh"
     }
   }
 }
