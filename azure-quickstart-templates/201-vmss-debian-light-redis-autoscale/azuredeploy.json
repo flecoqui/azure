@@ -184,7 +184,7 @@
     },
     "redisCustomScriptCommandToExecute": {
       "type": "string",
-      "defaultValue": "install-redis.sh",
+      "defaultValue": "bash install-redis.sh",
       "metadata": {
         "description": "command to run the custom script"
       }

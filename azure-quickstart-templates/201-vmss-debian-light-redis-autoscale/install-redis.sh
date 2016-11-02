@@ -36,6 +36,8 @@ LOGGING_KEY="[account-key]"
 REDIS_PORT=6379
 CURRENT_DIRECTORY=$(pwd)
 
+exit 0
+
 ########################################################
 # This script will install Redis from sources
 ########################################################
