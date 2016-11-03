@@ -1,4 +1,4 @@
-# Deployment of a VM scale set with Apache server, GlusterFS NFS partition and mySQL DB 
+# Deployment of a Debian VM scale set with Apache server, GlusterFS NFS partition, Redis Cache and mySQL DB 
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fazure-quickstart-templates%2Fmaster%2F101-vm-simple-centos-iperf%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
@@ -8,8 +8,8 @@
 </a>
 
 
-This template allows you to deploy a scaleset of Debian VM running Apache with GlusterFS NFS partition and mySQL DB server (replica), using the latest patched version. This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.
-With Azure CLI you can deploy this VM with 2 command lines:
+This template allows you to deploy a scaleset of Debian VM running Apache with GlusterFS NFS partition, Redis Cache and mySQL DB server (replica), using the latest patched version. This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.
+With Azure CLI you can deploy these VMs with 2 command lines:
 
 ##CREATE RESOURCE GROUP:
 azure group create "ResourceGroupName" "DataCenterName"
