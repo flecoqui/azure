@@ -771,7 +771,7 @@
                     ]
                   },
                   "protectedSettings": {
-                    "commandToExecute": "[concat('sh ', parameters('vmssInitScriptFileName'),' \"',  parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com','\" ',parameters('gfs1VmNamePrefix') ,'0', ' ', parameters('gfs1VolumeName'),'0',' ',variables('mysqlVMName'),'0',' ',parameters('redisVmNamePrefix'),'0')]"
+                    "commandToExecute": "[concat('sh ', parameters('vmssInitScriptFileName'),' \"',  parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com','\" ',parameters('gfs1VmNamePrefix') ,'0', ' ', parameters('gfs1VolumeName'),' ',variables('mysqlVMName'),'0',' ',parameters('redisVmNamePrefix'),'0')]"
                   }
                 }
               },

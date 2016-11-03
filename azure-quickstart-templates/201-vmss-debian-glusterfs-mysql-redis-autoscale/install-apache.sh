@@ -7,14 +7,26 @@ wm_gfsvol=$3
 wm_mysqlvm=$4
 wm_redisvm=$5
 wm_ipaddr=`ip addr show  eth0 | grep global`
+#############################################################################
+log()
+{
+	# If you want to enable this logging, uncomment the line below and specify your logging key 
+	#curl -X POST -H "content-type:text/plain" --data-binary "$(date) | ${HOSTNAME} | $1" https://logs-01.loggly.com/inputs/${LOGGING_KEY}/tag/redis-extension,${HOSTNAME}
+	echo "$1"
+}
 
 environ=`env`
-echo "Environment before installation: $environ"
+log "Environment before installation: $environ"
 
-echo "Installation script start : $(date)"
-echo "Apache Installation: $(date)"
-echo "#####  wm_hostname: $wm_hostname"
-echo "Installation script start : $(date)"
+log "Installation script start : $(date)"
+log "Apache Installation: $(date)"
+log "#####  wm_hostname: $wm_hostname"
+log "Installation script start : $(date)"
+log "NFS: $wm_gfsvm:$wm_gfsvol"
+log "MYSQL: $wm_mysqlvm"
+log "REDIS: $wm_redisvm"
+
+
 ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
 #############################################################################
 VERSION="3.0.7"
@@ -76,12 +88,14 @@ else
     OS=$(uname -s)
     VER=$(uname -r)
 fi
-echo "OS=$OS version $VER $ARCH"
+log "OS=$OS version $VER $ARCH"
 
 # Apache installation 
+log "Installing Apache"
 apt-get -y update
 apt-get -y install apache2
 # GlusterFS client  installation 
+log "Installing Gluster FS"
 NUM=`echo $VER |  sed 's/\(\.\)[0-9]*//g'`
 if [ $NUM -eq 7 ];
 then
@@ -103,19 +117,23 @@ apt-get install mysql-client -y
 wm_mysql=`mysql --user=admin --password=VMP@ssw0rd -h $wm_mysqlvm -e "show databases;"`
 
 # Redis installation & configuration 
+log "Installing redis Cache"
 install_redis
 configure_redis
 
 # firewall configuration 
+log "Configuring firewall "
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 # glusterfs mount
+log "Installing Gluster FS Client"
 mkdir /shareddata
 mount -t glusterfs $wm_gfsvm:$wm_gfsvol /shareddata
 wm_nfs=`df -h /shareddata`
 
 # redis test 
+log "Testing redis Cache Client"
 wm_redis=`redis-cli -h $wm_redisvm ping`
 
 directory=/var/www/html
@@ -123,6 +141,7 @@ if [ ! -d $directory ]; then
 mkdir $directory
 fi
 
+log "Creating Apache home page"
 cat <<EOF > $directory/index.html 
 <html>
   <head>
