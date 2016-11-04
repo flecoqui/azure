@@ -511,6 +511,24 @@
             "properties": {
               "addressPrefix": "[variables('vnetAppSubnetPrefix')]"
             }
+          },
+          {
+            "name": "[variables('vnetGFSSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('vnetGFSSubnetPrefix')]"
+            }
+          },
+          {
+            "name": "[variables('vnetMySQLSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('vnetMySQLSubnetPrefix')]"
+            }
+          },
+          {
+            "name": "[variables('vnetRedisSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('vnetRedisSubnetPrefix')]"
+            }
           }
         ]
       }
