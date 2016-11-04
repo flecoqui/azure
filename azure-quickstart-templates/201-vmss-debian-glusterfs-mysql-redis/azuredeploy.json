@@ -480,7 +480,7 @@
     "mysqlNicName": "[concat(parameters('mysqlName'), 'nic')]",
     "mysqlAvailabilitySetName": "[concat(parameters('mysqlName'), 'set')]",
     "mysqlSingleQuote": "",
-    "mysqlSa": "[parameters('mysqlDbSubnetStartAddress')]",
+    "mysqlSa": "[variables('vnetMySQLIPPrefix')]",
     "mysqlIpOctet01": "[concat(split(variables('mysqlSa'), '.')[0], '.', split(variables('mysqlSa'), '.')[1], '.')]",
     "mysqlIpOctet2": "[int(split(variables('mysqlSa'), '.')[2])]",
     "mysqlIpOctet3": "[int(split(variables('mysqlSa'), '.')[3])]",
@@ -496,20 +496,20 @@
   "resources": [
     {
       "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('virtualNetworkName')]",
+      "name": "[variables('vnetName')]",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('networkApiVersion')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('addressPrefix')]"
+            "[variables('vnetAddressPrefix')]"
           ]
         },
         "subnets": [
           {
-            "name": "[variables('subnetName')]",
+            "name": "[variables('vnetAppSubnetName')]",
             "properties": {
-              "addressPrefix": "[variables('subnetPrefix')]"
+              "addressPrefix": "[variables('vnetAppSubnetPrefix')]"
             }
           }
         ]
@@ -619,7 +619,7 @@
       "apiVersion": "[variables('computeApiVersion')]",
       "dependsOn": [
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
         "storageLoop",
         "gfs1extensionloop",
         "mysqlExtLoop",
@@ -819,7 +819,7 @@
         "count": "[parameters('gfs1ScaleNumber')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -827,9 +827,9 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[concat(parameters('gfs1VmIPPrefix'), copyindex())]",
+              "privateIPAddress": "[concat(variables('vnetGFSIPPrefix'), copyindex())]",
               "subnet": {
-                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('vnetName'), '/subnets/', variables('vnetGFSSubnetName'))]"
               }
             }
           }
@@ -848,7 +848,7 @@
       "dependsOn": [
         "gfs1storageloop",
         "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
         "[concat('Microsoft.Network/networkInterfaces/',variables('gfs1nicName'), copyindex())]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
       ],
@@ -930,7 +930,7 @@
           "fileUris": [
             "[parameters('gfs1CustomScriptFilePath')]"
           ],
-          "commandToExecute": "[concat(parameters('gfs1CustomScriptCommandToExecute'), ' ', parameters('gfs1VmNamePrefix'), ' ', parameters('gfs1VmIPPrefix'), ' ', parameters('gfs1VolumeName'), ' ', copyindex(), ' ', parameters('gfs1ScaleNumber'))]"
+          "commandToExecute": "[concat(parameters('gfs1CustomScriptCommandToExecute'), ' ', parameters('gfs1VmNamePrefix'), ' ', variables('vnetGFSIPPrefix'), ' ', parameters('gfs1VolumeName'), ' ', copyindex(), ' ', parameters('gfs1ScaleNumber'))]"
         }
       }
     },
@@ -960,7 +960,7 @@
           "count": "[variables('mysqlNodeCount')]"
         },
         "dependsOn": [
-          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
           "[concat('Microsoft.Network/loadBalancers/', variables('mysqlLbName'))]"
         ],
         "properties": {
@@ -971,7 +971,7 @@
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "[concat(variables('mysqlipOctet01'), add(variables('mysqlipOctet2'), div(copyIndex(variables('mysqlipOctet3')), 255)), '.', mod(copyIndex(variables('mysqlipOctet3')), 255))]",
                 "subnet": {
-                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('vnetName'), '/subnets/', variables('vnetMySQLSubnetName'))]"
                 },
                 "loadBalancerBackendAddressPools": [
                   {
@@ -1007,7 +1007,7 @@
         "dependsOn": [
           "[concat('Microsoft.Compute/availabilitySets/', variables('mysqlAvailabilitySetName'))]",
           "[concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName'))]",
-          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
           "mysqlNicLoop"
         ],
         "properties": {
@@ -1100,7 +1100,7 @@
       "name": "[variables('mysqlLbName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
       ],
       "properties": {
         "frontendIPConfigurations": [
@@ -1108,9 +1108,9 @@
             "name": "[variables('mysqlSshIPConfigName')]",
             "Properties": {
               "subnet": {
-                "Id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]"
+                "Id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('vnetName')), '/subnets/', variables('vnetMySQLSubnetName'))]"
               },
-              "privateIPAddress": "[parameters('mysqlIlbIpAddress')]",
+              "privateIPAddress": "[variables('vnetMySQLlbIpAddress')]",
               "privateIPAllocationMethod": "Static"
             }
           }
@@ -1226,7 +1226,7 @@
         "count": "[parameters('redisScaleNumber')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -1234,9 +1234,9 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[concat(parameters('redisVmIPPrefix'), copyindex())]",
+              "privateIPAddress": "[concat(variables('vnetRedisIPPrefix'), copyindex())]",
               "subnet": {
-                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('vnetName'), '/subnets/', variables('vnetRedisSubnetName'))]"
               }
             }
           }
@@ -1254,7 +1254,7 @@
       },
       "dependsOn": [       
         "redisstorageloop",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
         "redisnicloop",
         "[concat('Microsoft.Compute/availabilitySets/', variables('redisAvailabilitySetName'))]"
       ],
