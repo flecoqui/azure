@@ -682,7 +682,7 @@
                       "name": "[variables('ipConfigName')]",
                       "properties": {
                         "subnet": {
-                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('vnetName'), '/subnets/', variables('vnetAppSubnetName'))]"
                         },
                         "loadBalancerBackendAddressPools": [
                           {
@@ -1335,7 +1335,7 @@
           "fileUris": [
             "[parameters('redisCustomScriptFilePath')]"
           ],
-          "commandToExecute": "[concat(parameters('redisCustomScriptCommandToExecute'), ' -n ', parameters('redisVmNamePrefix'), ' -c ', parameters('redisScaleNumber'),' -p ', parameters('redisVmIPPrefix'),' -i ', copyindex())]"
+          "commandToExecute": "[concat(parameters('redisCustomScriptCommandToExecute'), ' -n ', parameters('redisVmNamePrefix'), ' -c ', parameters('redisScaleNumber'),' -p ', variables('vnetRedisIPPrefix'),' -i ', copyindex())]"
         }
       }
     }
