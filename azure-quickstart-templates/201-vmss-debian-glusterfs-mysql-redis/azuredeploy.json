@@ -1108,7 +1108,7 @@
             ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat(parameters('mysqlCustomScriptCommandToExecute'), ' ', copyIndex(1), ' ', variables('mysqlIpOctet01'), add(variables('mysqlIpOctet2'), div(copyIndex(variables('mysqlIpOctet3')), 255)), '.', mod(copyIndex(variables('mysqlIpOctet3')), 255), ' ', parameters('mysqlConfigFilePath'), ' ', variables('mysqlSingleQuote'), parameters('mysqlReplicationPassword'), variables('mysqlSingleQuote'), ' ', variables('mysqlSingleQuote'), parameters('mysqlRootPassword'), variables('mysqlSingleQuote'), ' ', variables('mysqlSingleQuote'), parameters('mysqlProbePassword'), variables('mysqlSingleQuote'), ' ', parameters('mysqlDbSubnetStartAddress'))]"
+            "commandToExecute": "[concat(parameters('mysqlCustomScriptCommandToExecute'), ' ', copyIndex(1), ' ', variables('mysqlIpOctet01'), add(variables('mysqlIpOctet2'), div(copyIndex(variables('mysqlIpOctet3')), 255)), '.', mod(copyIndex(variables('mysqlIpOctet3')), 255), ' ', parameters('mysqlConfigFilePath'), ' ', variables('mysqlSingleQuote'), parameters('mysqlReplicationPassword'), variables('mysqlSingleQuote'), ' ', variables('mysqlSingleQuote'), parameters('mysqlRootPassword'), variables('mysqlSingleQuote'), ' ', variables('mysqlSingleQuote'), parameters('mysqlProbePassword'), variables('mysqlSingleQuote'), ' ', variables('vnetMySQLIPPrefix'))]"
           }
         }
       },
