@@ -626,6 +626,20 @@
               "priority": 400,
               "direction": "Inbound"
             }
+          },
+          {
+            "name": "BlockInternetOutbound",
+            "properties": {
+              "description": "Block Internet Outbound",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Deny",
+              "priority": 500,
+              "direction": "Outbound"
+            }
           }
         ]
       }
@@ -692,6 +706,20 @@
               "priority": 400,
               "direction": "Inbound"
             }
+          },
+          {
+            "name": "BlockInternetOutbound",
+            "properties": {
+              "description": "Block Internet Outbound",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Deny",
+              "priority": 500,
+              "direction": "Outbound"
+            }
           }
         ]
       }
@@ -743,6 +771,20 @@
               "access": "Allow",
               "priority": 400,
               "direction": "Inbound"
+            }
+          },
+          {
+            "name": "BlockInternetOutbound",
+            "properties": {
+              "description": "Block Internet Outbound",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Deny",
+              "priority": 500,
+              "direction": "Outbound"
             }
           }
         ]
