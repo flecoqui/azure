@@ -666,7 +666,7 @@
             }
           },
           {
-            "name": "mysql_rule_1",
+            "name": "mysql_rule_2",
             "properties": {
               "description": "Allow port 9200",
               "protocol": "Tcp",
