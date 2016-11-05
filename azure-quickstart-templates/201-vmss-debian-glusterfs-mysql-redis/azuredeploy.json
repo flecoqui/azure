@@ -585,7 +585,7 @@
               "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
               "destinationAddressPrefix": "[variables('vnetRedisSubnetPrefix')]",
               "access": "Allow",
-              "priority": 500,
+              "priority": 600,
               "direction": "Outbound"
             }
           }
