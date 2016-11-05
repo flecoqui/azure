@@ -42,7 +42,7 @@
       "value": "install-apache-server.sh"
     },
     "gfs1HostOs": {
-      "value": "Ubuntu"
+      "value": "Debian"
     },
     "gfs1StorageAccountName": {
       "value": "gfs1sa"

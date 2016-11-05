@@ -97,7 +97,8 @@
       "defaultValue": "Centos",
       "allowedValues": [
         "Centos",
-        "Ubuntu"
+        "Ubuntu",
+        "Debian"
       ],
       "metadata": {
         "description": "OS to install on the host system"
@@ -470,6 +471,10 @@
     "osImageCentosOffer": "CentOS",
     "osImageCentosSKU": "6.5",
     "osImageCentosVersion": "latest",
+    "osImageDebianPublisher": "credativ",
+    "osImageDebianOffer": "Debian",
+    "osImageDebianSKU": "8",
+    "osImageDebianVersion": "latest",
     "mysqlStorageAccountName": "[concat(uniquestring(resourceGroup().id),'sa')]",
     "mysqlNodeCount": 2,
     "mysqlVMName": "[concat(parameters('mysqlName'), 'vm')]",
@@ -626,20 +631,6 @@
               "priority": 400,
               "direction": "Inbound"
             }
-          },
-          {
-            "name": "BlockInternetOutbound",
-            "properties": {
-              "description": "Block Internet Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "Internet",
-              "access": "Deny",
-              "priority": 500,
-              "direction": "Outbound"
-            }
           }
         ]
       }
@@ -706,20 +697,6 @@
               "priority": 400,
               "direction": "Inbound"
             }
-          },
-          {
-            "name": "BlockInternetOutbound",
-            "properties": {
-              "description": "Block Internet Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "Internet",
-              "access": "Deny",
-              "priority": 500,
-              "direction": "Outbound"
-            }
           }
         ]
       }
@@ -771,20 +748,6 @@
               "access": "Allow",
               "priority": 400,
               "direction": "Inbound"
-            }
-          },
-          {
-            "name": "BlockInternetOutbound",
-            "properties": {
-              "description": "Block Internet Outbound",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "Internet",
-              "access": "Deny",
-              "priority": 500,
-              "direction": "Outbound"
             }
           }
         ]

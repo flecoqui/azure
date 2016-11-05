@@ -27,6 +27,11 @@ check_os() {
     isubuntu=${?}
     grep centos /proc/version > /dev/null 2>&1
     iscentos=${?}
+	if [ -f /etc/debian_version ]; then
+    isdebian=0
+	else
+	isdebian=1	
+    fi
 }
 
 scan_for_new_disks() {
@@ -55,6 +60,21 @@ get_disk_count() {
 }
 
 create_raid0_ubuntu() {
+    dpkg -s mdadm 
+    if [ ${?} -eq 1 ];
+    then 
+        echo "installing mdadm"
+        wget --no-cache http://mirrors.cat.pdx.edu/ubuntu/pool/main/m/mdadm/mdadm_3.2.5-5ubuntu4_amd64.deb
+        dpkg -i mdadm_3.2.5-5ubuntu4_amd64.deb
+    fi
+    echo "Creating raid0"
+    udevadm control --stop-exec-queue
+    echo "yes" | mdadm --create "$RAIDDISK" --name=data --level=0 --chunk="$RAIDCHUNKSIZE" --raid-devices="$DISKCOUNT" "${DISKS[@]}"
+    udevadm control --start-exec-queue
+    mdadm --detail --verbose --scan > /etc/mdadm.conf
+}
+
+create_raid0_debian() {
     dpkg -s mdadm 
     if [ ${?} -eq 1 ];
     then 
@@ -132,6 +152,9 @@ configure_disks() {
         elif [ $isubuntu -eq 0 ];
         then
             create_raid0_ubuntu
+        elif [ $isdebian -eq 0 ];
+        then
+            create_raid0_debian
         fi
         do_partition ${RAIDDISK}
         PARTITION="${RAIDPARTITION}"
@@ -169,6 +192,11 @@ disable_apparmor_ubuntu() {
     update-rc.d -f apparmor remove
 }
 
+disable_apparmor_debian() {
+    /etc/init.d/apparmor teardown
+    update-rc.d -f apparmor remove
+}
+
 disable_selinux_centos() {
     sed -i 's/^SELINUX=.*/SELINUX=disabled/I' /etc/selinux/config
     setenforce 0
@@ -200,6 +228,20 @@ activate_secondnic_ubuntu() {
     fi
 }
 
+activate_secondnic_debian() {
+    if [ -n "$SECONDNIC" ];
+    then
+        echo "" >> /etc/network/interfaces
+        echo "auto $SECONDNIC" >> /etc/network/interfaces
+        echo "iface $SECONDNIC inet dhcp" >> /etc/network/interfaces
+        defaultgw=$(ip route show |sed -n "s/^default via //p")
+        declare -a gateway=(${defaultgw// / })
+        echo "" >> /etc/network/interfaces
+        echo "post-up ip route add default via $gateway" >> /etc/network/interfaces
+        /etc/init.d/networking restart    
+    fi
+}
+
 configure_network() {
     open_ports
     if [ $iscentos -eq 0 ];
@@ -210,10 +252,34 @@ configure_network() {
     then
         activate_secondnic_ubuntu
         disable_apparmor_ubuntu
+    elif [ $isdebian -eq 0 ];
+    then
+        activate_secondnic_debian
+        disable_apparmor_debian
     fi
 }
 
 install_glusterfs_ubuntu() {
+    dpkg -l | grep glusterfs
+    if [ ${?} -eq 0 ];
+    then
+        return
+    fi
+
+    if [ ! -e /etc/apt/sources.list.d/gluster* ];
+    then
+        echo "adding gluster ppa"
+        apt-get  -y install python-software-properties
+        apt-add-repository -y ppa:gluster/glusterfs-3.7
+        apt-get -y update
+    fi
+    
+    echo "installing gluster"
+    apt-get -y install glusterfs-server
+    
+    return
+}
+install_glusterfs_debian() {
     dpkg -l | grep glusterfs
     if [ ${?} -eq 0 ];
     then
@@ -272,6 +338,14 @@ configure_gluster() {
         if [ ${?} -ne 0 ];
         then
             install_glusterfs_ubuntu
+        fi
+        /etc/init.d/glusterfs-server start
+    elif [ $isdebian -eq 0 ];
+    then
+        /etc/init.d/glusterfs-server status
+        if [ ${?} -ne 0 ];
+        then
+            install_glusterfs_debian
         fi
         /etc/init.d/glusterfs-server start
     fi
@@ -339,6 +413,9 @@ allow_passwordssh() {
     elif [ $isubuntu -eq 0 ];
     then
         /etc/init.d/ssh reload
+    elif [ $isdebian -eq 0 ];
+    then
+        /etc/init.d/ssh reload
     fi
 }
 
@@ -347,7 +424,7 @@ check_os
 # temporary workaround form CRP 
 allow_passwordssh  
 
-if [ $iscentos -ne 0 ] && [ $isubuntu -ne 0];
+if [ $iscentos -ne 0 ] && [ $isubuntu -ne 0] && [ $isdebian -ne 0];
 then
     echo "unsupported operating system"
     exit 1 
