@@ -408,7 +408,7 @@
     "vnetGFSIPPrefix": "10.0.1.1",
     "vnetGFSSubnetName": "[concat(variables('shortName'), 'gfs-subnet')]",
     "vnetMySQLSubnetPrefix": "10.0.2.0/24",
-    "vnetMySQLIPPrefix": "10.0.2.1",
+    "vnetMySQLIPPrefix": "10.0.2.10",
     "vnetMySQLlbIpAddress": "10.0.2.100",    
     "vnetMySQLSubnetName": "[concat(variables('shortName'), 'mysql-subnet')]",
     "vnetRedisSubnetPrefix": "10.0.3.0/24",
@@ -989,7 +989,7 @@
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "[concat(variables('mysqlipOctet01'), add(variables('mysqlipOctet2'), div(copyIndex(variables('mysqlipOctet3')), 255)), '.', mod(copyIndex(variables('mysqlipOctet3')), 255))]",
                 "subnet": {
-                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('vnetName'), '/subnets/', variables('vnetMySQLSubnetName'))]"
+                      "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('vnetName')), '/subnets/', variables('vnetMySQLSubnetName'))]"
                 },
                 "loadBalancerBackendAddressPools": [
                   {
