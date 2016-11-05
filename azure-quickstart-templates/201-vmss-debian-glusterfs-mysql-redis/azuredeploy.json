@@ -529,7 +529,7 @@
               "sourceAddressPrefix": "Internet",
               "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 101,
+              "priority": 200,
               "direction": "Inbound"
             }
           },
@@ -543,11 +543,53 @@
               "sourceAddressPrefix": "Internet",
               "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 102,
+              "priority": 300,
               "direction": "Inbound"
             }
+          },
+          {
+            "name": "ApptoMySQL",
+            "properties": {
+              "description": "Allow ApptoMySQL",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "[variables('vnetMySQLSubnetPrefix')]",
+              "access": "Allow",
+              "priority": 400,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "ApptoGFS",
+            "properties": {
+              "description": "Allow ApptoGFS",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "[variables('vnetGFSSubnetPrefix')]",
+              "access": "Allow",
+              "priority": 500,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "ApptoRedis",
+            "properties": {
+              "description": "Allow ApptoRedis",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "[variables('vnetRedisSubnetPrefix')]",
+              "access": "Allow",
+              "priority": 500,
+              "direction": "Outbound"
+            }
           }
-        ]
+         ]
       }
     },
     {
@@ -557,6 +599,34 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
+          {
+            "name": "ssh_rule",
+            "properties": {
+              "description": "Allow SSH",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "ApptoGFS",
+            "properties": {
+              "description": "Allow ApptoGFS",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "[variables('vnetGFSSubnetPrefix')]",
+              "access": "Allow",
+              "priority": 400,
+              "direction": "Inbound"
+            }
+          }
         ]
       }
     },
@@ -567,6 +637,62 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
+          {
+            "name": "ssh_rule",
+            "properties": {
+              "description": "Allow SSH",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix":  "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "mysql_rule_1",
+            "properties": {
+              "description": "Allow port 3306",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3306",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 200,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "mysql_rule_1",
+            "properties": {
+              "description": "Allow port 9200",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "9200",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 300,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "ApptoMySQL",
+            "properties": {
+              "description": "Allow ApptoMySQL",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "[variables('vnetMySQLSubnetPrefix')]",
+              "access": "Allow",
+              "priority": 400,
+              "direction": "Inbound"
+            }
+          }
         ]
       }
     },
@@ -577,6 +703,48 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
+          {
+            "name": "ssh_rule",
+            "properties": {
+              "description": "Allow SSH",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix":  "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "redis_rule",
+            "properties": {
+              "description": "Allow port 6379",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "6379",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 200,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "ApptoRedis",
+            "properties": {
+              "description": "Allow ApptoRedis",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('vnetAppSubnetPrefix')]",
+              "destinationAddressPrefix": "[variables('vnetRedisSubnetPrefix')]",
+              "access": "Allow",
+              "priority": 400,
+              "direction": "Inbound"
+            }
+          }
         ]
       }
     },
