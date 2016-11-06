@@ -192,7 +192,6 @@ configure_disks() {
     add_to_fstab "${UUID}" "${MOUNTPOINT}"
     echo "Mounting disk ${PARTITION} on ${MOUNTPOINT}"
     mount "${MOUNTPOINT}"
-    log "Configuring disk done"
 }
 
 open_ports() {
@@ -267,7 +266,9 @@ install_mysql_debian() {
 	dpkg -i mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
 	wget http://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-utilities_1.6.4-1debian8_all.deb
     dpkg -i mysql-utilities_1.6.4-1debian8_all.deb
+    apt-get -f -y install 
     apt-get -y install xinetd
+    apt-get -f -y install 
     log "installing mysql for debian done"
 }
 
