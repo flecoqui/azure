@@ -22,6 +22,14 @@ RAIDPARTITION="/dev/md127p1"
 # An set of disks to ignore from partitioning and formatting
 BLACKLIST="/dev/sda|/dev/sdb"
 
+#############################################################################
+log()
+{
+	# If you want to enable this logging, uncomment the line below and specify your logging key 
+	#curl -X POST -H "content-type:text/plain" --data-binary "$(date) | ${HOSTNAME} | $1" https://logs-01.loggly.com/inputs/${LOGGING_KEY}/tag/redis-extension,${HOSTNAME}
+	echo "$1"
+}
+
 check_os() {
     grep ubuntu /proc/version > /dev/null 2>&1
     isubuntu=${?}
@@ -286,15 +294,37 @@ install_glusterfs_debian() {
         return
     fi
 
+	if [ -f /etc/debian_version ]; then
+		OS=Debian  # XXX or Ubuntu??
+		VER=$(cat /etc/debian_version)
+	else
+		OS=$(uname -s)
+		VER=$(uname -r)
+	fi
+	log "OS=$OS version $VER $ARCH"
+
+
+
     if [ ! -e /etc/apt/sources.list.d/gluster* ];
     then
-        echo "adding gluster ppa"
-        apt-get  -y install python-software-properties
-        apt-add-repository -y ppa:gluster/glusterfs-3.7
-        apt-get -y update
+		NUM=`echo $VER |  sed 's/\(\.\)[0-9]*//g'`
+		if [ $NUM -eq 7 ];
+		then
+		# install a version compliant with Debian 7 
+		wget -O - http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/rsa.pub | apt-key add -
+		echo deb http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/Debian/wheezy/apt wheezy main > /etc/apt/sources.list.d/gluster.list 
+		fi
+		# install a version compliant with Debian 8 
+		if [ $NUM -eq 8 ];
+		then
+		wget -O - http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub | apt-key add -
+		echo deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/jessie/apt jessie main > /etc/apt/sources.list.d/gluster.list
+		fi
+		apt-get update -y
+
     fi
     
-    echo "installing gluster"
+    log "installing gluster"
     apt-get -y install glusterfs-server
     
     return
