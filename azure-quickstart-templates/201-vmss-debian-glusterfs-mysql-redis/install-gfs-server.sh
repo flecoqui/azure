@@ -40,6 +40,18 @@ check_os() {
 	else
 	isdebian=1	
     fi
+
+	if [ $isdebian -eq 0 ];then
+		OS=Debian  # XXX or Ubuntu??
+		VER=$(cat /etc/debian_version)
+	else
+		OS=$(uname -s)
+		VER=$(uname -r)
+	fi
+	
+	ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+
+	log "OS=$OS version $VER $ARCH"
 }
 
 scan_for_new_disks() {
@@ -83,18 +95,21 @@ create_raid0_ubuntu() {
 }
 
 create_raid0_debian() {
+	log "Creating raid0 for debian"
+
     dpkg -s mdadm 
     if [ ${?} -eq 1 ];
     then 
-        echo "installing mdadm"
-        wget --no-cache http://mirrors.cat.pdx.edu/ubuntu/pool/main/m/mdadm/mdadm_3.2.5-5ubuntu4_amd64.deb
-        dpkg -i mdadm_3.2.5-5ubuntu4_amd64.deb
+        log "installing mdadm for debian"
+		wget --no-cache http://mirrors.cat.pdx.edu/debian/pool/main/m/mdadm/mdadm_3.2.5-5_amd64.deb
+        dpkg -i mdadm_3.2.5-5_amd64.deb
     fi
-    echo "Creating raid0"
+    log "Creating raid0 for debian"
     udevadm control --stop-exec-queue
     echo "yes" | mdadm --create "$RAIDDISK" --name=data --level=0 --chunk="$RAIDCHUNKSIZE" --raid-devices="$DISKCOUNT" "${DISKS[@]}"
     udevadm control --start-exec-queue
     mdadm --detail --verbose --scan > /etc/mdadm.conf
+	log "Creating raid0 for debian done"
 }
 
 create_raid0_centos() {
@@ -107,7 +122,7 @@ do_partition() {
 # This function creates one (1) primary partition on the
 # disk, using all available space
     DISK=${1}
-    echo "Partitioning disk $DISK"
+    log "Partitioning disk $DISK"
     echo "n
 p
 1
@@ -201,8 +216,10 @@ disable_apparmor_ubuntu() {
 }
 
 disable_apparmor_debian() {
+    log "disable apparmor for debian "
     /etc/init.d/apparmor teardown
     update-rc.d -f apparmor remove
+    log "disable apparmor for debian done"
 }
 
 disable_selinux_centos() {
@@ -237,6 +254,7 @@ activate_secondnic_ubuntu() {
 }
 
 activate_secondnic_debian() {
+    log "activate second nic for debian"
     if [ -n "$SECONDNIC" ];
     then
         echo "" >> /etc/network/interfaces
@@ -248,6 +266,7 @@ activate_secondnic_debian() {
         echo "post-up ip route add default via $gateway" >> /etc/network/interfaces
         /etc/init.d/networking restart    
     fi
+    log "activate second nic for debian done"
 }
 
 configure_network() {
@@ -288,22 +307,13 @@ install_glusterfs_ubuntu() {
     return
 }
 install_glusterfs_debian() {
+
+	log "Installing glusterfs for debian"
     dpkg -l | grep glusterfs
     if [ ${?} -eq 0 ];
     then
         return
     fi
-
-	if [ -f /etc/debian_version ]; then
-		OS=Debian  # XXX or Ubuntu??
-		VER=$(cat /etc/debian_version)
-	else
-		OS=$(uname -s)
-		VER=$(uname -r)
-	fi
-	log "OS=$OS version $VER $ARCH"
-
-
 
     if [ ! -e /etc/apt/sources.list.d/gluster* ];
     then
@@ -327,6 +337,7 @@ install_glusterfs_debian() {
     log "installing gluster"
     apt-get -y install glusterfs-server
     
+	log "Installing glusterfs for debian done"
     return
 }
 

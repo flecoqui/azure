@@ -23,11 +23,36 @@ RAIDPARTITION="/dev/md127p1"
 # An set of disks to ignore from partitioning and formatting
 BLACKLIST="/dev/sda|/dev/sdb"
 
+#############################################################################
+log()
+{
+	# If you want to enable this logging, uncomment the line below and specify your logging key 
+	#curl -X POST -H "content-type:text/plain" --data-binary "$(date) | ${HOSTNAME} | $1" https://logs-01.loggly.com/inputs/${LOGGING_KEY}/tag/redis-extension,${HOSTNAME}
+	echo "$1"
+}
+
 check_os() {
     grep ubuntu /proc/version > /dev/null 2>&1
     isubuntu=${?}
     grep centos /proc/version > /dev/null 2>&1
     iscentos=${?}
+	if [ -f /etc/debian_version ]; then
+    isdebian=0
+	else
+	isdebian=1	
+    fi
+
+	if [ $isdebian -eq 0 ];then
+		OS=Debian  # XXX or Ubuntu??
+		VER=$(cat /etc/debian_version)
+	else
+		OS=$(uname -s)
+		VER=$(uname -r)
+	fi
+	
+	ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+
+	log "OS=$OS version $VER $ARCH"
 }
 
 scan_for_new_disks() {
@@ -68,6 +93,23 @@ create_raid0_ubuntu() {
     echo "yes" | mdadm --create "$RAIDDISK" --name=data --level=0 --chunk="$RAIDCHUNKSIZE" --raid-devices="$DISKCOUNT" "${DISKS[@]}"
     udevadm control --start-exec-queue
     mdadm --detail --verbose --scan > /etc/mdadm.conf
+}
+create_raid0_debian() {
+	log "Creating raid0 for debian"
+
+    dpkg -s mdadm 
+    if [ ${?} -eq 1 ];
+    then 
+        log "installing mdadm for debian"
+		wget --no-cache http://mirrors.cat.pdx.edu/debian/pool/main/m/mdadm/mdadm_3.2.5-5_amd64.deb
+        dpkg -i mdadm_3.2.5-5_amd64.deb
+    fi
+    log "Creating raid0 for debian"
+    udevadm control --stop-exec-queue
+    echo "yes" | mdadm --create "$RAIDDISK" --name=data --level=0 --chunk="$RAIDCHUNKSIZE" --raid-devices="$DISKCOUNT" "${DISKS[@]}"
+    udevadm control --start-exec-queue
+    mdadm --detail --verbose --scan > /etc/mdadm.conf
+	log "Creating raid0 for debian done"
 }
 
 create_raid0_centos() {
@@ -115,6 +157,7 @@ add_to_fstab() {
 }
 
 configure_disks() {
+    log "Configuring disk"
 	ls "${MOUNTPOINT}"
 	if [ ${?} -eq 0 ]
 	then 
@@ -149,6 +192,7 @@ configure_disks() {
     add_to_fstab "${UUID}" "${MOUNTPOINT}"
     echo "Mounting disk ${PARTITION} on ${MOUNTPOINT}"
     mount "${MOUNTPOINT}"
+    log "Configuring disk done"
 }
 
 open_ports() {
@@ -170,6 +214,7 @@ disable_selinux_centos() {
 }
 
 configure_network() {
+    log "Configuring network"
     open_ports
     if [ $iscentos -eq 0 ];
     then
@@ -178,6 +223,7 @@ configure_network() {
     then
         disable_apparmor_ubuntu
     fi
+    log "Configuring network done"
 }
 
 create_mycnf() {
@@ -204,6 +250,25 @@ install_mysql_ubuntu() {
 	wget http://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-utilities_1.6.4-1ubuntu14.04_all.deb
     dpkg -i mysql-utilities_1.6.4-1ubuntu14.04_all.deb
     apt-get -y install xinetd
+}
+install_mysql_debian() {
+    dpkg -s mysql-5.6
+    if [ ${?} -eq 0 ];
+    then
+        return
+    fi
+    log "installing mysql for debian"
+    apt-get update
+    export DEBIAN_FRONTEND=noninteractive
+	apt-get install -y mysql-server-5.6
+	chown -R mysql:mysql "${MOUNTPOINT}/mysql/mysql"
+	apt-get install -y mysql-server-5.6
+	wget http://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
+	dpkg -i mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
+	wget http://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-utilities_1.6.4-1debian8_all.deb
+    dpkg -i mysql-utilities_1.6.4-1debian8_all.deb
+    apt-get -y install xinetd
+    log "installing mysql for debian done"
 }
 
 install_mysql_centos() {
@@ -339,6 +404,9 @@ configure_mysql() {
     elif [ $isubuntu -eq 0 ];
     then
         install_mysql_ubuntu
+    elif [ $isdebian -eq 0 ];
+    then
+        install_mysql_debian
     fi
 
     create_mycnf
@@ -360,9 +428,9 @@ fi
 }
 
 check_os
-if [ $iscentos -ne 0 ] && [ $isubuntu -ne 0 ];
+if [ $iscentos -ne 0 ] && [ $isubuntu -ne 0 ] && [ $isdebian -ne 0 ];
 then
-    echo "unsupported operating system"
+    log "unsupported operating system"
     exit 1 
 else
     configure_network

@@ -219,40 +219,18 @@
           "description": "Storage account type for the cluster"
         }
       },
-        "mysqlImagePublisher": {
-            "type": "string",
-            "defaultValue": "Canonical",
-            "allowedValues": [
-              "OpenLogic",
-              "Canonical"
-            ],
-            "metadata": {
-                "description": "publisher for the VM OS image"
-            }
-        },
-        "mysqlImageOffer": {
-            "type": "string",
-            "defaultValue": "UbuntuServer",
-            "allowedValues": [
-              "CentOS",
-              "UbuntuServer"
-            ],
-            "metadata": {
-                "description": "VM OS name"
-            }
-        },
-        "mysqlImageSKU": {
-            "type": "string",
-            "defaultValue": "6.6",
-          "allowedValues": [
-            "6.5",
-            "6.6",
-            "14.04.5-LTS"
-          ],
-            "metadata": {
-                "description": "VM OS version"
-            }
-        },
+    "mysqlHostOs": {
+      "type": "string",
+      "defaultValue": "Debian",
+      "allowedValues": [
+        "Centos",
+        "Ubuntu",
+        "Debian"
+      ],
+      "metadata": {
+        "description": "OS to install on the host system"
+      }
+    },
         "mysqlFrontEndPort0": {
             "type": "int",
             "defaultValue": 3306,
@@ -320,10 +298,11 @@
     },
     "redisHostOs": {
       "type": "string",
-      "defaultValue": "Ubuntu",
+      "defaultValue": "Debian",
       "allowedValues": [
         "Centos",
-        "Ubuntu"
+        "Ubuntu",
+        "Debian"
       ],
       "metadata": {
         "description": "OS to install on the host system"
@@ -493,6 +472,11 @@
     "mysqlIpOctet01": "[concat(split(variables('mysqlSa'), '.')[0], '.', split(variables('mysqlSa'), '.')[1], '.')]",
     "mysqlIpOctet2": "[int(split(variables('mysqlSa'), '.')[2])]",
     "mysqlIpOctet3": "[int(split(variables('mysqlSa'), '.')[3])]",
+    "mysqlOsImagePublisher": "[variables(concat('osImage', parameters('mysqlHostOs'), 'Publisher'))]",
+    "mysqlOsImageOffer": "[variables(concat('osImage', parameters('mysqlHostOs'), 'Offer'))]",
+    "mysqlOsImageSKU": "[variables(concat('osImage', parameters('mysqlHostOs'), 'SKU'))]",
+    "mysqlOsImageVersion": "[variables(concat('osImage', parameters('mysqlHostOs'), 'version'))]",
+
     "redisAvailabilitySetName": "redisAvSet",
     "redisnicName": "redisnic",
     "redisOsImagePublisher": "[variables(concat('osImage', parameters('redisHostOs'), 'Publisher'))]",
@@ -1319,10 +1303,10 @@
               },
               "storageProfile": {
                 "imageReference": {
-                  "publisher": "[parameters('mysqlImagePublisher')]",
-                  "offer": "[parameters('mysqlImageOffer')]",
-                  "sku": "[parameters('mysqlImageSKU')]",
-                  "version": "latest"
+                  "publisher": "[variables('mysqlOsImagePublisher')]",
+                  "offer": "[variables('mysqlOsImageOffer')]",
+                  "sku": "[variables('mysqlOsImageSKU')]",
+                  "version": "[variables('mysqlOsImageVersion')]"
                 },
                 "osDisk": {
                   "name": "osdisk",

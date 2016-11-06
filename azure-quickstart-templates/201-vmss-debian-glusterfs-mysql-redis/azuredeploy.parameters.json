@@ -96,16 +96,9 @@
         },
         "mysqlStorageAccountType": {
           "value": "Standard_LRS"
-
         },
-        "mysqlImagePublisher": {
-            "value": "OpenLogic"
-        },
-        "mysqlImageOffer": {
-            "value": "CentOS"
-        },
-        "mysqlImageSKU": {
-            "value": "6.6"
+        "mysqlHostOs": {
+          "value": "Debian"
         },
         "mysqlFrontEndPort0": {
             "value": 3306
@@ -135,7 +128,7 @@
             "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-debian-glusterfs-mysql-redis/my.cnf.template"
         },
     "redisHostOs": {
-      "value": "Ubuntu"
+      "value": "Debian"
     },
     "redisStorageAccountName": {
       "value": "redisdebiansa"
