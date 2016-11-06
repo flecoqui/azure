@@ -1123,6 +1123,7 @@
             },
             "dependsOn": [
               "gfs1storageloop",
+              "gfs1nicloop",
               "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
               "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
               "[concat('Microsoft.Network/networkInterfaces/',variables('gfs1nicName'), copyindex())]",
@@ -1195,6 +1196,7 @@
               "count": "[parameters('gfs1ScaleNumber')]"
             },
             "dependsOn": [
+              "gfs1vmloop",
               "[concat('Microsoft.Compute/virtualMachines/', parameters('gfs1VmNamePrefix'), copyindex())]"
             ],
             "properties": {
@@ -1353,6 +1355,7 @@
               "count": "[variables('mysqlNodeCount')]"
             },
             "dependsOn": [
+              "mysqlVmLoop",
               "[concat('Microsoft.Compute/virtualMachines/', variables('mysqlVMName'), copyIndex())]"
             ],
             "properties": {
@@ -1582,6 +1585,7 @@
               "count": "[parameters('redisScaleNumber')]"
             },
             "dependsOn": [
+              "redisvmloop",
               "[concat('Microsoft.Compute/virtualMachines/', parameters('redisVmNamePrefix'), copyindex())]"
             ],
             "properties": {

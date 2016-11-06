@@ -295,22 +295,7 @@ configure_redis_cluster()
 	echo "cluster-node-timeout 5000" >> /etc/redis/redis.conf
 	echo "cluster-config-file ${CLUSTER_NAME}.conf" >> /etc/redis/redis.conf
 }
-#############################################################################
-# Expand a list of successive IP range defined by a starting address prefix (e.g. 10.0.0.1) and the number of machines in the range
-# 10.0.0.1-3 would be converted to "10.0.0.10 10.0.0.11 10.0.0.12"
-expand_ip_range() {
-    IFS='-' read -a HOST_IPS <<< "$1"
 
-    declare -a EXPAND_STATICIP_RANGE_RESULTS=()
-	
-    for (( n=0 ; n<("${HOST_IPS[1]}"+0) ; n++))
-    do
-        HOST="${HOST_IPS[0]}${n}:${REDIS_PORT}"
-		EXPAND_STATICIP_RANGE_RESULTS+=($HOST)
-    done
-	
-    echo "${EXPAND_STATICIP_RANGE_RESULTS[@]}"
-}
 
 
 #############################################################################
