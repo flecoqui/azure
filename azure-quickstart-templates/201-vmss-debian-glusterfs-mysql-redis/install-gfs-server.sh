@@ -14,6 +14,7 @@ VOLUMENAME=${3}
 NODEINDEX=${4}
 NODECOUNT=${5}
 
+
 MOUNTPOINT="/datadrive"
 RAIDCHUNKSIZE=128
 
@@ -460,6 +461,7 @@ allow_passwordssh() {
         /etc/init.d/ssh reload
     fi
 }
+
 
 check_os
 

@@ -1123,7 +1123,6 @@
             },
             "dependsOn": [
               "gfs1storageloop",
-              "gfs1nicloop",
               "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
               "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
               "[concat('Microsoft.Network/networkInterfaces/',variables('gfs1nicName'), copyindex())]",
@@ -1196,7 +1195,6 @@
               "count": "[parameters('gfs1ScaleNumber')]"
             },
             "dependsOn": [
-              "gfs1vmloop",
               "[concat('Microsoft.Compute/virtualMachines/', parameters('gfs1VmNamePrefix'), copyindex())]"
             ],
             "properties": {
