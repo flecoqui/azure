@@ -41,7 +41,7 @@ check_os() {
 	isdebian=1	
     fi
 
-	if [ $isdebian -eq 0 ];then
+	if [ $isdebian -eq 0 ]; then
 		OS=Debian  # XXX or Ubuntu??
 		VER=$(cat /etc/debian_version)
 	else
@@ -465,7 +465,7 @@ check_os
 # temporary workaround form CRP 
 allow_passwordssh  
 
-if [ $iscentos -ne 0 ] && [ $isubuntu -ne 0] && [ $isdebian -ne 0];
+if [ $iscentos -ne 0 ] && [ $isubuntu -ne 0 ] && [ $isdebian -ne 0 ];
 then
     echo "unsupported operating system"
     exit 1 

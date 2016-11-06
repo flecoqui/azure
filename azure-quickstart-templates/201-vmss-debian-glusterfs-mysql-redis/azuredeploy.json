@@ -899,10 +899,7 @@
             "dependsOn": [
               "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
               "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
-              "storageLoop",
-              "gfs1extensionloop",
-              "mysqlExtLoop",
-              "redisextensionloop"
+              "storageLoop"
             ],
             "sku": {
               "name": "[parameters('projectAppVmSize')]",
@@ -1190,7 +1187,7 @@
           },
           {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('gfs1VmNamePrefix'), copyindex(), '/extension')]",
+            "name": "[concat(parameters('gfs1VmNamePrefix'), copyindex(), '/setupgfs')]",
             "apiVersion": "2015-05-01-preview",
             "location": "[resourceGroup().location]",
             "copy": {
@@ -1348,11 +1345,11 @@
           },
           {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('mysqlVMName'), copyIndex(), '/setupMySQL')]",
+            "name": "[concat(variables('mysqlVMName'), copyIndex(), '/setupmysql')]",
             "apiVersion": "[variables('resourceAPIVersion')]",
             "location": "[resourceGroup().location]",
             "copy": {
-              "name": "mysqlExtLoop",
+              "name": "mysqlextensionloop",
               "count": "[variables('mysqlNodeCount')]"
             },
             "dependsOn": [
@@ -1577,7 +1574,7 @@
           },
           {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('redisVmNamePrefix'), copyindex(), '/extension')]",
+            "name": "[concat(parameters('redisVmNamePrefix'), copyindex(), '/setupredis')]",
             "apiVersion": "2015-05-01-preview",
             "location": "[resourceGroup().location]",
             "copy": {
