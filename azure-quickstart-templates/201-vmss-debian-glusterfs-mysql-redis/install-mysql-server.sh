@@ -163,7 +163,9 @@ configure_disks() {
 	then 
 		return
 	fi
+    LISTDISKS=($(ls -1 /dev/sd*))
     DISKS=($(scan_for_new_disks))
+    echo "Disks are ${LISTDISKS}"
     echo "Disks are ${DISKS[@]}"
     declare -i DISKCOUNT
     DISKCOUNT=$(get_disk_count) 
@@ -176,8 +178,11 @@ configure_disks() {
     	elif [ $isubuntu -eq 0 ];
     	then
             create_raid0_ubuntu
-    	fi
-        do_partition ${RAIDDISK}
+        elif [ $isdebian -eq 0 ];
+        then
+            create_raid0_debian
+        fi
+		do_partition ${RAIDDISK}
         PARTITION="${RAIDPARTITION}"
     else
         DISK="${DISKS[0]}"

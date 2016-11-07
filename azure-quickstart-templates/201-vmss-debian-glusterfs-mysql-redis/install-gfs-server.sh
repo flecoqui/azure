@@ -163,7 +163,9 @@ configure_disks() {
     then 
         return
     fi
+    LISTDISKS=($(ls -1 /dev/sd*))
     DISKS=($(scan_for_new_disks))
+    echo "Disks are ${LISTDISKS}"
     echo "Disks are ${DISKS[@]}"
     declare -i DISKCOUNT
     DISKCOUNT=$(get_disk_count) 
