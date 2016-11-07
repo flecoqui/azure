@@ -1123,9 +1123,8 @@
             },
             "dependsOn": [
               "gfs1storageloop",
-              "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
-              "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
               "[concat('Microsoft.Network/networkInterfaces/',variables('gfs1nicName'), copyindex())]",
+              "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
               "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
             ],
             "properties": {
@@ -1158,7 +1157,7 @@
                 "dataDisks": [
                   {
                     "name": "datadisk1",
-                    "diskSizeGB": "1000",
+                    "diskSizeGB": "100",
                     "lun": 0,
                     "vhd": {
                       "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk1.vhd')]"
@@ -1167,7 +1166,7 @@
                   },
                   {
                     "name": "datadisk2",
-                    "diskSizeGB": "1000",
+                    "diskSizeGB": "100",
                     "lun": 1,
                     "vhd": {
                       "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk2.vhd')]"
@@ -1316,7 +1315,7 @@
                 "dataDisks": [
                   {
                     "name": "datadisk1",
-                    "diskSizeGB": "1000",
+                    "diskSizeGB": "100",
                     "lun": 0,
                     "vhd": {
                       "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk1.vhd')]"
@@ -1325,7 +1324,7 @@
                   },
                   {
                     "name": "datadisk2",
-                    "diskSizeGB": "1000",
+                    "diskSizeGB": "100",
                     "lun": 1,
                     "vhd": {
                       "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk2.vhd')]"
