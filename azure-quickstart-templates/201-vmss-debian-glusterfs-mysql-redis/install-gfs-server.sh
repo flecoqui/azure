@@ -157,7 +157,7 @@ add_to_fstab() {
     fi
 }
 
-configure_disks() {
+configure_disks {
     ls "${MOUNTPOINT}"
     if [ ${?} -eq 0 ]
     then 
@@ -165,30 +165,42 @@ configure_disks() {
     fi
     LISTDISKS=($(ls -1 /dev/sd*))
     DISKS=($(scan_for_new_disks))
-    echo "Disks are ${LISTDISKS}"
-    echo "Disks are ${DISKS[@]}"
-    declare -i DISKCOUNT
-    DISKCOUNT=$(get_disk_count) 
-    echo "Disk count is $DISKCOUNT"
-    if [ $DISKCOUNT -gt 1 ];
-    then
-        if [ $iscentos -eq 0 ];
-        then
-            create_raid0_centos
-        elif [ $isubuntu -eq 0 ];
-        then
-            create_raid0_ubuntu
-        elif [ $isdebian -eq 0 ];
-        then
-            create_raid0_debian
-        fi
-        do_partition ${RAIDDISK}
-        PARTITION="${RAIDPARTITION}"
-    else
-        DISK="${DISKS[0]}"
-        do_partition ${DISK}
-        PARTITION=$(fdisk -l ${DISK}|grep -A 1 Device|tail -n 1|awk '{print $1}')
-    fi
+	retry=10
+	failed=1
+    while [ $retry -gt 0 ] && [ $failed -gt 0 ]; do
+	    failed=0
+		sleep 30
+		echo "Disks are ${LISTDISKS}"
+		echo "Disks are ${DISKS[@]}"
+		declare -i DISKCOUNT
+		DISKCOUNT=$(get_disk_count) 
+		echo "Disk count is $DISKCOUNT"
+		if [ $DISKCOUNT -gt 1 ];
+		then
+    		if [ $iscentos -eq 0 ];
+    		then
+       			create_raid0_centos
+    		elif [ $isubuntu -eq 0 ];
+    		then
+				create_raid0_ubuntu
+			elif [ $isdebian -eq 0 ];
+			then
+				create_raid0_debian
+			fi
+			do_partition ${RAIDDISK}
+			PARTITION="${RAIDPARTITION}"
+		elif  [ $DISKCOUNT -eq 1 ];
+		then
+			DISK="${DISKS[0]}"
+			do_partition ${DISK}
+			PARTITION=$(fdisk -l ${DISK}|grep -A 1 Device|tail -n 1|awk '{print $1}')
+		elif  [ $DISKCOUNT -eq 0 ];
+		then
+			failed=1
+			echo "Data disk still not present"
+		fi
+		let retry--
+	done
 
     echo "Creating filesystem on ${PARTITION}."
     mkfs -t ext4 ${PARTITION}
