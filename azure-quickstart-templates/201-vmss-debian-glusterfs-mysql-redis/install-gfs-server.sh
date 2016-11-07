@@ -157,7 +157,7 @@ add_to_fstab() {
     fi
 }
 
-configure_disks {
+configure_disks() {
     ls "${MOUNTPOINT}"
     if [ ${?} -eq 0 ]
     then 

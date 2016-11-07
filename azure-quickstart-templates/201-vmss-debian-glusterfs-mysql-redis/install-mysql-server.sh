@@ -165,11 +165,10 @@ configure_disks() {
 	fi
     LISTDISKS=($(ls -1 /dev/sd*))
     DISKS=($(scan_for_new_disks))
-
 	retry=10
 	failed=1
     while [ $retry -gt 0 ] && [ $failed -gt 0 ]; do
-	    failed=0
+		failed=0
 		sleep 30
 		echo "Disks are ${LISTDISKS}"
 		echo "Disks are ${DISKS[@]}"
@@ -269,17 +268,18 @@ install_mysql_ubuntu() {
     apt-get -y install xinetd
 }
 install_mysql_debian() {
-    dpkg -s mysql-5.5
+    dpkg -s mysql-server-5.6
     if [ ${?} -eq 0 ];
     then
         return
     fi
     log "installing mysql for debian"
     apt-get -y update
-    export DEBIAN_FRONTEND=noninteractive
-	apt-get install -y mysql-server-5.5
+    apt-get -y upgrade
+	export DEBIAN_FRONTEND=noninteractive
+	apt-get install -y mysql-server-5.6
 	chown -R mysql:mysql "${MOUNTPOINT}/mysql/mysql"
-	apt-get install -y mysql-server-5.5
+	apt-get install -y mysql-server-5.6
 	wget http://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
 	dpkg -i mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
 	wget http://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-utilities_1.6.4-1debian8_all.deb
