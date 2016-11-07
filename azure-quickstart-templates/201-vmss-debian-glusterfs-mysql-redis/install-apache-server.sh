@@ -81,9 +81,6 @@ if [ -f /etc/lsb-release ]; then
 elif [ -f /etc/debian_version ]; then
     OS=Debian  # XXX or Ubuntu??
     VER=$(cat /etc/debian_version)
-elif [ -f /etc/redhat-release ]; then
-    # TODO add code for Red Hat and CentOS here
-    ...
 else
     OS=$(uname -s)
     VER=$(uname -r)

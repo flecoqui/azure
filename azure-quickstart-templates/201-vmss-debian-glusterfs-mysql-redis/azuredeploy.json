@@ -1124,13 +1124,9 @@
             "dependsOn": [
               "gfs1storageloop",
               "[concat('Microsoft.Network/networkInterfaces/',variables('gfs1nicName'), copyindex())]",
-              "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
-              "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
+              "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]"
             ],
             "properties": {
-              "availabilitySet": {
-                "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('gfs1AvailabilitySetName'))]"
-              },
               "hardwareProfile": {
                 "vmSize": "[parameters('gfs1VmSize')]"
               },
