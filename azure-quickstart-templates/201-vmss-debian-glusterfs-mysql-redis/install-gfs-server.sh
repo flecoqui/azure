@@ -163,13 +163,13 @@ configure_disks() {
     then 
         return
     fi
-    LISTDISKS=($(ls -1 /dev/sd*))
-    DISKS=($(scan_for_new_disks))
 	retry=10
 	failed=1
     while [ $retry -gt 0 ] && [ $failed -gt 0 ]; do
 	    failed=0
 		sleep 30
+		LISTDISKS=($(ls -1 /dev/sd*))
+		DISKS=($(scan_for_new_disks))
 		echo "Disks are ${LISTDISKS}"
 		echo "Disks are ${DISKS[@]}"
 		declare -i DISKCOUNT

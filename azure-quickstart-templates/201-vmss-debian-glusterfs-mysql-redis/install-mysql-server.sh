@@ -163,13 +163,13 @@ configure_disks() {
 	then 
 		return
 	fi
-    LISTDISKS=($(ls -1 /dev/sd*))
-    DISKS=($(scan_for_new_disks))
 	retry=10
 	failed=1
     while [ $retry -gt 0 ] && [ $failed -gt 0 ]; do
 		failed=0
 		sleep 30
+		LISTDISKS=($(ls -1 /dev/sd*))
+		DISKS=($(scan_for_new_disks))
 		echo "Disks are ${LISTDISKS}"
 		echo "Disks are ${DISKS[@]}"
 		declare -i DISKCOUNT
@@ -276,15 +276,27 @@ install_mysql_debian() {
     log "installing mysql for debian"
     apt-get -y update
     apt-get -y upgrade
+	#export DEBIAN_FRONTEND=noninteractive
+	#fred
+	apt-get -y install lsb-release
 	export DEBIAN_FRONTEND=noninteractive
-	apt-get install -y mysql-server-5.6
+    echo mysql-apt-config mysql-apt-config/enable-repo select mysql-5.6-dmr | debconf-set-selections
+	wget  http://dev.mysql.com/get/mysql-apt-config_0.8.0-1_all.deb
+	dpkg -i mysql-apt-config_0.8.0-1_all.deb
+	apt-get install -y mysql-server
 	chown -R mysql:mysql "${MOUNTPOINT}/mysql/mysql"
-	apt-get install -y mysql-server-5.6
-	wget http://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
-	dpkg -i mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
-	wget http://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-utilities_1.6.4-1debian8_all.deb
-    dpkg -i mysql-utilities_1.6.4-1debian8_all.deb
-    apt-get -f -y install 
+	apt-get install -y python-mysql.connector
+	apt-get install  -y mysql-utilities
+    apt-get install -f -y 
+	#fred
+	#apt-get install -y mysql-server-5.6
+	#chown -R mysql:mysql "${MOUNTPOINT}/mysql/mysql"
+	#apt-get install -y mysql-server-5.6
+	#wget http://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
+	#dpkg -i mysql-connector-python-py3_2.1.4-1debian8.2_all.deb
+	#wget http://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-utilities_1.6.4-1debian8_all.deb
+    #dpkg -i mysql-utilities_1.6.4-1debian8_all.deb
+    #apt-get -f -y install 
     apt-get -y install xinetd
     apt-get -f -y install 
     log "installing mysql for debian done"
@@ -458,5 +470,8 @@ else
 	#yum -y erase hypervkvpd.x86_64
 	#yum -y install microsoft-hyper-v
 #	echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
+    LISTDISKS=($(ls -1 /dev/sd*))
+    echo "Disks are ${LISTDISKS}"
+
 fi
 

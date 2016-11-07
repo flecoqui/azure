@@ -1278,8 +1278,7 @@
             "dependsOn": [
               "[concat('Microsoft.Compute/availabilitySets/', variables('mysqlAvailabilitySetName'))]",
               "[concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName'))]",
-              "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
-              "mysqlNicLoop"
+              "[concat('Microsoft.Network/networkInterfaces/', variables('mysqlNicName'), copyIndex())]"
             ],
             "properties": {
               "availabilitySet": {
