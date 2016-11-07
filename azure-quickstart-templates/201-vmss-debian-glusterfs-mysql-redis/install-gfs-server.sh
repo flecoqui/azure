@@ -489,5 +489,8 @@ else
     configure_network
     configure_disks
     configure_gluster
+
+    LISTDISKS=($(ls -1 /dev/sd*))
+    echo "Disks are ${LISTDISKS}"
 fi
 
