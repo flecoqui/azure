@@ -55,11 +55,34 @@ check_os() {
 	log "OS=$OS version $VER $ARCH"
 }
 
-scan_for_new_disks() {
+scan_for_new_disks_debian() {
     # Looks for unpartitioned disks
     declare -a RET
 #    DEVS=`ls -1 /dev/sd*|egrep -v "${BLACKLIST}"|egrep -v "[0-9]$"`
     DEVS=`ls -1 /dev/sd*|egrep -v "[0-9]$"`
+    for DEV in ${DEVS[@]};
+    do
+        # Check each device if there is a "1" partition.  If not,
+        # "assume" it is not partitioned.
+        if [ ! -b ${DEV}1 ];
+        then
+            RET+="${DEV} "
+        fi
+    done
+    echo "${RET}"
+}
+get_disk_count_debian() {
+    DISKCOUNT=0
+    for DISK in ${DISKS[@]};
+    do 
+        DISKCOUNT+=1
+    done;
+    echo "$DISKCOUNT"
+}
+scan_for_new_disks() {
+    # Looks for unpartitioned disks
+    declare -a RET
+    DEVS=`ls -1 /dev/sd*|egrep -v "${BLACKLIST}"|egrep -v "[0-9]$"`
     for DEV in "${DEVS[@]}";
     do
         # Check each device if there is a "1" partition.  If not,
@@ -170,13 +193,23 @@ configure_disks() {
 	    failed=0
 		sleep 30
 		LISTDISKS=`ls -1 /dev/sd*`
+		if [ $isdebian -eq 0 ];
+		then
+		DISKS=$(scan_for_new_disks_debian)
+		else
 		DISKS=$(scan_for_new_disks)
+		fi
 		LSBLK=`lsblk`
 		echo "Disks are ${LSBLK}"
 		echo "Disks are ${LISTDISKS}"
 		echo "Disks are ${DISKS[@]}"
 		declare -i DISKCOUNT
-		DISKCOUNT=$(get_disk_count) 
+		if [ $isdebian -eq 0 ];
+		then
+		DISKCOUNT=$(get_disk_count_debian)
+		else 
+		DISKCOUNT=$(get_disk_count)
+		fi  
 		echo "Disk count is $DISKCOUNT"
 		if [ $DISKCOUNT -gt 1 ];
 		then
