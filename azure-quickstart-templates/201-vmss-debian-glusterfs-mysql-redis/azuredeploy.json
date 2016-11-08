@@ -901,7 +901,7 @@
               "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
               "storageLoop",
               "gfs1extensionloop",
-              "mysqlExtLoop",
+              "mysqlextensionloop",
               "redisextensionloop"
             ],
             "sku": {
