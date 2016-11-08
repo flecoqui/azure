@@ -453,7 +453,7 @@
     "osImageDebianPublisher": "credativ",
     "osImageDebianOffer": "Debian",
     "osImageDebianSKU": "8",
-    "osImageDebianVersion": "8.0.201609120",
+    "osImageDebianVersion": "latest",
     "mysqlStorageAccountName": "[concat(uniquestring(resourceGroup().id),'sa')]",
     "mysqlNodeCount": 2,
     "mysqlVMName": "[concat(parameters('mysqlName'), 'vm')]",

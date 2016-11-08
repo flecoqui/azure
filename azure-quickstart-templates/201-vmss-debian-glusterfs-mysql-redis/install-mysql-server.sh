@@ -58,7 +58,7 @@ check_os() {
 scan_for_new_disks() {
     # Looks for unpartitioned disks
     declare -a RET
-    DEVS=($(ls -1 /dev/sd*|egrep -v "${BLACKLIST}"|egrep -v "[0-9]$"))
+    DEVS=`ls -1 /dev/sd*|egrep -v "${BLACKLIST}"|egrep -v "[0-9]$"`
     for DEV in "${DEVS[@]}";
     do
         # Check each device if there is a "1" partition.  If not,
@@ -168,9 +168,9 @@ configure_disks() {
     while [ $retry -gt 0 ] && [ $failed -gt 0 ]; do
 		failed=0
 		sleep 30
-		LISTDISKS=($(ls -1 /dev/sd*))
-		DISKS=($(scan_for_new_disks))
-		LSBLK=($(lsblk))
+		LISTDISKS=`ls -1 /dev/sd*`
+		DISKS=$(scan_for_new_disks)
+		LSBLK=`lsblk`
 		echo "Disks are ${LSBLK}"
 		echo "Disks are ${LISTDISKS}"
 		echo "Disks are ${DISKS[@]}"
@@ -472,8 +472,8 @@ else
 	#yum -y erase hypervkvpd.x86_64
 	#yum -y install microsoft-hyper-v
 #	echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
-    LISTDISKS=($(ls -1 /dev/sd*))
-	LSBLK=($(lsblk))
+    LISTDISKS=`ls -1 /dev/sd*`
+	LSBLK=`lsblk`
 	echo "Disks are ${LSBLK}"
     echo "Disks are ${LISTDISKS}"
 
