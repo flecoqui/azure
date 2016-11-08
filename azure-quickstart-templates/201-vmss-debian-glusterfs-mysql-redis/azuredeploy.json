@@ -1158,7 +1158,7 @@
                 "dataDisks": [
                   {
                     "name": "datadisk1",
-                    "diskSizeGB": "156",
+                    "diskSizeGB": "200",
                     "lun": 0,
                     "vhd": {
                       "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk1.vhd')]"
@@ -1168,7 +1168,7 @@
                   },
                   {
                     "name": "datadisk2",
-                    "diskSizeGB": "157",
+                    "diskSizeGB": "200",
                     "lun": 1,
                     "vhd": {
                       "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk2.vhd')]"
@@ -1317,7 +1317,7 @@
                 "dataDisks": [
                   {
                     "name": "datadisk1",
-                    "diskSizeGB": "156",
+                    "diskSizeGB": "200",
                     "lun": 0,
                     "vhd": {
                       "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk1.vhd')]"
@@ -1327,7 +1327,7 @@
                   },
                   {
                     "name": "datadisk2",
-                    "diskSizeGB": "157",
+                    "diskSizeGB": "200",
                     "lun": 1,
                     "vhd": {
                       "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk2.vhd')]"

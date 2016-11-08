@@ -130,7 +130,7 @@ create_raid0_debian() {
     fi
     log "Creating raid0 for debian"
     udevadm control --stop-exec-queue
-    echo "yes" | mdadm --create "$RAIDDISK" --name=data --level=0 --chunk="$RAIDCHUNKSIZE" --raid-devices="$DISKCOUNT" "${DISKS[@]}"
+    echo "yes" | mdadm --create $RAIDDISK --name=data --level=0 --chunk=$RAIDCHUNKSIZE --raid-devices=$DISKCOUNT ${DISKS[@]}
     udevadm control --start-exec-queue
     mdadm --detail --verbose --scan > /etc/mdadm.conf
 	log "Creating raid0 for debian done"
