@@ -187,7 +187,7 @@ configure_disks() {
     then 
         return
     fi
-	retry=10
+	retry=2
 	failed=1
     while [ $retry -gt 0 ] && [ $failed -gt 0 ]; do
 	    failed=0
