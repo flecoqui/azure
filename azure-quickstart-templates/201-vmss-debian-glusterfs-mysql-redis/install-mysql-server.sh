@@ -170,6 +170,8 @@ configure_disks() {
 		sleep 30
 		LISTDISKS=($(ls -1 /dev/sd*))
 		DISKS=($(scan_for_new_disks))
+		LSBLK=($(lsblk))
+		echo "Disks are ${LSBLK}"
 		echo "Disks are ${LISTDISKS}"
 		echo "Disks are ${DISKS[@]}"
 		declare -i DISKCOUNT
@@ -471,6 +473,8 @@ else
 	#yum -y install microsoft-hyper-v
 #	echo "/sbin/reboot" | /usr/bin/at now + 3 min >/dev/null 2>&1
     LISTDISKS=($(ls -1 /dev/sd*))
+	LSBLK=($(lsblk))
+	echo "Disks are ${LSBLK}"
     echo "Disks are ${LISTDISKS}"
 
 fi

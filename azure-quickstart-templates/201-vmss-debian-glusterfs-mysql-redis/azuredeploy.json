@@ -436,7 +436,7 @@
     "networkApiVersion": "2016-03-30",
     "storageApiVersion": "2015-06-15",
     "insightsApiVersion": "2015-04-01",
-    "gfs1AvailabilitySetName": "gfs1AvSet",
+    "gfs1AvailabilitySetName": "gfs1avset",
     "gfs1nicName": "gfs1nic",
     "gfs1OsImagePublisher": "[variables(concat('osImage', parameters('gfs1HostOs'), 'Publisher'))]",
     "gfs1OsImageOffer": "[variables(concat('osImage', parameters('gfs1HostOs'), 'Offer'))]",
@@ -453,7 +453,7 @@
     "osImageDebianPublisher": "credativ",
     "osImageDebianOffer": "Debian",
     "osImageDebianSKU": "8",
-    "osImageDebianVersion": "latest",
+    "osImageDebianVersion": "8.0.201609120",
     "mysqlStorageAccountName": "[concat(uniquestring(resourceGroup().id),'sa')]",
     "mysqlNodeCount": 2,
     "mysqlVMName": "[concat(parameters('mysqlName'), 'vm')]",
@@ -466,7 +466,7 @@
     "mysqlSshIPConfigName": "[concat(parameters('mysqlName'), 'sshIPCfg')]",
     "mysqlSshIPConfig": "[concat(variables('mysqlLbID'),'/frontendIPConfigurations/',variables('mysqlSshIPConfigName'))]",
     "mysqlNicName": "[concat(parameters('mysqlName'), 'nic')]",
-    "mysqlAvailabilitySetName": "[concat(parameters('mysqlName'), 'set')]",
+    "mysqlAvailabilitySetName": "[concat(parameters('mysqlName'), 'avset')]",
     "mysqlSingleQuote": "",
     "mysqlSa": "[variables('vnetMySQLIPPrefix')]",
     "mysqlIpOctet01": "[concat(split(variables('mysqlSa'), '.')[0], '.', split(variables('mysqlSa'), '.')[1], '.')]",
@@ -477,7 +477,7 @@
     "mysqlOsImageSKU": "[variables(concat('osImage', parameters('mysqlHostOs'), 'SKU'))]",
     "mysqlOsImageVersion": "[variables(concat('osImage', parameters('mysqlHostOs'), 'version'))]",
 
-    "redisAvailabilitySetName": "redisAvSet",
+    "redisAvailabilitySetName": "redisavset",
     "redisnicName": "redisnic",
     "redisOsImagePublisher": "[variables(concat('osImage', parameters('redisHostOs'), 'Publisher'))]",
     "redisOsImageOffer": "[variables(concat('osImage', parameters('redisHostOs'), 'Offer'))]",
@@ -899,7 +899,10 @@
             "dependsOn": [
               "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
               "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
-              "storageLoop"
+              "storageLoop",
+              "gfs1extensionloop",
+              "mysqlExtLoop",
+              "redisextensionloop"
             ],
             "sku": {
               "name": "[parameters('projectAppVmSize')]",
@@ -1124,9 +1127,13 @@
             "dependsOn": [
               "gfs1storageloop",
               "[concat('Microsoft.Network/networkInterfaces/',variables('gfs1nicName'), copyindex())]",
-              "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]"
+              "[concat('Microsoft.Storage/storageAccounts/',parameters('gfs1StorageAccountName'), copyIndex())]",
+              "[concat('Microsoft.Compute/availabilitySets/', variables('gfs1AvailabilitySetName'))]"
             ],
             "properties": {
+                "availabilitySet": { 
+                 "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('gfs1AvailabilitySetName'))]" 
+               }, 
               "hardwareProfile": {
                 "vmSize": "[parameters('gfs1VmSize')]"
               },
@@ -1153,20 +1160,22 @@
                 "dataDisks": [
                   {
                     "name": "datadisk1",
-                    "diskSizeGB": "100",
+                    "diskSizeGB": "156",
                     "lun": 0,
                     "vhd": {
                       "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk1.vhd')]"
                     },
+                    "caching": "None",
                     "createOption": "Empty"
                   },
                   {
                     "name": "datadisk2",
-                    "diskSizeGB": "100",
+                    "diskSizeGB": "157",
                     "lun": 1,
                     "vhd": {
                       "Uri": "[concat('http://', parameters('gfs1StorageAccountName'), copyindex(),'.blob.core.windows.net/vhds/', parameters('gfs1VmNamePrefix'), copyIndex(), 'datadisk2.vhd')]"
                     },
+                    "caching": "None",
                     "createOption": "Empty"
                   }
                 ]
@@ -1310,20 +1319,22 @@
                 "dataDisks": [
                   {
                     "name": "datadisk1",
-                    "diskSizeGB": "100",
+                    "diskSizeGB": "156",
                     "lun": 0,
                     "vhd": {
                       "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk1.vhd')]"
                     },
+                    "caching": "None",
                     "createOption": "Empty"
                   },
                   {
                     "name": "datadisk2",
-                    "diskSizeGB": "100",
+                    "diskSizeGB": "157",
                     "lun": 1,
                     "vhd": {
                       "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('mysqlStorageAccountName')), variables('resourceAPIVersion')).primaryEndpoints.blob, 'vhds/', variables('mysqlVMName'), copyIndex(), 'dataDisk2.vhd')]"
                     },
+                    "caching": "None",
                     "createOption": "Empty"
                   }
                 ]

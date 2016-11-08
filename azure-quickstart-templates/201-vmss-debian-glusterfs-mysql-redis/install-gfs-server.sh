@@ -170,6 +170,8 @@ configure_disks() {
 		sleep 30
 		LISTDISKS=($(ls -1 /dev/sd*))
 		DISKS=($(scan_for_new_disks))
+		LSBLK=($(lsblk))
+		echo "Disks are ${LSBLK}"
 		echo "Disks are ${LISTDISKS}"
 		echo "Disks are ${DISKS[@]}"
 		declare -i DISKCOUNT
@@ -491,6 +493,8 @@ else
     configure_gluster
 
     LISTDISKS=($(ls -1 /dev/sd*))
+	LSBLK=($(lsblk))
+	echo "Disks are ${LSBLK}"
     echo "Disks are ${LISTDISKS}"
 fi
 
