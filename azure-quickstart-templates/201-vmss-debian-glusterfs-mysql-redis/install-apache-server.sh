@@ -191,29 +191,29 @@ echo "<h1>General system toto information for host $(hostname -s)</h1>"
 echo ""
 
 echo "<h1>Memory Info</h1>"
-echo "<pre> $(free -m) </pre>"
+echo "<pre> \$(free -m) </pre>"
 
 echo "<h1>Disk Info:</h1>"
-echo "<pre> $(df -h) </pre>"
-echo "<pre> $(mount -t glusterfs $wm_gfsvm:$wm_gfsvol /shareddata) </pre>"
+echo "<pre> \$(df -h) </pre>"
+echo "<pre> \$(mount -t glusterfs $wm_gfsvm:$wm_gfsvol /shareddata) </pre>"
 
 echo "<h1>NFS partition content: /shareddata</h1>"
-echo "<pre> $(ls -l /shareddata) </pre>"
+echo "<pre> \$(ls -l /shareddata) </pre>"
 
 echo "<h1>MYSQL databases:</h1>"
-echo "<pre> $(mysql --user=admin --password=VMP@ssw0rd -h $wm_mysqlvm -e "show databases;")</pre>"
+echo "<pre> \$(mysql --user=admin --password=VMP@ssw0rd -h $wm_mysqlvm -e "show databases;")</pre>"
 
-echo "<h1>REDIS Cache response on $(date):</h1>"
-echo "<pre> $(redis-cli -h $wm_redisvm ping) </pre>"
+echo "<h1>REDIS Cache response on \$(date):</h1>"
+echo "<pre> \$(redis-cli -h $wm_redisvm ping) </pre>"
 
 echo "<h1>Logged in user</h1>"
-echo "<pre> $(w) </pre>"
+echo "<pre> \$(w) </pre>"
 
-echo "<center>Information generated on $(date)</center>"
+echo "<center>Information generated on \$(date)</center>"
 echo "</body></html>"
 EOF
 
- chmod +x $directorybin/info.cgi 
+chmod +x $directorybin/info.cgi 
 
 rm -f /etc/apache2/sites-enabled/*.conf
 echo "Configuring Web Site for Apache: $(date)"
@@ -228,19 +228,20 @@ ServerName "$wm_hostname"
                 Options FollowSymLinks
                 AllowOverride None
         </Directory>
-		<Directory /var/www/html/cgi-bin>
+		<Directory "/var/www/html/cgi-bin" >
 				Options ExecCGI
-				SetHandler cgi-script .cgi .pl .sh
+				SetHandler cgi-script 
 		</Directory>
 		AddHandler cgi-script .cgi .pl .sh
 
         # Possible values include: debug, info, notice, warn, error, crit,
         # alert, emerg.
         LogLevel warn
-        ErrorLog /var/log/apache2/evaluation-error.log
-        CustomLog /var/log/apache2/evaluation-access.log combined
+        ErrorLog /var/log/apache2/html-error.log
+        CustomLog /var/log/apache2/html-access.log combined
 </VirtualHost>
 EOF
+a2enmod cgi
 apachectl restart
 exit 0 
 
