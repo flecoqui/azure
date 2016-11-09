@@ -899,7 +899,10 @@
             "dependsOn": [
               "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
               "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
-              "storageLoop"
+              "storageLoop",
+              "mysqlextensionloop",
+              "gfs1extensionloop",
+              "redisextensionloop"
             ],
             "sku": {
               "name": "[parameters('projectAppVmSize')]",
