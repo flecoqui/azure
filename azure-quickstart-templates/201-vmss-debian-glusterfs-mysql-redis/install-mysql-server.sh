@@ -282,6 +282,15 @@ create_mycnf() {
     wget "${MYCNFTEMPLATE}" -O /etc/my.cnf
     sed -i "s/^server_id=.*/server_id=${NODEID}/I" /etc/my.cnf
     sed -i "s/^report-host=.*/report-host=${NODEADDRESS}/I" /etc/my.cnf
+
+	# if debian mysql 5.5 is installed 
+	# remove mysql 5.6 options
+    if [ $isdebian -eq 0 ];
+    then
+		sed -i "s/^enforce-gtid-consistency/#enforce-gtid-consistency/I" /etc/my.cnf
+		sed -i "s/^gtid-mode=ON/#gtid-mode=ON/I" /etc/my.cnf
+		sed -i "s/^master-info-repository=TABLE/#master-info-repository=TABLE/I" /etc/my.cnf
+	fi
     sed -i "s/^bind-address.*/bind-address=0.0.0.0/I" /etc/mysql/my.cnf
 }
 

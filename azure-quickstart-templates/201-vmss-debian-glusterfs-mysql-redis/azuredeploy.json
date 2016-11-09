@@ -900,6 +900,8 @@
               "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancerName'))]",
               "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
               "storageLoop",
+              "gfs1extensionloop",
+              "mysqlextensionloop",
               "redisextensionloop"
             ],
             "sku": {
