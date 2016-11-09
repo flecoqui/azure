@@ -137,6 +137,10 @@ directory=/var/www/html
 if [ ! -d $directory ]; then
 mkdir $directory
 fi
+directorybin=/var/www/html/cgi-bin
+if [ ! -d $directorybin ]; then
+mkdir $directorybin
+fi
 
 log "Creating Apache home page"
 cat <<EOF > $directory/index.html 
@@ -167,12 +171,50 @@ cat <<EOF > $directory/index.html
       <li>To the VM Scale Set: <a href="http://$wm_hostname/html/index.html">http://$wm_hostname/html/index.html</a>
     </ul>
     <ul>
+      <li>To <a href="cgi-bin/info.cgi">Services information</a>
       <li>To <a href="http://www.microsoft.com">Microsoft</a>
       <li>To <a href="https://portal.azure.com">Azure</a>
     </ul>
   </body>
 </html>
 EOF
+
+log "Creating cgi file"
+cat <<EOF > $directorybin/info.cgi 
+#!/bin/bash
+echo "Content-type: text/html"
+echo ""
+echo "<html><head><title>Bash as CGI"
+echo "</title></head><body>"
+
+echo "<h1>General system toto information for host $(hostname -s)</h1>"
+echo ""
+
+echo "<h1>Memory Info</h1>"
+echo "<pre> $(free -m) </pre>"
+
+echo "<h1>Disk Info:</h1>"
+echo "<pre> $(df -h) </pre>"
+echo "<pre> $(mount -t glusterfs $wm_gfsvm:$wm_gfsvol /shareddata) </pre>"
+
+echo "<h1>NFS partition content: /shareddata</h1>"
+echo "<pre> $(ls -l /shareddata) </pre>"
+
+echo "<h1>MYSQL databases:</h1>"
+echo "<pre> $(mysql --user=admin --password=VMP@ssw0rd -h $wm_mysqlvm -e "show databases;")</pre>"
+
+echo "<h1>REDIS Cache response on $(date):</h1>"
+echo "<pre> $(redis-cli -h $wm_redisvm ping) </pre>"
+
+echo "<h1>Logged in user</h1>"
+echo "<pre> $(w) </pre>"
+
+echo "<center>Information generated on $(date)</center>"
+echo "</body></html>"
+EOF
+
+ chmod +x $directorybin/info.cgi 
+
 rm -f /etc/apache2/sites-enabled/*.conf
 echo "Configuring Web Site for Apache: $(date)"
 cat <<EOF > /etc/apache2/sites-enabled/html.conf 
@@ -186,7 +228,11 @@ ServerName "$wm_hostname"
                 Options FollowSymLinks
                 AllowOverride None
         </Directory>
-
+		<Directory /var/www/html/cgi-bin>
+				Options ExecCGI
+				SetHandler cgi-script .cgi .pl .sh
+		</Directory>
+		AddHandler cgi-script .cgi .pl .sh
 
         # Possible values include: debug, info, notice, warn, error, crit,
         # alert, emerg.
