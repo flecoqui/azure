@@ -522,8 +522,11 @@ then
     echo "unsupported operating system"
     exit 1 
 else
+    log "Configuring Network"
     configure_network
+    log "Configuring Disks"
     configure_disks
+    log "Configuring Gluster"
     configure_gluster
 
     LISTDISKS=`ls -1 /dev/sd*`

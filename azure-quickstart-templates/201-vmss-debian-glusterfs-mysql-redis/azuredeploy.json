@@ -1196,6 +1196,7 @@
               "count": "[parameters('gfs1ScaleNumber')]"
             },
             "dependsOn": [
+              "gfs1vmloop",
               "[concat('Microsoft.Compute/virtualMachines/', parameters('gfs1VmNamePrefix'), copyindex())]"
             ],
             "properties": {

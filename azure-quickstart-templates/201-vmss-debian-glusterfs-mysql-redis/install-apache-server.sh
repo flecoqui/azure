@@ -187,7 +187,7 @@ echo ""
 echo "<html><head><title>Bash as CGI"
 echo "</title></head><body>"
 
-echo "<h1>General system toto information for host $(hostname -s)</h1>"
+echo "<h1>General system information for host $(hostname -s)</h1>"
 echo ""
 
 echo "<h1>Memory Info</h1>"
