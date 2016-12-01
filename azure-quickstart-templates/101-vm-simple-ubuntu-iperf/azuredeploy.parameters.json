@@ -12,7 +12,7 @@
       "value": "iperfubuntuvm001"
     },
     "ubuntuOSVersion": {
-      "value": "14.04.4-LTS"
+      "value": "16.04.0-LTS"
     },
     "vmSize": {
       "value": "Standard_D1_v2"
