@@ -22,7 +22,13 @@ check_os() {
 	isdebian=1	
     fi
 
-	if [ $isdebian -eq 0 ];then
+	if [ $isubuntu -eq 0 ]; then
+		OS=Ubuntu
+		VER=$(lsb_release -a | grep Release: | sed  's/Release://'| sed -e 's/^[ \t]*//' | cut -d . -f 1)
+	elif [ $iscentos -eq 0 ]; then
+		OS=Centos
+		VER=$(cat /etc/centos-release)
+	elif [ $isdebian -eq 0 ];then
 		OS=Debian  # XXX or Ubuntu??
 		VER=$(cat /etc/debian_version)
 	else
@@ -32,7 +38,7 @@ check_os() {
 	
 	ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
 
-	log "OS=$OS version $VER $ARCH"
+	log "OS=$OS version $VER Architecture $ARCH"
 }
 
 
@@ -47,9 +53,7 @@ apt-get -y install apache2
 #
 # Start Apache server
 #
-systemctl start apache2
-systemctl enable apache2
-systemctl status apache2
+apachectl restart
 
 directory=/var/www/html
 if [ ! -d $directory ]; then
@@ -154,7 +158,7 @@ configure_iperf_ubuntu_14(){
 #
 # install iperf3
 #  
-apt-get remove iperf3 libiperf0
+apt-get -y remove iperf3 libiperf0
 wget https://iperf.fr/download/ubuntu/libiperf0_3.1.3-1_amd64.deb
 wget https://iperf.fr/download/ubuntu/iperf3_3.1.3-1_amd64.deb
 dpkg -i libiperf0_3.1.3-1_amd64.deb iperf3_3.1.3-1_amd64.deb
@@ -206,8 +210,7 @@ else
     configure_network
     log "configure apache"
     configure_apache
-    log "configure iperf"
-    if [ $isubuntu -eq 0] && ["$VER" = "14"]; then
+    if [ $isubuntu -eq 0 ] && [ "$VER" = "14" ]; then
       log "configure iperf for ubuntu 14"
       configure_iperf_ubuntu_14
       log "start iperf for ubuntu 14"
