@@ -15,7 +15,7 @@
       "value": "16.04.0-LTS"
     },
     "vmSize": {
-      "value": "Standard_D1_v2"
+      "value": "Standard_D3_v2"
     },
     "initscriptUrl": {
       "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-ubuntu-iperf/install-iperf-test.sh"
