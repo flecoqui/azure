@@ -19,34 +19,83 @@ function WriteLog($msg)
 Write-Host $msg
 $msg >> c:\source\test.log
 }
-
+WriteLog "Installing IIS" 
+function Install-IIS
+{
+ install-Module -Name NanoServerPackage -SkipPublisherCheck -force
+ install-PackagePRovider NanoServerPackage
+ Set-ExecutionPolicy RemoteSigned -Scope Process
+ Import-PackageProvider NanoServerPackage
+ Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
+ Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
+}
+Install-IIS
+WriteLog "IIS Installed" 
 WriteLog "Downloading iperf3" 
 $url = 'https://iperf.fr/download/windows/iperf-3.1.3-win64.zip'
-$webClient = New-Object System.Net.WebClient 
-$webClient.DownloadFile($url,$source + "\iperf3.zip" ) 
 
 WriteLog "Installing iperf3" 
-# Function to unzip file contents
-function Expand-ZIPFile($file, $destination)
+
+function DownloadAndUnzip($sourceUrl,$DestinationDir ) 
 {
-    $shell = new-object -com shell.application
-    $zip = $shell.NameSpace($file)
-    foreach($item in $zip.items())
+$EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
+
+if (($EditionId -eq "ServerStandardNano") -or
+    ($EditionId -eq "ServerDataCenterNano") -or
+    ($EditionId -eq "NanoServer") -or
+    ($EditionId -eq "ServerTuva")) {
+
+    $TempPath = [System.IO.Path]::GetTempFileName()
+    if (($sourceUrl -as [System.URI]).AbsoluteURI -ne $null)
     {
-        # Unzip the file with 0x14 (overwrite silently)
-        $shell.Namespace($destination).copyhere($item, 0x14)
+        $handler = New-Object System.Net.Http.HttpClientHandler
+        $client = New-Object System.Net.Http.HttpClient($handler)
+        $client.Timeout = New-Object System.TimeSpan(0, 30, 0)
+        $cancelTokenSource = [System.Threading.CancellationTokenSource]::new()
+        $responseMsg = $client.GetAsync([System.Uri]::new($sourceUrl), $cancelTokenSource.Token)
+        $responseMsg.Wait()
+        if (!$responseMsg.IsCanceled)
+        {
+            $response = $responseMsg.Result
+            if ($response.IsSuccessStatusCode)
+            {
+                $downloadedFileStream = [System.IO.FileStream]::new($TempPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write)
+                $copyStreamOp = $response.Content.CopyToAsync($downloadedFileStream)
+                $copyStreamOp.Wait()
+                $downloadedFileStream.Close()
+                if ($copyStreamOp.Exception -ne $null)
+                {
+                    throw $copyStreamOp.Exception
+                }
+            }
+        }
     }
+    else
+    {
+        throw "Cannot copy from $sourceUrl"
+    }
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($TempPath, $DestinationDir)
+    Remove-Item $TempPath
 }
-Expand-ZIPFile -file "$source\iperf3.zip" -destination $source
+DownloadAndUnzip $url $source 
 WriteLog "iperf3 Installed" 
 
 
 WriteLog "Configuring firewall" 
 function Add-FirewallRules
 {
-netsh advfirewall firewall add rule name="iperfudp" dir=in action=allow protocol=UDP localport=5201
-netsh advfirewall firewall add rule name="iperftcp" dir=in action=allow protocol=TCP localport=5201
-netsh advfirewall firewall add rule name="http" dir=in action=allow protocol=TCP localport=80
+New-NetFirewallRule -Name "IPERFUDP" -DisplayName "IPERF on UDP/5201" -Protocol UDP -LocalPort 5201 -Action Allow -Enabled True
+New-NetFirewallRule -Name "IPERFTCP" -DisplayName "IPERF on TCP/5201" -Protocol TCP -LocalPort 5201 -Action Allow -Enabled True
+New-NetFirewallRule -Name "HTTP" -DisplayName "HTTP" -Protocol TCP -LocalPort 80 -Action Allow -Enabled True
+New-NetFirewallRule -Name "HTTPS" -DisplayName "HTTPS" -Protocol TCP -LocalPort 443 -Action Allow -Enabled True
+New-NetFirewallRule -Name "WINRM1" -DisplayName "WINRM TCP/5985" -Protocol TCP -LocalPort 5985 -Action Allow -Enabled True
+New-NetFirewallRule -Name "WINRM2" -DisplayName "WINRM TCP/5986" -Protocol TCP -LocalPort 5986 -Action Allow -Enabled True
+
+#netsh advfirewall firewall add rule name="iperfudp" dir=in action=allow protocol=UDP localport=5201
+#netsh advfirewall firewall add rule name="iperftcp" dir=in action=allow protocol=TCP localport=5201
+#netsh advfirewall firewall add rule name="http" dir=in action=allow protocol=TCP localport=80
+#netsh advfirewall firewall add rule name="winrm1" dir=in action=allow protocol=TCP localport=5985
+#netsh advfirewall firewall add rule name="winrm2" dir=in action=allow protocol=TCP localport=5986
 }
 Add-FirewallRules
 WriteLog "Firewall configured" 
