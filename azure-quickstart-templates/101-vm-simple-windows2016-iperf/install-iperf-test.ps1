@@ -76,6 +76,7 @@ if (($EditionId -eq "ServerStandardNano") -or
     }
     [System.IO.Compression.ZipFile]::ExtractToDirectory($TempPath, $DestinationDir)
     Remove-Item $TempPath
+   }
 }
 DownloadAndUnzip $url $source 
 WriteLog "iperf3 Installed" 

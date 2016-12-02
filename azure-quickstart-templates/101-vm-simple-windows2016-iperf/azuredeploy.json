@@ -320,32 +320,6 @@
       },
       "resources": [
         {
-          "name": "dsc",
-          "type": "extensions",
-          "location": "[resourceGroup().location]",
-          "apiVersion": "2015-06-15",
-          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-          ],
-          "tags": {
-            "displayName": "dsc"
-          },
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.8",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-                    "ModulesUrl": "[parameters('initdscUrl')]", 
-           "ConfigurationFunction": "[parameters('initdscFileName')]", 
-           "Properties": { 
-             "MachineName": "[variables('vmName')]" 
-           } 
-            },
-             "protectedSettings": null
-          }
-        },
-        {
           "name": "init",
           "type": "extensions",
           "location": "[resourceGroup().location]",
@@ -377,9 +351,13 @@
       "type": "string",
       "value": "[concat(parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
-    "mstscCommand": {
+    "setItemCommand": {
       "type": "string",
-      "value": "[concat('mstsc /admin /v:', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('Set-Item WSMan:\\localhost\\Client\\TrustedHosts ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+    },
+    "enterPSSessionCommand": {
+      "type": "string",
+      "value": "[concat('Enter-PSSession -ComputerName  \"', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com', '\"  -Credential ', parameters('adminUsername') )]"
     },
     "httpClient": {
       "type": "string",
