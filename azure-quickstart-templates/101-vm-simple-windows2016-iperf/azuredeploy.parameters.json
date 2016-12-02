@@ -19,12 +19,6 @@
     },
     "initScriptFileName": {
       "value": "install-iperf-test.ps1"
-    },
-    "initdscUrl": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows2016-iperf/iperfWebsite.zip"
-    },
-    "initdscFileName": {
-      "value": "iperfWebSite.ps1\\iperfWebSite"
     }
    }
 }

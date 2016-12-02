@@ -37,20 +37,6 @@
         "description": "powershell.exe -ExecutionPolicy Unrestricted -File [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
       },
       "defaultValue": "install-iperf-test.ps1"
-    },
-    "initdscUrl": {
-      "type": "string",
-      "metadata": {
-        "description": "url to the DSC File"
-      },
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows2016-iperf/iperfWebsite.zip"
-    },
-    "initdscFileName": {
-      "type": "string",
-      "metadata": {
-        "description": "File containing the configuration"
-      },
-      "defaultValue": "iperfWebSite.ps1\\iperfWebSite"
     }    
   },
   "variables": {
@@ -339,7 +325,7 @@
               "fileUris": [
                 "[parameters('initscriptUrl')]"
               ],
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]"
             }
           }
         }        

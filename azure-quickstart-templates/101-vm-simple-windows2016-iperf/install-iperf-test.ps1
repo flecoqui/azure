@@ -3,34 +3,26 @@
 
 param
 (
-      [string]$dnsName = $null
+      [string]$dnsName = $null,
+	  [string]$adminUser
 )
 
-if(!$dnsName) {
- throw "DNSName not specified"
-}
 
 #Create Source folder
 $source = 'C:\source' 
- 
 If (!(Test-Path -Path $source -PathType Container)) {New-Item -Path $source -ItemType Directory | Out-Null} 
 function WriteLog($msg)
 {
 Write-Host $msg
 $msg >> c:\source\test.log
 }
-WriteLog "Installing IIS" 
-function Install-IIS
-{
- install-Module -Name NanoServerPackage -SkipPublisherCheck -force
- install-PackagePRovider NanoServerPackage
- Set-ExecutionPolicy RemoteSigned -Scope Process
- Import-PackageProvider NanoServerPackage
- Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
- Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
+
+if(!$dnsName) {
+ WriteLog "DNSName not specified" 
+ throw "DNSName not specified"
 }
-Install-IIS
-WriteLog "IIS Installed" 
+
+
 WriteLog "Downloading iperf3" 
 $url = 'https://iperf.fr/download/windows/iperf-3.1.3-win64.zip'
 
@@ -131,10 +123,36 @@ $content = @'
 '@
 $content = $content -replace "\{0\}",$dnsName
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
+WriteLog "Installing IIS" 
+function Install-IIS
+{
+ install-Module -Name NanoServerPackage -SkipPublisherCheck -force
+ install-PackagePRovider NanoServerPackage
+ Set-ExecutionPolicy RemoteSigned -Scope Process
+ Import-PackageProvider NanoServerPackage
+ Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
+ Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
+}
+function Install-script
+{
+ "
+ install-Module -Name NanoServerPackage -SkipPublisherCheck -force `r`n
+ install-PackagePRovider NanoServerPackage `r`n
+ Set-ExecutionPolicy RemoteSigned -Scope Process `r`n
+ Import-PackageProvider NanoServerPackage `r`n
+ Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package `r`n
+ Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package `r`n
+ function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}`r`n
+ bg`r`n
+ "
+}
+Install-script > c:\source\installiis.ps1
 
-function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}
+#create scheduled task
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 
-WriteLog "Launching iperf3" 
-bg 
-WriteLog "Initialization completed!" 
- 
+WriteLog "Initialization completed !" 
+WriteLog "Rebooting !" 
+Restart-Computer -Force       
