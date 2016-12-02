@@ -122,6 +122,48 @@
              } 
            },
            { 
+             "name": "https", 
+             "properties": { 
+               "description": "https server port", 
+               "protocol": "Tcp", 
+               "sourcePortRange": "*", 
+               "destinationPortRange": "443", 
+               "sourceAddressPrefix": "Internet", 
+               "destinationAddressPrefix": "*", 
+               "access": "Allow", 
+               "priority": 102, 
+               "direction": "Inbound" 
+             } 
+           },
+           { 
+             "name": "winrm1", 
+             "properties": { 
+               "description": "winrm1 server port", 
+               "protocol": "Tcp", 
+               "sourcePortRange": "*", 
+               "destinationPortRange": "5985", 
+               "sourceAddressPrefix": "Internet", 
+               "destinationAddressPrefix": "*", 
+               "access": "Allow", 
+               "priority": 103, 
+               "direction": "Inbound" 
+             } 
+           },
+           { 
+             "name": "winrm2", 
+             "properties": { 
+               "description": "winrm2 server port", 
+               "protocol": "Tcp", 
+               "sourcePortRange": "*", 
+               "destinationPortRange": "5986", 
+               "sourceAddressPrefix": "Internet", 
+               "destinationAddressPrefix": "*", 
+               "access": "Allow", 
+               "priority": 104, 
+               "direction": "Inbound" 
+             } 
+           },
+           { 
              "name": "iperf3-udp", 
              "properties": { 
                "description": "iperf3 udp port", 
@@ -131,7 +173,7 @@
                "sourceAddressPrefix": "Internet", 
                "destinationAddressPrefix": "*", 
                "access": "Allow", 
-               "priority": 102, 
+               "priority": 105, 
                "direction": "Inbound" 
              } 
            },
@@ -145,7 +187,7 @@
                "sourceAddressPrefix": "Internet", 
                "destinationAddressPrefix": "*", 
                "access": "Allow", 
-               "priority": 103, 
+               "priority": 106, 
                "direction": "Inbound" 
              } 
            }             
