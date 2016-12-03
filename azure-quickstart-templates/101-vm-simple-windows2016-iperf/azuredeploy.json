@@ -45,7 +45,7 @@
     "dataDisk1VhdName": "[concat(parameters('dnsLabelPrefix'), 'datadisk')]",
     "imagePublisher": "MicrosoftWindowsServer", 
     "imageOffer": "WindowsServer", 
-    "imageSKU": "2016-Nano-Server", 
+    "imageSKU": "2016-Datacenter-Server-Core", 
     "OSDiskName": "[concat(parameters('dnsLabelPrefix'), 'osdisk')]",
     "nicName": "[concat(parameters('dnsLabelPrefix'), 'nic')]",
     "addressPrefix": "10.0.0.0/16",

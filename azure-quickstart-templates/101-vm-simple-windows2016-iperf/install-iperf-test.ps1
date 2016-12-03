@@ -126,6 +126,11 @@ $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 WriteLog "Installing IIS" 
 function Install-IIS
 {
+#Install-PackageProvider NanoServerPackage
+ #  Import-PackageProvider NanoServerPackage
+  # Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
+   #Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
+
  install-Module -Name NanoServerPackage -SkipPublisherCheck -force
  install-PackageProvider NanoServerPackage
  Set-ExecutionPolicy RemoteSigned -Scope Process
@@ -139,7 +144,9 @@ function Install-script
  function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}`r`n
  if (!(Test-Path -Path c:\source\iis.log)) `r`n
  {  `r`n
- echo install-Module-NameNanoServerPackage-SkipPublisherCheck > c:\source\iis.log `r`n 
+
+ Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+  echo install-Module-NameNanoServerPackage-SkipPublisherCheck > c:\source\iis.log `r`n 
  install-Module -Name NanoServerPackage -SkipPublisherCheck -force `r`n
  echo install-PackagePRoviderNanoServerPackage >> c:\source\iis.log `r`n 
  install-PackagePRovider NanoServerPackage `r`n
@@ -162,13 +169,13 @@ function Install-script
  "
 }
 #Install-IIS
-Install-script > c:\source\installiis.ps1
+#Install-script > c:\source\installiis.ps1
 
 #create scheduled task
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
 $trigger = New-ScheduledTaskTrigger -AtStartup
-Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
+#Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 
 WriteLog "Initialization completed !" 
 WriteLog "Rebooting !" 
-Restart-Computer -Force       
+#Restart-Computer -Force       
