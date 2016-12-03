@@ -126,7 +126,7 @@ $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 WriteLog "Installing IIS" 
 function Install-IIS
 {
- install-Module -Name NanoServerPackage -SkipPublisherCheck 
+ install-Module -Name NanoServerPackage -SkipPublisherCheck -force
  install-PackageProvider NanoServerPackage
  Set-ExecutionPolicy RemoteSigned -Scope Process
  Import-PackageProvider NanoServerPackage
@@ -136,22 +136,37 @@ function Install-IIS
 function Install-script
 {
  "
- #install-Module -Name NanoServerPackage -SkipPublisherCheck `r`n
- #install-PackagePRovider NanoServerPackage `r`n
- #Set-ExecutionPolicy RemoteSigned -Scope Process `r`n
- #Import-PackageProvider NanoServerPackage `r`n
- #Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package `r`n
- #Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package `r`n
  function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}`r`n
- bg`r`n
+ if (!(Test-Path -Path c:\source\iis.log)) `r`n
+ {  `r`n
+ echo install-Module-NameNanoServerPackage-SkipPublisherCheck > c:\source\iis.log `r`n 
+ install-Module -Name NanoServerPackage -SkipPublisherCheck -force `r`n
+ echo install-PackagePRoviderNanoServerPackage >> c:\source\iis.log `r`n 
+ install-PackagePRovider NanoServerPackage `r`n
+ echo Set-ExecutionPolicyRemoteSigned-ScopeProcess >> c:\source\iis.log `r`n 
+ Set-ExecutionPolicy RemoteSigned -Scope Process `r`n
+ echo Import-PackageProviderNanoServerPackage >> c:\source\iis.log `r`n 
+ Import-PackageProvider NanoServerPackage `r`n
+ echo Install-NanoServerPackage-NameMicrosoft-NanoServer-Storage-Package >> c:\source\iis.log `r`n 
+ Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package `r`n
+ echo Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package >> c:\source\iis.log `r`n 
+ Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package `r`n
+ echo Restart-Computer >> c:\source\iis.log `r`n 
+ Restart-Computer -Force      `r`n 
+ } `r`n
+ else `r`n
+ { `r`n
+ bg `r`n
+ } `r`n
+ `r`n
  "
 }
-Install-IIS
+#Install-IIS
 Install-script > c:\source\installiis.ps1
 
 #create scheduled task
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
-$trigger = New-ScheduledTaskTrigger -AtLogOn
+$trigger = New-ScheduledTaskTrigger -AtStartup
 Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 
 WriteLog "Initialization completed !" 
