@@ -7,6 +7,7 @@ param
 	  [string]$adminUser
 )
 
+set-executionpolicy remotesigned -Force
 
 #Create Source folder
 $source = 'C:\source' 
@@ -148,9 +149,13 @@ $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c
 $trigger = New-ScheduledTaskTrigger -AtStartup
 #Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 #function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}
-function bg() {Start-Job { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile c:\source\iperflog.txt }}
+function bg() {Start-Job { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D  }}
 bg
-
+schtasks /CREATE /TN IPERF3 /TR "c:\source\iperf-3.1.3-win64\iperf3.exe -s -D " /SC ONLOGON
 WriteLog "Initialization completed !" 
-WriteLog "Rebooting !" 
+#WriteLog "Rebooting !" 
+#Restart-Computer -Force       
+
+#WriteLog "Initialization completed !" 
+#WriteLog "Rebooting !" 
 #Restart-Computer -Force       
