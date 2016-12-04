@@ -11,13 +11,6 @@ Configuration iperfWebsite
       Name = "Web-Server"
     }
 
-    #Install ASP.NET 4.5
-    WindowsFeature ASP
-    {
-      Ensure = "Present"
-      Name = "Web-Asp-Net45"
-    }
-
      WindowsFeature WebServerManagementConsole
     {
         Name = "Web-Mgmt-Console"

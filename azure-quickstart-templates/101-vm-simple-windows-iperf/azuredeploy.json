@@ -367,7 +367,8 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-06-15",
           "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
+            "[resourceId('Microsoft.Compute/virtualMachines/extensions',  variables('vmName'), 'dsc')]" 
           ],
           "tags": {
             "displayName": "init"
