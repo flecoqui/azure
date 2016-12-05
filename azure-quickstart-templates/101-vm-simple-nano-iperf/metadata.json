@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Deploy a simple Nano Server 2016  VM",
+  "description": "This template allows you to deploy a simple  VM running nano server 2016 with IIS and iperf",
+  "summary": "This template takes a minimum amount of parameters and deploys a nano server 2016 VM, using the latest patched version.",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2016-11-16"
+}
