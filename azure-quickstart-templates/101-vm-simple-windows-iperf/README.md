@@ -10,10 +10,10 @@
 
 This template allows you to deploy a simple Windows Server VM running IIS and iPerf3, using the latest patched version. This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.
 This template has been tested with the following Windows versions:
-        2008-R2-SP1
-        2012-Datacenter
-        2012-R2-Datacenter
-        2016-Datacenter
+##2008-R2-SP1
+##2012-Datacenter
+##2012-R2-Datacenter
+##2016-Datacenter
 This template allows you to deploy a simple Windows Server VM running IIS and iPerf3, using the latest patched version. This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.
 With Azure CLI you can deploy this VM with 2 command lines:
 
