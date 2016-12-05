@@ -145,17 +145,21 @@ function Install-script
 #Install-script > c:\source\installiis.ps1
 
 #create scheduled task
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
-$trigger = New-ScheduledTaskTrigger -AtStartup
+#$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
+#$trigger = New-ScheduledTaskTrigger -AtStartup
 #Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 #function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}
-function bg() {Start-Job { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D  }}
-bg
-schtasks /CREATE /TN IPERF3 /TR "c:\source\iperf-3.1.3-win64\iperf3.exe -s -D " /SC ONLOGON
+#function bg() {Start-Job { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D  }}
+#bg
+WriteLog "Installing IPERF3 as a service" 
+sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe -s -D" type= own start= auto DisplayName= "IPERF3"
+WriteLog "IPERF3 Installed" 
+
+#schtasks /CREATE /TN IPERF3 /TR "c:\source\iperf-3.1.3-win64\iperf3.exe -s -D " /SC ONLOGON
 WriteLog "Initialization completed !" 
 #WriteLog "Rebooting !" 
 #Restart-Computer -Force       
 
 #WriteLog "Initialization completed !" 
-#WriteLog "Rebooting !" 
-#Restart-Computer -Force       
+WriteLog "Rebooting !" 
+Restart-Computer -Force       
