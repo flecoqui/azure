@@ -15,7 +15,7 @@
       "value": "Standard_D3_v2"
     },
     "osVersion": {
-      "value": "2008-R2-SP1"
+      "value": "2012-Datacenter"
     },
     "modulesUrl": {
       "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-windows-iperf/iperfWebsite.zip"

@@ -310,18 +310,7 @@
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
-          },
-          "dataDisks": [
-            {
-              "name": "datadisk1",
-              "diskSizeGB": "100",
-              "lun": 0,
-              "vhd": {
-                "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('dataDisk1VhdName'),'.vhd')]"
-              },
-              "createOption": "Empty"
-            }
-          ]
+          }
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -382,7 +371,7 @@
               "fileUris": [
                 "[parameters('initscriptUrl')]"
               ],
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]"
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\" ')]"
             }
           }
        }                 
@@ -394,13 +383,9 @@
       "type": "string",
       "value": "[concat(parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
-    "setItemCommand": {
+    "mstscCommand": {
       "type": "string",
-      "value": "[concat('Set-Item WSMan:\\localhost\\Client\\TrustedHosts ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
-    },
-    "enterPSSessionCommand": {
-      "type": "string",
-      "value": "[concat('Enter-PSSession -ComputerName  \"', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com', '\"  -Credential ', parameters('adminUsername') )]"
+      "value": "[concat('mstsc /admin /v:', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "httpClient": {
       "type": "string",

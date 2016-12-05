@@ -1,10 +1,12 @@
-
+# This script install :
+# - iperf3 on a computer running Windows
+# - Create a basic HTML home page
+#
 #usage install-iperf-test.ps1 dnsname
 
 param
 (
-      [string]$dnsName = $null,
-	  [string]$adminUser
+      [string]$dnsName = $null
 )
 
 set-executionpolicy remotesigned -Force
@@ -49,19 +51,10 @@ WriteLog "iperf3 Installed"
 WriteLog "Configuring firewall" 
 function Add-FirewallRules
 {
-#New-NetFirewallRule -Name "IPERFUDP" -DisplayName "IPERF on UDP/5201" -Protocol UDP -LocalPort 5201 -Action Allow -Enabled True
-#New-NetFirewallRule -Name "IPERFTCP" -DisplayName "IPERF on TCP/5201" -Protocol TCP -LocalPort 5201 -Action Allow -Enabled True
-#New-NetFirewallRule -Name "HTTP" -DisplayName "HTTP" -Protocol TCP -LocalPort 80 -Action Allow -Enabled True
-#New-NetFirewallRule -Name "HTTPS" -DisplayName "HTTPS" -Protocol TCP -LocalPort 443 -Action Allow -Enabled True
-#New-NetFirewallRule -Name "WINRM1" -DisplayName "WINRM TCP/5985" -Protocol TCP -LocalPort 5985 -Action Allow -Enabled True
-#New-NetFirewallRule -Name "WINRM2" -DisplayName "WINRM TCP/5986" -Protocol TCP -LocalPort 5986 -Action Allow -Enabled True
-
 netsh advfirewall firewall add rule name="iperfudp" dir=in action=allow protocol=UDP localport=5201
 netsh advfirewall firewall add rule name="iperftcp" dir=in action=allow protocol=TCP localport=5201
 netsh advfirewall firewall add rule name="http" dir=in action=allow protocol=TCP localport=80
 netsh advfirewall firewall add rule name="http" dir=in action=allow protocol=TCP localport=3389
-netsh advfirewall firewall add rule name="winrm1" dir=in action=allow protocol=TCP localport=5985
-netsh advfirewall firewall add rule name="winrm2" dir=in action=allow protocol=TCP localport=5986
 }
 Add-FirewallRules
 WriteLog "Firewall configured" 
@@ -96,70 +89,12 @@ $content = @'
 '@
 $content = $content -replace "\{0\}",$dnsName
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
-WriteLog "Installing IIS" 
-function Install-IIS
-{
-#Install-PackageProvider NanoServerPackage
- #  Import-PackageProvider NanoServerPackage
-  # Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
-   #Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
+WriteLog "Creating Home Page done" 
 
- install-Module -Name NanoServerPackage -SkipPublisherCheck -force
- install-PackageProvider NanoServerPackage
- Set-ExecutionPolicy RemoteSigned -Scope Process
- Import-PackageProvider NanoServerPackage
- Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
- Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
-}
-function Install-script
-{
- "
- function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}`r`n
- if (!(Test-Path -Path c:\source\iis.log)) `r`n
- {  `r`n
-
- Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-  echo install-Module-NameNanoServerPackage-SkipPublisherCheck > c:\source\iis.log `r`n 
- install-Module -Name NanoServerPackage -SkipPublisherCheck -force `r`n
- echo install-PackagePRoviderNanoServerPackage >> c:\source\iis.log `r`n 
- install-PackagePRovider NanoServerPackage `r`n
- echo Set-ExecutionPolicyRemoteSigned-ScopeProcess >> c:\source\iis.log `r`n 
- Set-ExecutionPolicy RemoteSigned -Scope Process `r`n
- echo Import-PackageProviderNanoServerPackage >> c:\source\iis.log `r`n 
- Import-PackageProvider NanoServerPackage `r`n
- echo Install-NanoServerPackage-NameMicrosoft-NanoServer-Storage-Package >> c:\source\iis.log `r`n 
- Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package `r`n
- echo Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package >> c:\source\iis.log `r`n 
- Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package `r`n
- echo Restart-Computer >> c:\source\iis.log `r`n 
- Restart-Computer -Force      `r`n 
- } `r`n
- else `r`n
- { `r`n
- bg `r`n
- } `r`n
- `r`n
- "
-}
-#Install-IIS
-#Install-script > c:\source\installiis.ps1
-
-#create scheduled task
-#$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
-#$trigger = New-ScheduledTaskTrigger -AtStartup
-#Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
-#function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}
-#function bg() {Start-Job { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D  }}
-#bg
 WriteLog "Installing IPERF3 as a service" 
 sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe -s -D" type= own start= auto DisplayName= "IPERF3"
 WriteLog "IPERF3 Installed" 
 
-#schtasks /CREATE /TN IPERF3 /TR "c:\source\iperf-3.1.3-win64\iperf3.exe -s -D " /SC ONLOGON
 WriteLog "Initialization completed !" 
-#WriteLog "Rebooting !" 
-#Restart-Computer -Force       
-
-#WriteLog "Initialization completed !" 
 WriteLog "Rebooting !" 
 Restart-Computer -Force       
