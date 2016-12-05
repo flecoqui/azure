@@ -139,26 +139,30 @@ function Install-script
  #function bg() {Invoke-Command -scriptblock  { c:\source\iperf-3.1.3-win64\iperf3.exe -s -D --logfile iperflog.txt }}`r`n
  if (!(Test-Path -Path c:\source\iis.log)) `r`n
  {  `r`n
+ echo Start installation script >> c:\source\iis.log `r`n 
+ echo date >> c:\source\iis.log `r`n 
+ echo Set-ExecutionPolicyRemoteSigned-ScopeProcess >> c:\source\iis.log `r`n 
+ Set-ExecutionPolicy RemoteSigned -Scope Process `r`n
  Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force `r`n
-  echo install-Module-NameNanoServerPackage-SkipPublisherCheck > c:\source\iis.log `r`n 
+ echo install-Module-NameNanoServerPackage-SkipPublisherCheck >> c:\source\iis.log `r`n 
  install-Module -Name NanoServerPackage -SkipPublisherCheck -force `r`n
  echo install-PackagePRoviderNanoServerPackage >> c:\source\iis.log `r`n 
  install-PackagePRovider NanoServerPackage `r`n
- echo Set-ExecutionPolicyRemoteSigned-ScopeProcess >> c:\source\iis.log `r`n 
- Set-ExecutionPolicy RemoteSigned -Scope Process `r`n
  echo Import-PackageProviderNanoServerPackage >> c:\source\iis.log `r`n 
  Import-PackageProvider NanoServerPackage `r`n
  echo Install-NanoServerPackage-NameMicrosoft-NanoServer-Storage-Package >> c:\source\iis.log `r`n 
  Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package `r`n
- echo Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package >> c:\source\iis.log `r`n 
+ echo Install-NanoServerPackage-Name Microsoft-NanoServer-IIS-Package >> c:\source\iis.log `r`n 
  Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package `r`n
  echo Restart-Computer >> c:\source\iis.log `r`n 
  Restart-Computer -Force      `r`n 
  } `r`n
- #else `r`n
- #{ `r`n
+ else `r`n
+ { `r`n
+ echo Start installation script Nothing to do  >> c:\source\iis.log `r`n 
+ echo date >> c:\source\iis.log `r`n 
  #bg `r`n
- #} `r`n
+ } `r`n
  "
 }
 #Install-IIS
@@ -170,7 +174,7 @@ WriteLog "IPERF3 Installed"
 
 #create scheduled task
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
-$trigger = New-ScheduledTaskTrigger -AtStartup
+$trigger = New-ScheduledTaskTrigger -AtLogon
 Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 
 WriteLog "Initialization completed !" 
