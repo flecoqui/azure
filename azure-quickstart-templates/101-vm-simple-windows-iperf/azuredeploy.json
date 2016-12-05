@@ -16,6 +16,7 @@
     },
     "dnsLabelPrefix": {
       "type": "string",
+      "defaultValue": "iperfwinvm001",
       "metadata": {
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine. DNS name: <dnsLabelPrefix>.<Region>.cloudapp.azure.com"
       }
@@ -23,9 +24,9 @@
     "osVersion": {
       "type": "string",
       "metadata": {
-        "description": "Image SKU"
+        "description": "OS Version - Image SKU"
       },
-      "defaultValue": "Standard_A1",
+      "defaultValue": "2016-Datacenter",
       "allowedValues": [
         "2008-R2-SP1",
         "2012-Datacenter",
@@ -38,7 +39,7 @@
       "metadata": {
         "description": "VM Size"
       },
-      "defaultValue": "Standard_A1"
+      "defaultValue": "Standard_D1_v2"
     },
     "initscriptUrl": {
       "type": "string",
