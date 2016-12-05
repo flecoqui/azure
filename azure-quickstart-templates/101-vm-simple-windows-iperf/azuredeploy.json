@@ -30,12 +30,7 @@
         "2008-R2-SP1",
         "2012-Datacenter",
         "2012-R2-Datacenter",
-        "2016-Datacenter",
-        "2016-Datacenter-Server-Core",
-        "2016-Datacenter-with-Containers",
-        "2016-Nano-Server",
-        "2016-Nano-Server-Technical-Preview",
-        "Windows-Server-Technical-Preview"
+        "2016-Datacenter"
       ]
     },
     "vmSize": {
