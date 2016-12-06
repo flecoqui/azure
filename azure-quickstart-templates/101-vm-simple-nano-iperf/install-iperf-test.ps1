@@ -158,10 +158,10 @@ function Install-IIS
 function Dump-Install-IIS
 {
  "
- function WriteLog($msg) `r
+ function WriteLog(`$msg) `r
  { `r
- Write-Host $msg `r
- $msg >> c:\source\installiis.log `r
+ Write-Host `$msg `r
+ `$msg >> c:\source\installiis.log `r
  } `r
  function WriteDateLog `r
  { `r
