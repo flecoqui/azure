@@ -14,11 +14,11 @@ If (!(Test-Path -Path $source -PathType Container)) {New-Item -Path $source -Ite
 function WriteLog($msg)
 {
 Write-Host $msg
-$msg >> c:\source\test.log
+$msg >> c:\source\install.log
 }
 function WriteDateLog
 {
-date >> c:\source\test.log
+date >> c:\source\install.log
 }
 if(!$dnsName) {
  WriteLog "DNSName not specified" 
@@ -154,6 +154,42 @@ function Install-IIS
 # Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
 # Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
 }
+
+function Dump-Install-IIS
+{
+ "
+ function WriteLog($msg) `r
+ { `r
+ Write-Host $msg `r
+ $msg >> c:\source\installiis.log `r
+ } `r
+ function WriteDateLog `r
+ { `r
+ date >> c:\source\installiis.log `r
+ } `r
+ if (!(Test-Path -Path c:\source\iis.log)) `r
+ {  `r
+ WriteLog ""Installing IIS: Install-Module -Name NanoServerPackage -SkipPublisherCheck -force "" `r
+ Install-Module -Name NanoServerPackage -SkipPublisherCheck -force `r
+ WriteLog ""Installing IIS: Install-PackageProvider NanoServerPackage"" `r
+ Install-PackageProvider NanoServerPackage `r 
+ WriteLog ""Installing IIS:Set-ExecutionPolicy RemoteSigned -Scope Process""  `r
+ Set-ExecutionPolicy RemoteSigned -Scope Process `r
+ WriteLog ""Installing IIS: Import-PackageProvider NanoServerPackage"" `r 
+ Import-PackageProvider NanoServerPackage `r
+ WriteLog ""Installing IIS: Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0"" `r
+ Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0 `r
+ WriteLog ""Installing IIS: Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0"" `r
+ Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0 `r
+ WriteLog ""Installing IIS: done"" `r
+ WriteLog ""Starting IIS""  `r
+ net start w3svc `r
+ WriteLog ""Starting IIS: done"" `r
+ date >> c:\source\iis.log `r
+ }`r
+ "
+}
+
 function Install-script
 {
  "
@@ -187,22 +223,29 @@ function Install-script
  "
 }
 
-WriteDateLog
-Install-IIS
+#WriteDateLog
+#Install-IIS
 
-WriteLog "Starting IIS" 
-net start w3svc
+#WriteLog "Starting IIS" 
+#net start w3svc
 
 #Install-script > c:\source\installiis.ps1
+WriteLog "Create file c:\source\installiis.ps1" 
+Dump-Install-IIS > c:\source\installiis.ps1
+
 WriteDateLog
 WriteLog "Installing IPERF3 as a service" 
 sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe -s -D" type= own start= auto DisplayName= "IPERF3"
 WriteLog "IPERF3 Installed"
 
+
+WriteLog "Create file c:\source\installiis.ps1" 
+Dump-Install-IIS > c:\source\installiis.ps1
 #create scheduled task
-#$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
-#$trigger = New-ScheduledTaskTrigger -AtStartup
-#Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
+WriteLog "Create scheduled task for file c:\source\installiis.ps1" 
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 
 WriteLog "Initialization completed !" 
 WriteDateLog
