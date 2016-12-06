@@ -126,6 +126,11 @@ function Install-IIS
   # Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
    #Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
 
+   Install-PackageProvider NanoServerPackage -Force
+ Import-PackageProvider NanoServerPackage -Force
+ Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14300.10
+ Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14300.1000
+
  install-Module -Name NanoServerPackage -SkipPublisherCheck -force
  install-PackageProvider NanoServerPackage
  Set-ExecutionPolicy RemoteSigned -Scope Process
@@ -173,9 +178,9 @@ sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe 
 WriteLog "IPERF3 Installed"
 
 #create scheduled task
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
-$trigger = New-ScheduledTaskTrigger -AtStartup
-Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
+#$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
+#$trigger = New-ScheduledTaskTrigger -AtStartup
+#Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 
 WriteLog "Initialization completed !" 
 WriteLog "Rebooting !" 
