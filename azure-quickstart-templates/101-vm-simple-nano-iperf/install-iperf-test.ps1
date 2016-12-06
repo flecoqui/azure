@@ -25,7 +25,7 @@ if(!$dnsName) {
  throw "DNSName not specified"
 }
 
-
+WriteDateLog
 WriteLog "Downloading iperf3" 
 $url = 'https://iperf.fr/download/windows/iperf-3.1.3-win64.zip'
 
@@ -128,23 +128,34 @@ function Install-IIS
  #  Import-PackageProvider NanoServerPackage
   # Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
    #Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
- WriteLog "Installing IIS: Install-Module -Name NanoServerPackage -SkipPublisherCheck -force"
- Install-Module -Name NanoServerPackage -SkipPublisherCheck -force
+WriteLog "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force"
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+WriteLog "Save-Module -Path "$env:programfiles\WindowsPowerShell\Modules\" -Name NanoServerPackage -minimumVersion 1.0.1.0"
+Save-Module -Path "$env:programfiles\WindowsPowerShell\Modules\" -Name NanoServerPackage -minimumVersion 1.0.1.0
+WriteLog "Import-PackageProvider NanoServerPackage"
+Import-PackageProvider NanoServerPackage
+WriteLog "Find-NanoServerPackage -name *"
+Find-NanoServerPackage -name *
+WriteLog "Find-NanoServerPackage *iis* | install-NanoServerPackage -culture en-us"
+Find-NanoServerPackage *iis* | install-NanoServerPackage -culture en-us
+
+# WriteLog "Installing IIS: Install-Module -Name NanoServerPackage -SkipPublisherCheck -force"
+# Install-Module -Name NanoServerPackage -SkipPublisherCheck -force
  
- WriteLog "Installing IIS: Install-PackageProvider NanoServerPackage" 
- Install-PackageProvider NanoServerPackage
+# WriteLog "Installing IIS: Install-PackageProvider NanoServerPackage" 
+# Install-PackageProvider NanoServerPackage
  
- WriteLog "Installing IIS:Set-ExecutionPolicy RemoteSigned -Scope Process" 
- Set-ExecutionPolicy RemoteSigned -Scope Process
+# WriteLog "Installing IIS:Set-ExecutionPolicy RemoteSigned -Scope Process" 
+# Set-ExecutionPolicy RemoteSigned -Scope Process
 
- WriteLog "Installing IIS: Import-PackageProvider NanoServerPackage" 
- Import-PackageProvider NanoServerPackage
+# WriteLog "Installing IIS: Import-PackageProvider NanoServerPackage" 
+# Import-PackageProvider NanoServerPackage
 
- WriteLog "Installing IIS: Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0"
- Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0
+# WriteLog "Installing IIS: Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0"
+# Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0
 
- WriteLog "Installing IIS: Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0"
- Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0
+# WriteLog "Installing IIS: Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0"
+# Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0
 
  WriteLog "Installing IIS: done"
 # install-Module -Name NanoServerPackage -SkipPublisherCheck -force
@@ -223,15 +234,15 @@ function Install-script
  "
 }
 
-#WriteDateLog
-#Install-IIS
+WriteDateLog
+Install-IIS
 
-#WriteLog "Starting IIS" 
-#net start w3svc
+WriteLog "Starting IIS" 
+net start w3svc
 
 #Install-script > c:\source\installiis.ps1
-WriteLog "Create file c:\source\installiis.ps1" 
-Dump-Install-IIS > c:\source\installiis.ps1
+#WriteLog "Create file c:\source\installiis.ps1" 
+#Dump-Install-IIS > c:\source\installiis.ps1
 
 WriteDateLog
 WriteLog "Installing IPERF3 as a service" 
@@ -239,13 +250,20 @@ sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe 
 WriteLog "IPERF3 Installed"
 
 
-WriteLog "Create file c:\source\installiis.ps1" 
-Dump-Install-IIS > c:\source\installiis.ps1
+#WriteLog "Create file c:\source\installiis.ps1" 
+#Dump-Install-IIS > c:\source\installiis.ps1
 #create scheduled task
-WriteLog "Create scheduled task for file c:\source\installiis.ps1" 
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
-$trigger = New-ScheduledTaskTrigger -AtLogOn
-Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
+#WriteLog "Create scheduled task for file c:\source\installiis.ps1" 
+#$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoExit c:\source\installiis.ps1" 
+#$trigger = New-ScheduledTaskTrigger -AtLogOn
+#Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
+
+
+
+#echo "echo ""boot at"" >> c:\source\Startup.log"    > c:\source\Startup.cmd
+#echo "date >> c:\source\Startup.log"    >> c:\source\Startup.cmd
+#echo "ipconfig >> c:\source\Startup.log"   >> c:\source\Startup.cmd 
+#schtasks /create /tn "Logboot" /tr c:\source\Startup.cmd /sc onstart /ru "System"
 
 WriteLog "Initialization completed !" 
 WriteDateLog
