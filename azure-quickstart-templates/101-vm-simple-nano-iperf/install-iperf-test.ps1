@@ -16,7 +16,10 @@ function WriteLog($msg)
 Write-Host $msg
 $msg >> c:\source\test.log
 }
-
+function WriteDateLog
+{
+date >> c:\source\test.log
+}
 if(!$dnsName) {
  WriteLog "DNSName not specified" 
  throw "DNSName not specified"
@@ -118,25 +121,38 @@ $content = @'
 $content = $content -replace "\{0\}",$dnsName
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 
-WriteLog "Installing IIS" 
+ 
 function Install-IIS
 {
 #Install-PackageProvider NanoServerPackage
  #  Import-PackageProvider NanoServerPackage
   # Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
    #Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
-
-   Install-PackageProvider NanoServerPackage -Force
- Import-PackageProvider NanoServerPackage -Force
- Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14300.10
- Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14300.1000
-
- install-Module -Name NanoServerPackage -SkipPublisherCheck -force
- install-PackageProvider NanoServerPackage
+ WriteLog "Installing IIS: Install-Module -Name NanoServerPackage -SkipPublisherCheck -force"
+ Install-Module -Name NanoServerPackage -SkipPublisherCheck -force
+ 
+ WriteLog "Installing IIS: Install-PackageProvider NanoServerPackage" 
+ Install-PackageProvider NanoServerPackage
+ 
+ WriteLog "Installing IIS:Set-ExecutionPolicy RemoteSigned -Scope Process" 
  Set-ExecutionPolicy RemoteSigned -Scope Process
+
+ WriteLog "Installing IIS: Import-PackageProvider NanoServerPackage" 
  Import-PackageProvider NanoServerPackage
- Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
- Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
+
+ WriteLog "Installing IIS: Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0"
+ Find-NanoServerPackage –AllVersions -Name *IIS* -RequiredVersion 10.0.14393.0
+
+ WriteLog "Installing IIS: Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0"
+ Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package -Culture en-us -RequiredVersion 10.0.14393.0
+
+ WriteLog "Installing IIS: done"
+# install-Module -Name NanoServerPackage -SkipPublisherCheck -force
+# install-PackageProvider NanoServerPackage
+# Set-ExecutionPolicy RemoteSigned -Scope Process
+# Import-PackageProvider NanoServerPackage
+# Install-NanoServerPackage -Name Microsoft-NanoServer-Storage-Package
+# Install-NanoServerPackage -Name Microsoft-NanoServer-IIS-Package
 }
 function Install-script
 {
@@ -170,9 +186,15 @@ function Install-script
  } `r`n
  "
 }
-#Install-IIS
-Install-script > c:\source\installiis.ps1
 
+WriteDateLog
+Install-IIS
+
+WriteLog "Starting IIS" 
+net start w3svc
+
+#Install-script > c:\source\installiis.ps1
+WriteDateLog
 WriteLog "Installing IPERF3 as a service" 
 sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe -s -D" type= own start= auto DisplayName= "IPERF3"
 WriteLog "IPERF3 Installed"
@@ -183,5 +205,8 @@ WriteLog "IPERF3 Installed"
 #Register-ScheduledTask -TaskName "scriptiis" -Action $action -Trigger $trigger -RunLevel Highest -User $adminUser | Out-Null 
 
 WriteLog "Initialization completed !" 
+WriteDateLog
 WriteLog "Rebooting !" 
-Restart-Computer -Force       
+Restart-Computer -Force  
+WriteLog "Rebooting done!"      
+WriteDateLog
