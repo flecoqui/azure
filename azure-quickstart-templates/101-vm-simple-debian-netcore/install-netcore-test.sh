@@ -28,11 +28,15 @@ mkdir -p /opt/dotnet && tar zxf dotnet.tar.gz -C /opt/dotnet
 ln -s /opt/dotnet/dotnet /usr/local/bin
 
 # Create new app
-#mkdir hwapp
-#cd hwapp
-#dotnet new
-#dotnet restore
-#dotnet run
+mkdir hello
+cd hello
+dotnet new
+dotnet restore
+dotnet build
+dotnet publish -f netcoreapp1.1 -c release
+cd ..
+dotnet ./hello/bin/release/netcoreapp1.1/publish/hello.dll
+
 
 #
 # Start Apache server
