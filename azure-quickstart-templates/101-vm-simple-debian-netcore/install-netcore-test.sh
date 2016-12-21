@@ -20,10 +20,12 @@ sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 #
 # install .Net Core
 #  
-apt-get install curl libunwind8 gettext
+apt-get -y install curl
+apt-get -y install  gettext
+apt-get -y install libunwind8
 curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=835021
-sudo mkdir -p /opt/dotnet && sudo tar zxf dotnet.tar.gz -C /opt/dotnet
-sudo ln -s /opt/dotnet/dotnet /usr/local/bin
+mkdir -p /opt/dotnet && tar zxf dotnet.tar.gz -C /opt/dotnet
+ln -s /opt/dotnet/dotnet /usr/local/bin
 
 # Create new app
 #mkdir hwapp

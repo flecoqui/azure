@@ -9,10 +9,10 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "iperfdebianvm001"
+      "value": "netdebianvm001"
     },
     "debianOSVersion": {
-      "value": "7"
+      "value": "8"
     },
     "vmSize": {
       "value": "Standard_F1"
