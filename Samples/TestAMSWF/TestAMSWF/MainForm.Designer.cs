@@ -53,6 +53,15 @@
             this.label8 = new System.Windows.Forms.Label();
             this.buttonOpenSubtitle = new System.Windows.Forms.Button();
             this.buttonDisplayJobs = new System.Windows.Forms.Button();
+            this.textBoxSearchAccountName = new System.Windows.Forms.TextBox();
+            this.textBoxSearchAccountKey = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.buttonCreateIndex = new System.Windows.Forms.Button();
+            this.buttonDeleteIndex = new System.Windows.Forms.Button();
+            this.buttonPopulateIndex = new System.Windows.Forms.Button();
+            this.buttonSearch = new System.Windows.Forms.Button();
+            this.textBoxSearch = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxJob)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,7 +71,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxAccountKey.Location = new System.Drawing.Point(15, 74);
             this.textBoxAccountKey.Name = "textBoxAccountKey";
-            this.textBoxAccountKey.Size = new System.Drawing.Size(352, 20);
+            this.textBoxAccountKey.Size = new System.Drawing.Size(194, 20);
             this.textBoxAccountKey.TabIndex = 34;
             this.textBoxAccountKey.UseSystemPasswordChar = true;
             // 
@@ -81,7 +90,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxAccountName.Location = new System.Drawing.Point(15, 35);
             this.textBoxAccountName.Name = "textBoxAccountName";
-            this.textBoxAccountName.Size = new System.Drawing.Size(352, 20);
+            this.textBoxAccountName.Size = new System.Drawing.Size(194, 20);
             this.textBoxAccountName.TabIndex = 33;
             // 
             // label1
@@ -97,7 +106,7 @@
             // 
             this.buttonLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonLogin.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonLogin.Location = new System.Drawing.Point(373, 31);
+            this.buttonLogin.Location = new System.Drawing.Point(444, 28);
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.Size = new System.Drawing.Size(105, 27);
             this.buttonLogin.TabIndex = 37;
@@ -242,16 +251,16 @@
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(15, 469);
+            this.richTextBoxLog.Location = new System.Drawing.Point(15, 518);
             this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(727, 119);
+            this.richTextBoxLog.Size = new System.Drawing.Size(727, 184);
             this.richTextBoxLog.TabIndex = 56;
             this.richTextBoxLog.Text = "";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(22, 453);
+            this.label7.Location = new System.Drawing.Point(14, 502);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(33, 13);
             this.label7.TabIndex = 57;
@@ -298,11 +307,114 @@
             this.buttonDisplayJobs.UseVisualStyleBackColor = true;
             this.buttonDisplayJobs.Click += new System.EventHandler(this.buttonDisplayJobs_Click);
             // 
+            // textBoxSearchAccountName
+            // 
+            this.textBoxSearchAccountName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSearchAccountName.Location = new System.Drawing.Point(227, 35);
+            this.textBoxSearchAccountName.Name = "textBoxSearchAccountName";
+            this.textBoxSearchAccountName.Size = new System.Drawing.Size(194, 20);
+            this.textBoxSearchAccountName.TabIndex = 63;
+            // 
+            // textBoxSearchAccountKey
+            // 
+            this.textBoxSearchAccountKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSearchAccountKey.Location = new System.Drawing.Point(227, 74);
+            this.textBoxSearchAccountKey.Name = "textBoxSearchAccountKey";
+            this.textBoxSearchAccountKey.Size = new System.Drawing.Size(194, 20);
+            this.textBoxSearchAccountKey.TabIndex = 64;
+            this.textBoxSearchAccountKey.UseSystemPasswordChar = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(224, 19);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(115, 13);
+            this.label9.TabIndex = 65;
+            this.label9.Text = "Search Account Name";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(224, 58);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(105, 13);
+            this.label10.TabIndex = 66;
+            this.label10.Text = "Search Account Key";
+            // 
+            // buttonCreateIndex
+            // 
+            this.buttonCreateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCreateIndex.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.buttonCreateIndex.Location = new System.Drawing.Point(15, 466);
+            this.buttonCreateIndex.Name = "buttonCreateIndex";
+            this.buttonCreateIndex.Size = new System.Drawing.Size(86, 27);
+            this.buttonCreateIndex.TabIndex = 67;
+            this.buttonCreateIndex.Text = "Create Index";
+            this.buttonCreateIndex.UseVisualStyleBackColor = true;
+            this.buttonCreateIndex.Click += new System.EventHandler(this.buttonCreateIndex_Click);
+            // 
+            // buttonDeleteIndex
+            // 
+            this.buttonDeleteIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonDeleteIndex.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.buttonDeleteIndex.Location = new System.Drawing.Point(107, 466);
+            this.buttonDeleteIndex.Name = "buttonDeleteIndex";
+            this.buttonDeleteIndex.Size = new System.Drawing.Size(86, 27);
+            this.buttonDeleteIndex.TabIndex = 68;
+            this.buttonDeleteIndex.Text = "Delete Index";
+            this.buttonDeleteIndex.UseVisualStyleBackColor = true;
+            this.buttonDeleteIndex.Click += new System.EventHandler(this.buttonDeleteIndex_Click);
+            // 
+            // buttonPopulateIndex
+            // 
+            this.buttonPopulateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPopulateIndex.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.buttonPopulateIndex.Location = new System.Drawing.Point(199, 466);
+            this.buttonPopulateIndex.Name = "buttonPopulateIndex";
+            this.buttonPopulateIndex.Size = new System.Drawing.Size(96, 27);
+            this.buttonPopulateIndex.TabIndex = 69;
+            this.buttonPopulateIndex.Text = "Populate Index";
+            this.buttonPopulateIndex.UseVisualStyleBackColor = true;
+            this.buttonPopulateIndex.Click += new System.EventHandler(this.buttonPopulateIndex_Click);
+            // 
+            // buttonSearch
+            // 
+            this.buttonSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.buttonSearch.Location = new System.Drawing.Point(394, 466);
+            this.buttonSearch.Name = "buttonSearch";
+            this.buttonSearch.Size = new System.Drawing.Size(63, 27);
+            this.buttonSearch.TabIndex = 70;
+            this.buttonSearch.Text = "Search";
+            this.buttonSearch.UseVisualStyleBackColor = true;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            // 
+            // textBoxSearch
+            // 
+            this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSearch.Location = new System.Drawing.Point(463, 473);
+            this.textBoxSearch.Name = "textBoxSearch";
+            this.textBoxSearch.Size = new System.Drawing.Size(283, 20);
+            this.textBoxSearch.TabIndex = 71;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(758, 600);
+            this.ClientSize = new System.Drawing.Size(758, 714);
+            this.Controls.Add(this.textBoxSearch);
+            this.Controls.Add(this.buttonSearch);
+            this.Controls.Add(this.buttonPopulateIndex);
+            this.Controls.Add(this.buttonDeleteIndex);
+            this.Controls.Add(this.buttonCreateIndex);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBoxSearchAccountKey);
+            this.Controls.Add(this.textBoxSearchAccountName);
             this.Controls.Add(this.buttonDisplayJobs);
             this.Controls.Add(this.buttonOpenSubtitle);
             this.Controls.Add(this.label8);
@@ -361,6 +473,15 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button buttonOpenSubtitle;
         private System.Windows.Forms.Button buttonDisplayJobs;
+        private System.Windows.Forms.TextBox textBoxSearchAccountName;
+        private System.Windows.Forms.TextBox textBoxSearchAccountKey;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button buttonCreateIndex;
+        private System.Windows.Forms.Button buttonDeleteIndex;
+        private System.Windows.Forms.Button buttonPopulateIndex;
+        private System.Windows.Forms.Button buttonSearch;
+        private System.Windows.Forms.TextBox textBoxSearch;
     }
 }
 

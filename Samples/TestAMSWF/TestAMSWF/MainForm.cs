@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.WindowsAzure.MediaServices.Client;
+using Microsoft.Azure.Search;
+using Microsoft.Azure.Search.Models;
 
 namespace TestAMSWF
 {
@@ -30,13 +32,17 @@ namespace TestAMSWF
             InitializeComponent();
             textBoxAccountName.Text = "testamsindexer";
             textBoxAccountKey.Text = "7osPnuOAoPP3dY48IFLuJxY++V8nq4ICI0rCDy12Hsk=";
+            textBoxSearchAccountName.Text = "testamsindexsearch";
+            textBoxSearchAccountKey.Text = "50373C7F6D3D38FEA3A672392E059AEA";
             comboBoxLanguages.Items.AddRange(LanguagesIndexV2.ToArray());
             comboBoxLanguages.SelectedIndex = 0;
             _context = null;
             UpdateControls();
 
         }
-        Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext _context;
+        Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext _context = null;
+        Microsoft.Azure.Search.SearchServiceClient _searchContext = null;
+        Microsoft.Azure.Search.ISearchIndexClient _indexClient = null;
 
         void PopulateJobList()
         {
@@ -48,7 +54,7 @@ namespace TestAMSWF
         }
         bool IsConnected()
         {
-            if (_context != null)
+            if ((_context != null)&&(_searchContext != null))
                 return true;
             return false;
         }
@@ -58,6 +64,8 @@ namespace TestAMSWF
             {
                 textBoxAccountKey.Enabled = false;
                 textBoxAccountName.Enabled = false;
+                textBoxSearchAccountKey.Enabled = false;
+                textBoxSearchAccountName.Enabled = false;
                 buttonLogin.Enabled = false;
 
                 listInputAssets.Enabled = true;
@@ -72,11 +80,19 @@ namespace TestAMSWF
                 comboBoxLanguages.Enabled = true;
                 buttonOpenSubtitle.Enabled = true;
                 buttonDisplayJobs.Enabled = true;
+
+                buttonCreateIndex.Enabled = true;
+                buttonDeleteIndex.Enabled = true;
+                buttonPopulateIndex.Enabled = true;
+                buttonSearch.Enabled = true;
+                textBoxSearch.Enabled = true;
             }
             else
             {
                 textBoxAccountKey.Enabled = true;
                 textBoxAccountName.Enabled = true;
+                textBoxSearchAccountKey.Enabled = true;
+                textBoxSearchAccountName.Enabled = true;
                 buttonLogin.Enabled = true;
 
                 listInputAssets.Enabled = false;
@@ -91,6 +107,11 @@ namespace TestAMSWF
                 comboBoxLanguages.Enabled = false;
                 buttonOpenSubtitle.Enabled = false;
                 buttonDisplayJobs.Enabled = false;
+                buttonCreateIndex.Enabled = false;
+                buttonDeleteIndex.Enabled = false;
+                buttonPopulateIndex.Enabled = false;
+                buttonSearch.Enabled = false;
+                textBoxSearch.Enabled = false;
 
             }
         }
@@ -108,13 +129,19 @@ namespace TestAMSWF
                     _context = new Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext(textBoxAccountName.Text, textBoxAccountKey.Text);
                     if (_context != null)
                     {
+                        _searchContext =  new Microsoft.Azure.Search.SearchServiceClient(textBoxSearchAccountName.Text, new Microsoft.Azure.Search.SearchCredentials(textBoxSearchAccountKey.Text));
+                        if (_searchContext != null)
+                        {
+                            _indexClient = _searchContext.Indexes.GetClient("media");
 
-                        _context.Credentials.RefreshToken();
-                        UpdateControls();
-                        PopulateInputAssets();
-                        PopulateInputFiles();
-                        PopulateOutputAssets();
-                        PopulateOutputFiles();
+
+                            _context.Credentials.RefreshToken();
+                            UpdateControls();
+                            PopulateInputAssets();
+                            PopulateInputFiles();
+                            PopulateOutputAssets();
+                            PopulateOutputFiles();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -924,7 +951,7 @@ namespace TestAMSWF
                 NumberOfConcurrentTransfers = _context.NumberOfConcurrentTransfers,
                 ParallelTransferThreadCount = _context.ParallelTransferThreadCount
             };
-
+            
             var myTask = Task.Factory.StartNew(async () =>
             {
                 bool Error = false;
@@ -952,6 +979,61 @@ namespace TestAMSWF
                     }
                 }
             }, response.token);
+        }
+        public static string GetTempFilePathWithExtension(string extension)
+        {
+            var path = System.IO.Path.GetTempPath();
+            var fileName = Guid.NewGuid().ToString() + extension;
+            return System.IO.Path.Combine(path, fileName);
+        }
+        public string GetAssetFileContent(  Microsoft.WindowsAzure.MediaServices.Client.IAsset asset, 
+                                            Microsoft.WindowsAzure.MediaServices.Client.IAssetFile File)
+        {
+            // If download is in the queue, let's wait our turn
+            //DoGridTransferWaitIfNeeded(response.Id);
+            //if (response.token.IsCancellationRequested)
+            //{
+            //    DoGridTransferDeclareCancelled(response.Id);
+            //    return;
+            //}
+            string content = string.Empty;
+            string localfile = GetTempFilePathWithExtension(".ttml");
+
+            Microsoft.WindowsAzure.MediaServices.Client.ILocator sasLocator = null;
+            var locatorTask = Task.Factory.StartNew(() =>
+            {
+                sasLocator = _context.Locators.Create(Microsoft.WindowsAzure.MediaServices.Client.LocatorType.Sas, asset, Microsoft.WindowsAzure.MediaServices.Client.AccessPermissions.Read, TimeSpan.FromHours(24));
+            });
+            locatorTask.Wait();
+            File.Download(localfile);
+
+            var myTask = Task.Factory.StartNew(() =>
+            {
+                bool Error = false;
+                try
+                {
+                    File.Download(localfile);
+                    sasLocator.Delete();
+                }
+                catch (Exception e)
+                {
+                    Error = true;
+                    TextBoxLogWriteLine(string.Format("Download of file '{0}' failed !", File.Name), true);
+                    TextBoxLogWriteLine(e);
+                }
+                if (!Error)
+                {
+                }
+            });
+            myTask.Wait();
+
+            using (System.IO.StreamReader sr = new System.IO.StreamReader(localfile))
+            {
+                // Read the stream to a string, and write the string to the console.
+                content = sr.ReadToEnd();
+            }
+            return content;
+
         }
 
         private async void buttonRemoveOutputAsset_Click(object sender, EventArgs e)
@@ -1050,6 +1132,239 @@ namespace TestAMSWF
         private void buttonDisplayJobs_Click(object sender, EventArgs e)
         {
             PopulateJobList();
+        }
+
+        public async Task<bool> DeleteSearchIndex()
+        {
+            bool result = false;
+            if (_searchContext != null)
+            {
+                var response = _searchContext.Indexes.ExistsWithHttpMessagesAsync("media");
+                if ((response != null) && (response.Status != TaskStatus.Created))
+                {
+                    if (response.Result.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        await _searchContext.Indexes.DeleteWithHttpMessagesAsync("media");
+                        _indexClient = null;
+                        result = true;
+                    }
+                }
+            }
+            return result;
+        }
+        public  bool CreateSearchIndex()
+        {
+           
+            bool result = false;
+            if (_searchContext != null)
+            {
+                var definition = new Microsoft.Azure.Search.Models.Index()
+                {
+                    Name = "media",
+                    Fields = new[]
+                    {
+                        new Microsoft.Azure.Search.Models.Field("mediaId", Microsoft.Azure.Search.Models.DataType.String)                       { IsKey = true },
+                        new Microsoft.Azure.Search.Models.Field("mediaName", Microsoft.Azure.Search.Models.DataType.String)                     { IsSearchable = true, IsFilterable = true },
+                        new Microsoft.Azure.Search.Models.Field("mediaUrl", Microsoft.Azure.Search.Models.DataType.String) { IsSearchable = true, IsFilterable = true },
+                        new Microsoft.Azure.Search.Models.Field("mediaContent", Microsoft.Azure.Search.Models.DataType.String)                     { IsSearchable = true, IsFilterable = true }
+                    }
+                };
+
+                var response = _searchContext.Indexes.CreateWithHttpMessagesAsync(definition);
+                if ((response != null) && (response.Status != TaskStatus.Created))
+                {
+                    if (response.Result.Response.StatusCode == System.Net.HttpStatusCode.Created)
+                    {
+                        _indexClient = _searchContext.Indexes.GetClient("media");
+                        result = true;
+                    }
+                }
+            }
+            return result;
+        }
+        public bool UploadTestIndex()
+        {
+
+            bool result = false;
+            if (_searchContext != null)
+            {
+                var documents = new Media[]
+                {
+                    new Media()
+                    {
+                      mediaId = "1111",
+                      mediaName = "Name1",
+                      mediaUrl = "http://media",
+                      mediaContent = "ti too  a a a toot"
+                    },
+                    new Media()
+                    {
+                      mediaId = "1112",
+                      mediaName = "Name2",
+                      mediaUrl = "http://medi2",
+                      mediaContent = "ti tiiti toot2"
+                    }
+                };
+                try
+                {
+                    var batch = Microsoft.Azure.Search.Models.IndexBatch.Upload(documents);
+                    if(_indexClient!=null)
+                        _indexClient.Documents.Index(batch);
+                    result = true;
+                }
+                catch (IndexBatchException e)
+                {
+                    // Sometimes when your Search service is under load, indexing will fail for some of the documents in
+                    // the batch. Depending on your application, you can take compensating actions like delaying and
+                    // retrying. For this simple demo, we just log the failed document keys and continue.
+                    Console.WriteLine(
+                        "Failed to index some of the documents: {0}",
+                        String.Join(", ", e.IndexingResults.Where(r => !r.Succeeded).Select(r => r.Key)));
+                }
+
+                // Wait a while for indexing to complete.
+                System.Threading.Tasks.Task.Delay(2000);
+                    result = true;
+            }
+            return result;
+        }
+        public bool UploadIndex()
+        {
+            bool result = false;
+            if ((_context != null)&&(_searchContext != null))
+            {
+                List<Media> documents = new List<Media>();
+                foreach (var asset in _context.Assets)
+                {
+                    if (!asset.Name.EndsWith("Indexed"))
+                    {
+                        foreach (var a in _context.Assets)
+                        {
+                            if (a.Name.StartsWith(asset.Name) && a.Name.EndsWith("Indexed"))
+                            {
+
+                                foreach (var file in _context.Files)
+                                {
+                                    if ((a.Id == file.Asset.Id)&&(file.Name.EndsWith(".ttml",StringComparison.OrdinalIgnoreCase)))
+                                    {
+                                        string content = GetAssetFileContent(a, file);
+                                        byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(asset.Id);
+                                        Media media = new Media()
+                                        {
+                                            mediaId = System.Convert.ToBase64String(toEncodeAsBytes),
+                                            mediaName = asset.Name,
+                                            mediaUrl = asset.Id,
+                                            mediaContent = content
+                                        };
+                                        documents.Add(media);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                try
+                {
+                    var batch = Microsoft.Azure.Search.Models.IndexBatch.Upload(documents);
+                    if (_indexClient != null)
+                        _indexClient.Documents.Index(batch);
+                    result = true;
+                }
+                catch (IndexBatchException e)
+                {
+                    // Sometimes when your Search service is under load, indexing will fail for some of the documents in
+                    // the batch. Depending on your application, you can take compensating actions like delaying and
+                    // retrying. For this simple demo, we just log the failed document keys and continue.
+                    Console.WriteLine(
+                        "Failed to index some of the documents: {0}",
+                        String.Join(", ", e.IndexingResults.Where(r => !r.Succeeded).Select(r => r.Key)));
+                }
+
+                // Wait a while for indexing to complete.
+                System.Threading.Tasks.Task.Delay(2000);
+                result = true;
+            }
+            return result;
+        }
+
+        private void buttonCreateIndex_Click(object sender, EventArgs e)
+        {
+            bool res = CreateSearchIndex();
+            if(res == true)
+                TextBoxLogWriteLine("Azure Search Index Created");
+            else
+                TextBoxLogWriteLine("Azure Search Index not Created");
+
+        }
+
+        private async void buttonDeleteIndex_Click(object sender, EventArgs e)
+        {
+            bool res = await DeleteSearchIndex();
+            if (res == true)
+                TextBoxLogWriteLine("Azure Search Index Deleted");
+            else
+                TextBoxLogWriteLine("Azure Search Index not Deleted");
+        }
+
+        private void buttonPopulateIndex_Click(object sender, EventArgs e)
+        {
+            bool res = UploadIndex();
+            if (res == true)
+                TextBoxLogWriteLine("Azure Search Index populated");
+            else
+                TextBoxLogWriteLine("Azure Search Index not populated");
+        }
+        private bool Search(string text)
+        {
+            bool result = false;
+            if (_indexClient != null)
+            {
+                DocumentSearchResult<Media> response = null;
+                try
+                {
+                    response = _indexClient.Documents.Search<Media>(text);
+                }
+                catch(Exception e)
+                {
+                    TextBoxLogWriteLine("Exception while searching media found for : " + textBoxSearch.Text + " exception: " + e.Message);
+                }
+                if ((response != null) && (response.Results.Count > 0))
+                {
+                    TextBoxLogWriteLine("Search result for : " + textBoxSearch.Text);
+                    foreach (SearchResult<Media> res in response.Results)
+                    {
+                        TextBoxLogWriteLine(res.Document.ToString());
+                    }
+                    result = true;
+                }
+                else
+                {
+                    TextBoxLogWriteLine("No media found for : " + textBoxSearch.Text);
+                }
+            }
+            return result;
+        }
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            Search(textBoxSearch.Text);
+        }
+    }
+
+    public class Media
+    {
+        public string mediaId { set; get; } 
+        public string mediaName { set; get; }
+        public string mediaUrl { set; get; }
+        public string mediaContent { set; get; }
+        public override string ToString()
+        {
+            return String.Format(
+                "ID: {0}\tName: {1}\tUrl: {2}",
+                mediaId,
+                mediaName,
+                mediaUrl);
         }
     }
     public class TransferEntryResponse
