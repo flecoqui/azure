@@ -305,13 +305,13 @@ EOF
 configure_mysql_replication() {
 if [ ${NODEID} -eq 1 ];
 then
-    mysql -u root -p"${ROOTPWD}" <<EOF
+    mysql -u root -p "${ROOTPWD}" <<EOF
 CREATE USER 'rpluser'@'%' IDENTIFIED BY '${RPLPWD}';
 GRANT REPLICATION SLAVE ON *.* TO 'rpluser'@'%';
 FLUSH PRIVILEGES;
 EOF
 else
-    mysql -u root -p"${ROOTPWD}" <<EOF
+    mysql -u root -p "${ROOTPWD}" <<EOF
 change master to master_host='${MASTERIP}', master_port=3306, master_user='rpluser', master_password='${RPLPWD}', master_auto_position=1;
 START slave;
 EOF
