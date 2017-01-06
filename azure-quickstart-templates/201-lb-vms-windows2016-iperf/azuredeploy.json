@@ -96,7 +96,6 @@
     "bePoolName": "[concat(parameters('dnsLabelPrefix'), 'bepool')]",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
-    "imageSKU": "2016-Datacenter",
     "OSDiskName": "[concat(parameters('dnsLabelPrefix'), 'osdisk')]",
     "nicName": "[concat(parameters('dnsLabelPrefix'), 'nic')]",
     "vnetAddressPrefix": "10.0.0.0/16",
@@ -559,7 +558,7 @@
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSKU')]",
+            "sku": "[parameters('osVersion')]",
             "version": "latest"
           },
           "osDisk": {
