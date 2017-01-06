@@ -9,13 +9,22 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "iperfvm"
+      "value": "iperfvmlb"
     },
     "vmSize": {
       "value": "Standard_D1_v2"
     },
     "vmCount": {
       "value": 2
+    },
+    "osVersion": {
+      "value": "2016-Datacenter"
+    },
+    "modulesUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-windows2016-iperf/iperfWebsite.zip"
+    },
+    "configurationFunction": {
+      "value": "iperfWebsite.ps1\\iperfWebsite"
     },
     "initscriptUrl": {
       "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-windows2016-iperf/install-iperf-test.ps1"

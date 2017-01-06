@@ -40,6 +40,33 @@
         4
       ]
     },
+    "osVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Version - Image SKU"
+      },
+      "defaultValue": "2016-Datacenter",
+      "allowedValues": [
+        "2008-R2-SP1",
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
+      ]
+    },
+    "modulesUrl": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-windows2016-iperf/iperfWebSite.zip",
+      "metadata": {
+        "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
+      }
+    },
+    "configurationFunction": {
+      "type": "string",
+      "defaultValue": "iperfWebsite.ps1\\iperfWebsite",
+      "metadata": {
+        "description": "DSC configuration function to call"
+      }
+    },
     "initscriptUrl": {
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-windows2016-iperf/install-iperf-test.ps1"
@@ -63,18 +90,13 @@
     "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
     "lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName'))]",
     "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
-    "lbPoolID": "[concat(variables('lbID'),'/backendAddressPools/BackendPool1')]",
+    "lbPoolID": "[concat(variables('lbID'),'/backendAddressPools/', variables('bePoolName'))]",
     "lbProbeID": "[concat(variables('lbID'),'/probes/tcpProbe')]",
     "natPoolName": "[concat(parameters('dnsLabelPrefix'), 'natpool')]",
     "bePoolName": "[concat(parameters('dnsLabelPrefix'), 'bepool')]",
-    "natStartPort": 50000,
-    "natEndPort": 50119,
-    "natBackendPort": 22,
-
-
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
-    "imageSKU": "2016-Datacenter-Server-Core",
+    "imageSKU": "2016-Datacenter",
     "OSDiskName": "[concat(parameters('dnsLabelPrefix'), 'osdisk')]",
     "nicName": "[concat(parameters('dnsLabelPrefix'), 'nic')]",
     "vnetAddressPrefix": "10.0.0.0/16",
@@ -192,6 +214,102 @@
               "protocol": "tcp",
               "frontendPort": 50003,
               "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperftcp0",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 52000,
+              "backendPort": 5201,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperftcp1",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 52001,
+              "backendPort": 5201,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperftcp2",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 52002,
+              "backendPort": 5201,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperftcp3",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 52003,
+              "backendPort": 5201,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperfudp0",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "udp",
+              "frontendPort": 52000,
+              "backendPort": 5201,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperfudp1",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "udp",
+              "frontendPort": 52001,
+              "backendPort": 5201,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperfudp2",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "udp",
+              "frontendPort": 52002,
+              "backendPort": 5201,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "iperfudp3",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "udp",
+              "frontendPort": 52003,
+              "backendPort": 5201,
               "enableFloatingIP": false
             }
           }
@@ -344,7 +462,8 @@
       "name": "[variables('virtualNetworkName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
+        "[concat('Microsoft.Network/loadBalancers/',variables('loadBalancerName'))]"
       ],
       "properties": {
         "addressSpace": {
@@ -390,12 +509,18 @@
               },
               "loadBalancerBackendAddressPools": [
                 {
-                  "id": "[concat(variables('lbID'), '/backendAddressPools/BackendPool1')]"
+                  "id": "[concat(variables('lbID'), '/backendAddressPools/',variables('bePoolName'))]"
                 }
               ],
               "loadBalancerInboundNatRules": [
                 {
                   "id": "[concat(variables('lbID'),'/inboundNatRules/rdp', copyindex())]"
+                },
+                {
+                  "id": "[concat(variables('lbID'),'/inboundNatRules/iperftcp', copyindex())]"
+                },
+                {
+                  "id": "[concat(variables('lbID'),'/inboundNatRules/iperfudp', copyindex())]"
                 }
               ]
             }
@@ -471,55 +596,83 @@
             "storageUri": "[concat('http://',variables('storageAccountName'),copyindex(),'.blob.core.windows.net')]"
           }
         }
+      }
+
+    },
+    {
+      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), 'init')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('apiVersion')]",
+      "tags": {
+        "displayName": "[concat(parameters('dnsLabelPrefix'), copyindex(), 'init')]"
       },
-      "resources": [
-        {
-          "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), '/extension')]",
-          "type": "extensions",
-          "location": "[resourceGroup().location]",
-          "apiVersion": "[variables('apiVersion')]",
-          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelPrefix'), copyindex())]"
+      "copy": {
+        "name": "vmextensionloop",
+        "count": "[parameters('vmCount')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelPrefix'), copyindex())]"
+      ],
+
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.7",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[parameters('initscriptUrl')]"
           ],
-          "tags": {
-            "displayName": "init"
-          },
-          "properties": {
-            "publisher": "Microsoft.Compute",
-            "type": "CustomScriptExtension",
-            "typeHandlerVersion": "1.7",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "fileUris": [
-                "[parameters('initscriptUrl')]"
-              ],
-              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]"
-            }
-          }
-        }
-      ]
-    }
-  ],
-      "outputs": {
-        "hostname": {
-          "type": "string",
-          "value": "[concat(parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
-        },
-        "setItemCommand": {
-          "type": "string",
-          "value": "[concat('Set-Item WSMan:\\localhost\\Client\\TrustedHosts ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
-        },
-        "enterPSSessionCommand": {
-          "type": "string",
-          "value": "[concat('Enter-PSSession -ComputerName  \"', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com', '\"  -Credential ', parameters('adminUsername') )]"
-        },
-        "httpClient": {
-          "type": "string",
-          "value": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
-        },
-        "iperf3client": {
-          "type": "string",
-          "value": "[concat('iperf3 -c ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com -p 5201 --parallel 32') ]"
+          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]"
         }
       }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), 'dsc')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmextensionloop",
+        "count": "[parameters('vmCount')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelPrefix'), copyindex())]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.19",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "modulesUrl": "[parameters('modulesUrl')]",
+          "configurationFunction": "[parameters('configurationFunction')]",
+          "Properties": {
+            "MachineName": "[variables('vmName')]"
+          }
+        },
+        "protectedSettings": null
+      }
     }
+
+  ],
+  "outputs": {
+    "hostname": {
+      "type": "string",
+      "value": "[concat(parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+    },
+    "mstscCommand": {
+      "type": "string",
+      "value": "[concat('mstsc /admin /v:', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com:5000X')]"
+    },
+    "httpClient": {
+      "type": "string",
+      "value": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+    },
+    "iperf3client": {
+      "type": "string",
+      "value": "[concat('iperf3 -c ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com -p 5200X --parallel 32') ]"
+    }
+  }
+  }
