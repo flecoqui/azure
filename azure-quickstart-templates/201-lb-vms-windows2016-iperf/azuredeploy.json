@@ -1,0 +1,525 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "User name for the Virtual Machine."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "dnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine. DNS name: <dnsLabelPrefix>.<Region>.cloudapp.azure.com"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Size"
+      },
+      "defaultValue": "Standard_A1"
+    },
+    "vmCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VMs"
+      },
+      "defaultValue": 2,
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "initscriptUrl": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-windows2016-iperf/install-iperf-test.ps1"
+    },
+    "initScriptFileName": {
+      "type": "string",
+      "metadata": {
+        "description": "powershell.exe -ExecutionPolicy Unrestricted -File [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      },
+      "defaultValue": "install-iperf-test.ps1"
+    }
+  },
+  "variables": {
+    "storageAccountName": "[concat(parameters('dnsLabelPrefix'), 'storage')]",
+    "vmAvailabilitySetName": "[concat(parameters('dnsLabelPrefix'), 'avset')]",
+    "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'), 'nsg')]",
+    "dataDisk1VhdName": "[concat(parameters('dnsLabelPrefix'), 'datadisk')]",
+    "publicIPAddressName": "[concat(parameters('dnsLabelPrefix'), 'pip')]",
+    "publicIPAddressType": "Dynamic",
+    "loadBalancerName": "[concat(parameters('dnsLabelPrefix'), 'lb')]",
+    "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
+    "lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName'))]",
+    "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
+    "lbPoolID": "[concat(variables('lbID'),'/backendAddressPools/BackendPool1')]",
+    "lbProbeID": "[concat(variables('lbID'),'/probes/tcpProbe')]",
+    "natPoolName": "[concat(parameters('dnsLabelPrefix'), 'natpool')]",
+    "bePoolName": "[concat(parameters('dnsLabelPrefix'), 'bepool')]",
+    "natStartPort": 50000,
+    "natEndPort": 50119,
+    "natBackendPort": 22,
+
+
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageOffer": "WindowsServer",
+    "imageSKU": "2016-Datacenter-Server-Core",
+    "OSDiskName": "[concat(parameters('dnsLabelPrefix'), 'osdisk')]",
+    "nicName": "[concat(parameters('dnsLabelPrefix'), 'nic')]",
+    "vnetAddressPrefix": "10.0.0.0/16",
+    "subnetName": "[concat(parameters('dnsLabelPrefix'), 'subnet')]",
+    "subnetAddressPrefix": "10.0.0.0/24",
+    "vmIPPrefix": "10.0.0.1",
+    "storageAccountType": "Standard_LRS",
+    "vmStorageAccountContainerName": "vhds",
+    "vmName": "[concat(parameters('dnsLabelPrefix'), 'vm')]",
+    "virtualNetworkName": "[concat(parameters('dnsLabelPrefix'), 'vnet')]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+    "apiVersion": "2015-06-15"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[concat(variables('storageAccountName'), copyIndex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmstorageloop",
+        "count": "[parameters('vmCount')]"
+      },
+      "properties": {
+        "accountType": "Standard_LRS"
+      }
+    },
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('vmAvailabilitySetName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[resourceGroup().location]",
+      "properties": {}
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/loadBalancers",
+      "name": "[variables('loadBalancerName')]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('apiVersion')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "LoadBalancerFrontEnd",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[variables('publicIPAddressID')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('bePoolName')]"
+          }
+        ],
+        "inboundNatRules": [
+          {
+            "name": "rdp0",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 50000,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "rdp1",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 50001,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "rdp2",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 50002,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "rdp3",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 50003,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "LBRule",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "backendAddressPool": {
+                "id": "[variables('lbPoolID')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 80,
+              "backendPort": 80,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 10,
+              "probe": {
+                "id": "[variables('lbProbeID')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "tcpProbe",
+            "properties": {
+              "protocol": "Tcp",
+              "port": 80,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "RDP",
+            "properties": {
+              "description": "RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "http",
+            "properties": {
+              "description": "http server port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "https",
+            "properties": {
+              "description": "https server port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "winrm1",
+            "properties": {
+              "description": "winrm1 server port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5985",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "winrm2",
+            "properties": {
+              "description": "winrm2 server port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5986",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 104,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "iperf3-udp",
+            "properties": {
+              "description": "iperf3 udp port",
+              "protocol": "Udp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5201",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 105,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "iperf3-tcp",
+            "properties": {
+              "description": "iperf3 tcp port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5201",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 106,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('vnetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetAddressPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('nicName'), copyindex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmnicloop",
+        "count": "[parameters('vmCount')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[concat(variables('vmIPPrefix'), copyindex())]",
+              "subnet": {
+                "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(variables('lbID'), '/backendAddressPools/BackendPool1')]"
+                }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[concat(variables('lbID'),'/inboundNatRules/rdp', copyindex())]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(parameters('dnsLabelPrefix'), copyindex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmloop",
+        "count": "[parameters('vmCount')]"
+      },
+      "dependsOn": [
+        "vmstorageloop",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "vmnicloop",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('vmAvailabilitySetName'))]"
+      ],
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('vmAvailabilitySetName'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat('http://',variables('storageAccountName'),copyindex(),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),copyIndex(),'.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "name": "datadisk1",
+              "diskSizeGB": "100",
+              "lun": 0,
+              "vhd": {
+                "uri": "[concat('http://',variables('storageAccountName'),copyindex(),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('dataDisk1VhdName'),copyIndex(),'.vhd')]"
+              },
+              "createOption": "Empty"
+            }
+          ]
+        },
+
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), copyindex()))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "true",
+            "storageUri": "[concat('http://',variables('storageAccountName'),copyindex(),'.blob.core.windows.net')]"
+          }
+        }
+      },
+      "resources": [
+        {
+          "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), '/extension')]",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "[variables('apiVersion')]",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelPrefix'), copyindex())]"
+          ],
+          "tags": {
+            "displayName": "init"
+          },
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.7",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": [
+                "[parameters('initscriptUrl')]"
+              ],
+              "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]"
+            }
+          }
+        }
+      ]
+    }
+  ],
+      "outputs": {
+        "hostname": {
+          "type": "string",
+          "value": "[concat(parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+        },
+        "setItemCommand": {
+          "type": "string",
+          "value": "[concat('Set-Item WSMan:\\localhost\\Client\\TrustedHosts ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+        },
+        "enterPSSessionCommand": {
+          "type": "string",
+          "value": "[concat('Enter-PSSession -ComputerName  \"', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com', '\"  -Credential ', parameters('adminUsername') )]"
+        },
+        "httpClient": {
+          "type": "string",
+          "value": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+        },
+        "iperf3client": {
+          "type": "string",
+          "value": "[concat('iperf3 -c ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com -p 5201 --parallel 32') ]"
+        }
+      }
+    }
