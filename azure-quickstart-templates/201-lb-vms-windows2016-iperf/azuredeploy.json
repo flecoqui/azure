@@ -599,7 +599,7 @@
 
     },
     {
-      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), 'init')]",
+      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), '/init')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('apiVersion')]",
@@ -607,7 +607,7 @@
         "displayName": "[concat(parameters('dnsLabelPrefix'), copyindex(), 'init')]"
       },
       "copy": {
-        "name": "vmextensionloop",
+        "name": "vminitloop",
         "count": "[parameters('vmCount')]"
       },
       "dependsOn": [
@@ -629,11 +629,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), 'dsc')]",
+      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), '/dsc')]",
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "vmextensionloop",
+        "name": "vmdscloop",
         "count": "[parameters('vmCount')]"
       },
       "dependsOn": [
