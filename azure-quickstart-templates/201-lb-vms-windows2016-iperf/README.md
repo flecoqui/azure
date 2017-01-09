@@ -8,9 +8,9 @@
 </a>
 
 
-This template allows you to deploy up-to 4 Windows Server 2012/2016 VMs running IIS and iPerf3 behind a load balancer, using the latest patched version. This will deploy the VMs and the Load Balancer in the region associated with Resource Group.
-The parameters are:
-vmSize: 
+This template allows you to deploy up-to 4 Windows Server 2012/2016 VMs running IIS and iPerf3 behind a load balancer, using the latest patched version. This will deploy the VMs and the Load Balancer in the region associated with Resource Group.</p>
+The parameters are:</p>
+vmSize (Standard_AX, Standard_DX, Standard_DX_v2, Standard_FX, ...) : 
 
     "vmSize": {
       "type": "string",
