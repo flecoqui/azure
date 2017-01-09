@@ -8,8 +8,70 @@
 </a>
 
 
-This template allows you to deploy up-to 4 Windows Server 2012/2016 VMs running IIS and iPerf3 behind a load balancer, using the latest patched version. This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.
-With Azure CLI you can deploy this VM with 2 command lines:
+This template allows you to deploy up-to 4 Windows Server 2012/2016 VMs running IIS and iPerf3 behind a load balancer, using the latest patched version. This will deploy the VMs and the Load Balancer in the region associated with Resource Group.
+The parameters are:
+vmSize: 
+
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Size"
+      },
+      "defaultValue": "Standard_A1"
+    },
+
+vmCount (from 1 to 4): 
+
+    "vmCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VMs"
+      },
+      "defaultValue": 2,
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+
+osVersion (Windows 2008 R2, 2012, 2012 R2, 2016):
+
+    "osVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Version - Image SKU"
+      },
+      "defaultValue": "2016-Datacenter",
+      "allowedValues": [
+        "2008-R2-SP1",
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
+      ]
+    },
+
+The Load Balancer is configured to forward the following port:
+RDP
+Load Balancer Public IP Address : port tcp 50000   ->   VM0 port tcp 3389
+Load Balancer Public IP Address : port tcp 50001   ->   VM1 port tcp 3389
+Load Balancer Public IP Address : port tcp 50002   ->   VM2 port tcp 3389
+Load Balancer Public IP Address : port tcp 50003   ->   VM3 port tcp 3389
+
+iPerf TCP
+Load Balancer Public IP Address : port tcp 52000   ->   VM0 port tcp 5201
+Load Balancer Public IP Address : port tcp 52001   ->   VM1 port tcp 5201
+Load Balancer Public IP Address : port tcp 52002   ->   VM2 port tcp 5201
+Load Balancer Public IP Address : port tcp 52003   ->   VM3 port tcp 5201
+
+iPerf UDP
+Load Balancer Public IP Address : port tcp 52000   ->   VM0 port udp 5201
+Load Balancer Public IP Address : port tcp 52001   ->   VM1 port udp 5201
+Load Balancer Public IP Address : port tcp 52002   ->   VM2 port udp 5201
+Load Balancer Public IP Address : port tcp 52003   ->   VM3 port udp 5201
+
+With Azure CLI you can deploy these VMs and the Load Balancer with 2 following command lines:
 
 ##CREATE RESOURCE GROUP:
 azure group create "ResourceGroupName" "DataCenterName"
