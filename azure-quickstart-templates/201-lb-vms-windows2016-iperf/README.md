@@ -52,20 +52,20 @@ osVersion (Windows 2008 R2, 2012, 2012 R2, 2016):
       ]
     },
 
-The Load Balancer is configured to forward the following port:
-RDP
+The Load Balancer is configured to forward the following ports:
+###RDP TCP 3389
 Load Balancer Public IP Address : port tcp 50000   ->   VM0 port tcp 3389
 Load Balancer Public IP Address : port tcp 50001   ->   VM1 port tcp 3389
 Load Balancer Public IP Address : port tcp 50002   ->   VM2 port tcp 3389
 Load Balancer Public IP Address : port tcp 50003   ->   VM3 port tcp 3389
 
-iPerf TCP
+###iPerf TCP
 Load Balancer Public IP Address : port tcp 52000   ->   VM0 port tcp 5201
 Load Balancer Public IP Address : port tcp 52001   ->   VM1 port tcp 5201
 Load Balancer Public IP Address : port tcp 52002   ->   VM2 port tcp 5201
 Load Balancer Public IP Address : port tcp 52003   ->   VM3 port tcp 5201
 
-iPerf UDP
+###iPerf UDP
 Load Balancer Public IP Address : port tcp 52000   ->   VM0 port udp 5201
 Load Balancer Public IP Address : port tcp 52001   ->   VM1 port udp 5201
 Load Balancer Public IP Address : port tcp 52002   ->   VM2 port udp 5201
