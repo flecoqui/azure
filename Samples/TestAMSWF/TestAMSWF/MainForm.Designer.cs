@@ -62,6 +62,7 @@
             this.buttonPopulateIndex = new System.Windows.Forms.Button();
             this.buttonSearch = new System.Windows.Forms.Button();
             this.textBoxSearch = new System.Windows.Forms.TextBox();
+            this.buttonPlaySubtitle = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxJob)).BeginInit();
             this.SuspendLayout();
             // 
@@ -241,7 +242,7 @@
             // 
             this.buttonDonwloadSubtitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonDonwloadSubtitle.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonDonwloadSubtitle.Location = new System.Drawing.Point(518, 287);
+            this.buttonDonwloadSubtitle.Location = new System.Drawing.Point(504, 287);
             this.buttonDonwloadSubtitle.Name = "buttonDonwloadSubtitle";
             this.buttonDonwloadSubtitle.Size = new System.Drawing.Size(116, 27);
             this.buttonDonwloadSubtitle.TabIndex = 55;
@@ -289,7 +290,7 @@
             this.buttonOpenSubtitle.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.buttonOpenSubtitle.Location = new System.Drawing.Point(394, 287);
             this.buttonOpenSubtitle.Name = "buttonOpenSubtitle";
-            this.buttonOpenSubtitle.Size = new System.Drawing.Size(116, 27);
+            this.buttonOpenSubtitle.Size = new System.Drawing.Size(102, 27);
             this.buttonOpenSubtitle.TabIndex = 61;
             this.buttonOpenSubtitle.Text = "Open Subtitle";
             this.buttonOpenSubtitle.UseVisualStyleBackColor = true;
@@ -401,11 +402,24 @@
             this.textBoxSearch.Size = new System.Drawing.Size(283, 20);
             this.textBoxSearch.TabIndex = 71;
             // 
+            // buttonPlaySubtitle
+            // 
+            this.buttonPlaySubtitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPlaySubtitle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.buttonPlaySubtitle.Location = new System.Drawing.Point(626, 287);
+            this.buttonPlaySubtitle.Name = "buttonPlaySubtitle";
+            this.buttonPlaySubtitle.Size = new System.Drawing.Size(116, 27);
+            this.buttonPlaySubtitle.TabIndex = 72;
+            this.buttonPlaySubtitle.Text = "Play Subtitle";
+            this.buttonPlaySubtitle.UseVisualStyleBackColor = true;
+            this.buttonPlaySubtitle.Click += new System.EventHandler(this.buttonPlaySubtitle_Click_1);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(758, 714);
+            this.Controls.Add(this.buttonPlaySubtitle);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.buttonSearch);
             this.Controls.Add(this.buttonPopulateIndex);
@@ -482,6 +496,7 @@
         private System.Windows.Forms.Button buttonPopulateIndex;
         private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.TextBox textBoxSearch;
+        private System.Windows.Forms.Button buttonPlaySubtitle;
     }
 }
 

@@ -848,6 +848,38 @@ namespace TestAMSWF
             }
             return Selection;
         }
+        private List<IAssetFile> ReturnSelectedInputAssetFiles()
+        {
+            List<IAssetFile> Selection = new List<IAssetFile>();
+            string assetID = string.Empty;
+            string fileName = string.Empty;
+
+            string s = listInputFiles.SelectedItem as string;
+            if (!string.IsNullOrEmpty(s))
+            {
+                int pos = s.IndexOf("FILE: ");
+                if (pos >= 0)
+                {
+                    int end = s.IndexOf(" ASSET-ID ");
+                    if (end > 0)
+                    {
+                        fileName = s.Substring(pos + 6, end - pos - 6);
+                        fileName.Trim();
+                        assetID = s.Substring(end + 10, s.Length - end - 10);
+                        assetID.Trim();
+                        foreach (var file in _context.Files)
+                        {
+                            if ((assetID == file.Asset.Id) && (fileName == file.Name))
+                            {
+                                Selection.Add(file);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return Selection;
+        }
         private IAsset ReturnAsset(IAssetFile file)
         {
             foreach (var asset in _context.Assets)
@@ -940,6 +972,7 @@ namespace TestAMSWF
             Microsoft.WindowsAzure.MediaServices.Client.ILocator sasLocator = null;
             var locatorTask = Task.Factory.StartNew(() =>
             {
+                
                 sasLocator = _context.Locators.Create(Microsoft.WindowsAzure.MediaServices.Client.LocatorType.Sas, asset, Microsoft.WindowsAzure.MediaServices.Client.AccessPermissions.Read, TimeSpan.FromHours(24));
             });
             locatorTask.Wait();
@@ -957,6 +990,7 @@ namespace TestAMSWF
                 bool Error = false;
                 try
                 {
+                    TextBoxLogWriteLine("Downloading from SASLocator: " + sasLocator.Path.ToString());
                     await File.DownloadAsync(System.IO.Path.Combine(folder as string, File.Name), blobTransferClient, sasLocator, response.token);
                     sasLocator.Delete();
                 }
@@ -1061,7 +1095,22 @@ namespace TestAMSWF
         public IAsset tempAsset = null;
         private ILocator GetTemporaryLocator(IAsset asset)
         {
-            if((tempAsset!=null) &&(tempAsset.Id != asset.Id)&& (tempLocator != null))
+            foreach (var loc in _context.Locators)
+            {
+                    if (loc.AssetId == asset.Id)
+                    {
+                        if (loc.ExpirationDateTime > DateTime.Now)
+                            return loc;
+                        else
+                        {
+                            tempLocator = loc;
+                            tempAsset = loc.Asset;
+                            break;
+                        }
+                    }
+            }
+
+            if ((tempAsset!=null) && (tempLocator != null))
 //            if (tempLocator != null)
             {
                 try
@@ -1088,21 +1137,84 @@ namespace TestAMSWF
             }
             if (tempLocator == null) // no temp locator, let's create it
             {
+                var locatorTask = Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        tempLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(1));
+                        tempAsset = asset;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error when creating the temporary SAS locator." + ex.Message);
+                        tempAsset = null;
+                    }
+                });
+                locatorTask.Wait();
+            }
+            return tempLocator;
+        }
+        public ILocator tempInputLocator = null;
+        public IAsset tempInputAsset = null;
+        private ILocator GetTemporaryInputLocator(IAsset asset)
+        {
+            foreach(var loc in _context.Locators)
+            {
+                if (loc.AssetId == asset.Id)
+                {
+                    if(loc.ExpirationDateTime > DateTime.Now)
+                        return loc;
+                    else
+                    {
+                        tempInputLocator = loc;
+                        tempInputAsset = loc.Asset;
+                        break;
+                    }
+                }
+            }
+            if ((tempInputAsset != null) && (tempInputLocator != null))
+            //            if (tempLocator != null)
+            {
                 try
                 {
                     var locatorTask = Task.Factory.StartNew(() =>
                     {
-                        tempLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(1));
-                        tempAsset = asset;
+                        try
+                        {
+                            tempInputLocator.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Exception when creating the temporary SAS locator." + ex.Message);
+                        }
                     });
                     locatorTask.Wait();
+                    locatorTask.Wait(1000);
+                    tempInputLocator = null;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show("Error when creating the temporary SAS locator." + ex.Message);
+
                 }
             }
-            return tempLocator;
+            if (tempInputLocator == null) // no temp locator, let's create it
+            {
+                var locatorTask = Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        tempInputLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(1));
+                        tempInputAsset = asset;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error when creating the temporary SAS locator." + ex.Message);
+                        tempInputAsset = null;
+                    }
+                });
+                locatorTask.Wait();
+            }
+            return tempInputLocator;
         }
         private void buttonOpenSubtitle_Click(object sender, EventArgs e)
         {
@@ -1349,6 +1461,82 @@ namespace TestAMSWF
         private void buttonSearch_Click(object sender, EventArgs e)
         {
             Search(textBoxSearch.Text);
+        }
+
+        public static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+        private string GetDuplicateUri(IAssetFile SelectedAssetFile)
+        {
+            string res = string.Empty;
+            if (SelectedAssetFile != null)
+            {
+                try
+                {
+                    Microsoft.WindowsAzure.Storage.CloudStorageAccount storageAccount;
+                    storageAccount = new Microsoft.WindowsAzure.Storage.CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(_context.DefaultStorageAccount.Name, "06KUYkR81KFZDpmSw8NvArrXwW/qW3gW9J5Yt6hSEeadkt9+vhAZw3rirYVcfR84tTAGs4yWUGnZ/lNLkg2tEQ=="),true);
+                    var cloudBlobClient = storageAccount.CreateCloudBlobClient();
+                    string containerName = "asset-" + SelectedAssetFile.Asset.Id.Replace("nb:cid:UUID:","");
+                    Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer sourceContainer = cloudBlobClient.GetContainerReference(containerName);
+                    Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer targetContainer = cloudBlobClient.GetContainerReference("test");
+                    string blobName = SelectedAssetFile.Name;
+                    Microsoft.WindowsAzure.Storage.Blob.CloudBlockBlob sourceBlob = sourceContainer.GetBlockBlobReference(blobName);
+                    Microsoft.WindowsAzure.Storage.Blob.CloudBlockBlob targetBlob = targetContainer.GetBlockBlobReference(blobName);
+                    targetBlob.DeleteIfExists();
+                    targetBlob.StartCopyFromBlob(sourceBlob);
+
+                    while (targetBlob.CopyState.Status == Microsoft.WindowsAzure.Storage.Blob.CopyStatus.Pending)
+                    {
+                        Task.Delay(TimeSpan.FromSeconds(1d)).Wait();
+                        targetBlob.FetchAttributes();
+                    }
+                    res = targetBlob.SnapshotQualifiedUri.ToString().Replace("https://","http://");
+                }
+                catch
+                {
+                    MessageBox.Show("Error when duplicating this file");
+                }
+            }
+            return res;
+        }
+
+        private void buttonPlaySubtitle_Click_1(object sender, EventArgs e)
+        {
+         //   http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?
+
+            var SelectedAssetFiles = ReturnSelectedAssetFiles();
+            var SelectedInputAssetFiles = ReturnSelectedInputAssetFiles();
+            if ((SelectedAssetFiles.Count > 0)&& (SelectedInputAssetFiles.Count > 0))
+            {
+                var af = SelectedAssetFiles.FirstOrDefault();
+                string destUri = GetDuplicateUri(af);
+                var inputaf = SelectedInputAssetFiles.FirstOrDefault();
+                ILocator locator = GetTemporaryLocator(af.Asset);
+                ILocator Inputlocator = GetTemporaryInputLocator(inputaf.Asset);
+                if ((locator != null)&& (Inputlocator != null))
+                {
+                    try
+                    {
+                        foreach (var assetfile in SelectedAssetFiles)
+                        {
+                            TextBoxLogWriteLine("Url for TTML file: " + destUri);
+                            string ttmlencoded = Base64Encode(destUri);
+                            TextBoxLogWriteLine("Url for MP3 file: " + inputaf.GetSasUri(Inputlocator).ToString());
+                            string mp3encoded = Base64Encode(inputaf.GetSasUri(Inputlocator).ToString());
+                            string uri = "http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?audiourl=" + mp3encoded + "&ttmlurl=" + ttmlencoded;
+                            TextBoxLogWriteLine("Url for player: " + uri);
+                            System.Diagnostics.Process.Start(uri);
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error when accessing temporary SAS locator");
+                    }
+                }
+            }
+
         }
     }
 
