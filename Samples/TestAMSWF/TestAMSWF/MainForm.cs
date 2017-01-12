@@ -247,15 +247,15 @@ namespace TestAMSWF
                 PopulateInputFiles();
                 PopulateOutputAssets();
                 PopulateOutputFiles();
-                listOutputAssets.SelectedIndex = 0;
-                listOutputFiles.SelectedIndex = 0;
-                listInputFiles.SelectedIndex = 0;
+                if(listOutputAssets.Items.Count>0)listOutputAssets.SelectedIndex = 0;
+                if (listOutputFiles.Items.Count > 0) listOutputFiles.SelectedIndex = 0;
+                if (listInputFiles.Items.Count > 0) listInputFiles.SelectedIndex = 0;
             }
         }
         void PopulateInputFiles()
         {
             string id = "";
-            string s = listInputAssets.SelectedItem as string;
+            string s = (listInputAssets.Items.Count>0 ? listInputAssets.SelectedItem as string :string.Empty);
             if (!string.IsNullOrEmpty(s))
             {
                 int pos = s.IndexOf(" ASSET-ID ");
@@ -267,7 +267,7 @@ namespace TestAMSWF
         void PopulateOutputFiles()
         {
             string id = "";
-            string s = listOutputAssets.SelectedItem as string;
+            string s = (listOutputAssets.Items.Count>0 ? listOutputAssets.SelectedItem as string: string.Empty);
             if (string.IsNullOrEmpty(s))
             {
                 if (listOutputAssets.Items.Count == 1)
@@ -284,7 +284,7 @@ namespace TestAMSWF
         void PopulateOutputAssets()
         {
             string id = "";
-            string s = listInputAssets.SelectedItem as string;
+            string s = (listInputAssets.Items.Count>0 ?listInputAssets.SelectedItem as string:string.Empty);
             if (!string.IsNullOrEmpty(s))
             {
                 int pos = s.IndexOf(" ASSET-ID ");
@@ -457,7 +457,7 @@ namespace TestAMSWF
         private async void buttonRemoveAsset_Click(object sender, EventArgs e)
         {
             string id = "";
-            string s = listInputAssets.SelectedItem as string;
+            string s = (listInputAssets.Items.Count>0?listInputAssets.SelectedItem as string:string.Empty);
             if (!string.IsNullOrEmpty(s))
             {
                 using (new CursorHandler())
@@ -499,7 +499,7 @@ namespace TestAMSWF
         {
             List<Microsoft.WindowsAzure.MediaServices.Client.IAsset> list = new List<Microsoft.WindowsAzure.MediaServices.Client.IAsset>();
             string id = "";
-            string s = listInputAssets.SelectedItem as string;
+            string s = (listInputAssets.Items.Count>0? listInputAssets.SelectedItem as string:string.Empty);
             if (!string.IsNullOrEmpty(s))
             {
                 int pos = s.IndexOf(" ASSET-ID ");
@@ -816,7 +816,7 @@ namespace TestAMSWF
                     //new Item("Arabic (Egyptian)", "ArEg"),
                     //new Item("Japanese", "JaJp")
                     string language = "FrFr";
-                    Item item = comboBoxLanguages.SelectedItem as Item;
+                    Item item = (comboBoxLanguages.Items.Count>0?comboBoxLanguages.SelectedItem as Item:null);
                     if (item != null)
                         language = item.Value;
                     if (string.IsNullOrEmpty(language))
@@ -852,7 +852,7 @@ namespace TestAMSWF
             string assetID = string.Empty;
             string fileName = string.Empty;
 
-            string s = listOutputFiles.SelectedItem as string;
+            string s = (listOutputFiles.Items.Count>0? listOutputFiles.SelectedItem as string:string.Empty);
             if (!string.IsNullOrEmpty(s))
             {
                 int pos = s.IndexOf("FILE: ");
@@ -884,7 +884,7 @@ namespace TestAMSWF
             string assetID = string.Empty;
             string fileName = string.Empty;
 
-            string s = listInputFiles.SelectedItem as string;
+            string s = (listInputFiles.Items.Count>0? listInputFiles.SelectedItem as string:string.Empty);
             if (!string.IsNullOrEmpty(s))
             {
                 int pos = s.IndexOf("FILE: ");
@@ -1104,7 +1104,7 @@ namespace TestAMSWF
         private async void buttonRemoveOutputAsset_Click(object sender, EventArgs e)
         {
             string id = "";
-            string s = listOutputAssets.SelectedItem as string;
+            string s = (listOutputAssets.Items.Count>0? listOutputAssets.SelectedItem as string:string.Empty);
             if (!string.IsNullOrEmpty(s))
             {
                 using (new CursorHandler())
