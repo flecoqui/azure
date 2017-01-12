@@ -63,6 +63,12 @@
             this.buttonSearch = new System.Windows.Forms.Button();
             this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.buttonPlaySubtitle = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBoxStorageAccountKey = new System.Windows.Forms.TextBox();
+            this.textBoxStorageAccountName = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBoxStorageContainerName = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxJob)).BeginInit();
             this.SuspendLayout();
             // 
@@ -72,7 +78,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxAccountKey.Location = new System.Drawing.Point(15, 74);
             this.textBoxAccountKey.Name = "textBoxAccountKey";
-            this.textBoxAccountKey.Size = new System.Drawing.Size(194, 20);
+            this.textBoxAccountKey.Size = new System.Drawing.Size(154, 20);
             this.textBoxAccountKey.TabIndex = 34;
             this.textBoxAccountKey.UseSystemPasswordChar = true;
             // 
@@ -91,7 +97,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxAccountName.Location = new System.Drawing.Point(15, 35);
             this.textBoxAccountName.Name = "textBoxAccountName";
-            this.textBoxAccountName.Size = new System.Drawing.Size(194, 20);
+            this.textBoxAccountName.Size = new System.Drawing.Size(154, 20);
             this.textBoxAccountName.TabIndex = 33;
             // 
             // label1
@@ -107,7 +113,7 @@
             // 
             this.buttonLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonLogin.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonLogin.Location = new System.Drawing.Point(444, 28);
+            this.buttonLogin.Location = new System.Drawing.Point(531, 25);
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.Size = new System.Drawing.Size(105, 27);
             this.buttonLogin.TabIndex = 37;
@@ -312,25 +318,25 @@
             // 
             this.textBoxSearchAccountName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSearchAccountName.Location = new System.Drawing.Point(227, 35);
+            this.textBoxSearchAccountName.Location = new System.Drawing.Point(175, 35);
             this.textBoxSearchAccountName.Name = "textBoxSearchAccountName";
-            this.textBoxSearchAccountName.Size = new System.Drawing.Size(194, 20);
+            this.textBoxSearchAccountName.Size = new System.Drawing.Size(148, 20);
             this.textBoxSearchAccountName.TabIndex = 63;
             // 
             // textBoxSearchAccountKey
             // 
             this.textBoxSearchAccountKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSearchAccountKey.Location = new System.Drawing.Point(227, 74);
+            this.textBoxSearchAccountKey.Location = new System.Drawing.Point(175, 74);
             this.textBoxSearchAccountKey.Name = "textBoxSearchAccountKey";
-            this.textBoxSearchAccountKey.Size = new System.Drawing.Size(194, 20);
+            this.textBoxSearchAccountKey.Size = new System.Drawing.Size(148, 20);
             this.textBoxSearchAccountKey.TabIndex = 64;
             this.textBoxSearchAccountKey.UseSystemPasswordChar = true;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(224, 19);
+            this.label9.Location = new System.Drawing.Point(172, 19);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(115, 13);
             this.label9.TabIndex = 65;
@@ -339,7 +345,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(224, 58);
+            this.label10.Location = new System.Drawing.Point(172, 58);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(105, 13);
             this.label10.TabIndex = 66;
@@ -414,11 +420,72 @@
             this.buttonPlaySubtitle.UseVisualStyleBackColor = true;
             this.buttonPlaySubtitle.Click += new System.EventHandler(this.buttonPlaySubtitle_Click_1);
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(329, 58);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(108, 13);
+            this.label11.TabIndex = 76;
+            this.label11.Text = "Storage Account Key";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(329, 19);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(118, 13);
+            this.label12.TabIndex = 75;
+            this.label12.Text = "Storage Account Name";
+            // 
+            // textBoxStorageAccountKey
+            // 
+            this.textBoxStorageAccountKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxStorageAccountKey.Location = new System.Drawing.Point(332, 74);
+            this.textBoxStorageAccountKey.Name = "textBoxStorageAccountKey";
+            this.textBoxStorageAccountKey.Size = new System.Drawing.Size(148, 20);
+            this.textBoxStorageAccountKey.TabIndex = 74;
+            this.textBoxStorageAccountKey.UseSystemPasswordChar = true;
+            // 
+            // textBoxStorageAccountName
+            // 
+            this.textBoxStorageAccountName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxStorageAccountName.Location = new System.Drawing.Point(332, 35);
+            this.textBoxStorageAccountName.Name = "textBoxStorageAccountName";
+            this.textBoxStorageAccountName.Size = new System.Drawing.Size(148, 20);
+            this.textBoxStorageAccountName.TabIndex = 73;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(486, 58);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(123, 13);
+            this.label13.TabIndex = 78;
+            this.label13.Text = "Storage Container Name";
+            // 
+            // textBoxStorageContainerName
+            // 
+            this.textBoxStorageContainerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxStorageContainerName.Location = new System.Drawing.Point(489, 74);
+            this.textBoxStorageContainerName.Name = "textBoxStorageContainerName";
+            this.textBoxStorageContainerName.Size = new System.Drawing.Size(148, 20);
+            this.textBoxStorageContainerName.TabIndex = 77;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(758, 714);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.textBoxStorageContainerName);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.textBoxStorageAccountKey);
+            this.Controls.Add(this.textBoxStorageAccountName);
             this.Controls.Add(this.buttonPlaySubtitle);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.buttonSearch);
@@ -497,6 +564,12 @@
         private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.Button buttonPlaySubtitle;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox textBoxStorageAccountKey;
+        private System.Windows.Forms.TextBox textBoxStorageAccountName;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBoxStorageContainerName;
     }
 }
 

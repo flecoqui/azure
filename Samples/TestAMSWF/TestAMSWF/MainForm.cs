@@ -34,6 +34,9 @@ namespace TestAMSWF
             textBoxAccountKey.Text = "7osPnuOAoPP3dY48IFLuJxY++V8nq4ICI0rCDy12Hsk=";
             textBoxSearchAccountName.Text = "testamsindexsearch";
             textBoxSearchAccountKey.Text = "50373C7F6D3D38FEA3A672392E059AEA";
+            textBoxStorageAccountName.Text = "testamsindexersto";
+            textBoxStorageAccountKey.Text = "06KUYkR81KFZDpmSw8NvArrXwW/qW3gW9J5Yt6hSEeadkt9+vhAZw3rirYVcfR84tTAGs4yWUGnZ/lNLkg2tEQ==";
+            textBoxStorageContainerName.Text = "test";
             comboBoxLanguages.Items.AddRange(LanguagesIndexV2.ToArray());
             comboBoxLanguages.SelectedIndex = 0;
             _context = null;
@@ -66,6 +69,9 @@ namespace TestAMSWF
                 textBoxAccountName.Enabled = false;
                 textBoxSearchAccountKey.Enabled = false;
                 textBoxSearchAccountName.Enabled = false;
+                textBoxStorageAccountKey.Enabled = false;
+                textBoxStorageAccountName.Enabled = false;
+                textBoxStorageContainerName.Enabled = false;
                 buttonLogin.Enabled = false;
 
                 listInputAssets.Enabled = true;
@@ -93,6 +99,9 @@ namespace TestAMSWF
                 textBoxAccountName.Enabled = true;
                 textBoxSearchAccountKey.Enabled = true;
                 textBoxSearchAccountName.Enabled = true;
+                textBoxStorageAccountKey.Enabled = true;
+                textBoxStorageAccountName.Enabled = true;
+                textBoxStorageContainerName.Enabled = true;
                 buttonLogin.Enabled = true;
 
                 listInputAssets.Enabled = false;
@@ -115,6 +124,22 @@ namespace TestAMSWF
 
             }
         }
+        void DeleteLocators()
+        {
+            foreach (var loc in _context.Locators)
+            {
+                try
+                {
+                    loc.Delete();
+                }
+                catch(Exception e)
+                {
+                   // TextBoxLogWriteLine("Exception while deleting locators: " + e.Message);
+                }
+
+            }
+
+        }
         private void buttonLogin_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(textBoxAccountName.Text))
@@ -126,6 +151,7 @@ namespace TestAMSWF
             {
                 try
                 {
+                   
                     _context = new Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext(textBoxAccountName.Text, textBoxAccountKey.Text);
                     if (_context != null)
                     {
@@ -141,6 +167,7 @@ namespace TestAMSWF
                             PopulateInputFiles();
                             PopulateOutputAssets();
                             PopulateOutputFiles();
+                            DeleteLocators();
                         }
                     }
                 }
@@ -220,6 +247,9 @@ namespace TestAMSWF
                 PopulateInputFiles();
                 PopulateOutputAssets();
                 PopulateOutputFiles();
+                listOutputAssets.SelectedIndex = 0;
+                listOutputFiles.SelectedIndex = 0;
+                listInputFiles.SelectedIndex = 0;
             }
         }
         void PopulateInputFiles()
@@ -1033,21 +1063,20 @@ namespace TestAMSWF
             string content = string.Empty;
             string localfile = GetTempFilePathWithExtension(".ttml");
 
-            Microsoft.WindowsAzure.MediaServices.Client.ILocator sasLocator = null;
-            var locatorTask = Task.Factory.StartNew(() =>
-            {
-                sasLocator = _context.Locators.Create(Microsoft.WindowsAzure.MediaServices.Client.LocatorType.Sas, asset, Microsoft.WindowsAzure.MediaServices.Client.AccessPermissions.Read, TimeSpan.FromHours(24));
-            });
-            locatorTask.Wait();
-            File.Download(localfile);
-
-            var myTask = Task.Factory.StartNew(() =>
-            {
-                bool Error = false;
+            //Microsoft.WindowsAzure.MediaServices.Client.ILocator sasLocator = null;
+            //var locatorTask = Task.Factory.StartNew(() =>
+            //{
+            //    sasLocator = _context.Locators.Create(Microsoft.WindowsAzure.MediaServices.Client.LocatorType.Sas, asset, Microsoft.WindowsAzure.MediaServices.Client.AccessPermissions.Read, TimeSpan.FromHours(24));
+            //});
+            //locatorTask.Wait();
+           // File.Download(localfile);
+            bool Error = false;
+            //var myTask = Task.Factory.StartNew(() =>
+            //{
+            //    Error = false;
                 try
                 {
                     File.Download(localfile);
-                    sasLocator.Delete();
                 }
                 catch (Exception e)
                 {
@@ -1055,16 +1084,18 @@ namespace TestAMSWF
                     TextBoxLogWriteLine(string.Format("Download of file '{0}' failed !", File.Name), true);
                     TextBoxLogWriteLine(e);
                 }
-                if (!Error)
-                {
-                }
-            });
-            myTask.Wait();
+            //});
+            //myTask.Wait();
+            //if(sasLocator!= null)
+            //    sasLocator.Delete();
 
-            using (System.IO.StreamReader sr = new System.IO.StreamReader(localfile))
+            if (Error == false)
             {
-                // Read the stream to a string, and write the string to the console.
-                content = sr.ReadToEnd();
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(localfile))
+                {
+                    // Read the stream to a string, and write the string to the console.
+                    content = sr.ReadToEnd();
+                }
             }
             return content;
 
@@ -1218,24 +1249,27 @@ namespace TestAMSWF
         }
         private void buttonOpenSubtitle_Click(object sender, EventArgs e)
         {
-            var SelectedAssetFiles = ReturnSelectedAssetFiles();
-            if (SelectedAssetFiles.Count > 0)
+            using (new CursorHandler())
             {
-                var af = SelectedAssetFiles.FirstOrDefault();
-                ILocator locator = GetTemporaryLocator(af.Asset);
-                if (locator != null)
+                var SelectedAssetFiles = ReturnSelectedAssetFiles();
+                if (SelectedAssetFiles.Count > 0)
                 {
-                    try
+                    var af = SelectedAssetFiles.FirstOrDefault();
+                    ILocator locator = GetTemporaryLocator(af.Asset);
+                    if (locator != null)
                     {
-                        foreach (var assetfile in SelectedAssetFiles)
+                        try
                         {
+                            foreach (var assetfile in SelectedAssetFiles)
+                            {
 
-                            System.Diagnostics.Process.Start(assetfile.GetSasUri(locator).ToString());
+                                System.Diagnostics.Process.Start(assetfile.GetSasUri(locator).ToString());
+                            }
                         }
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Error when accessing temporary SAS locator");
+                        catch
+                        {
+                            MessageBox.Show("Error when accessing temporary SAS locator");
+                        }
                     }
                 }
             }
@@ -1360,15 +1394,18 @@ namespace TestAMSWF
                                     if ((a.Id == file.Asset.Id)&&(file.Name.EndsWith(".ttml",StringComparison.OrdinalIgnoreCase)))
                                     {
                                         string content = GetAssetFileContent(a, file);
-                                        byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(asset.Id);
-                                        Media media = new Media()
+                                        if (!string.IsNullOrEmpty(content))
                                         {
-                                            mediaId = System.Convert.ToBase64String(toEncodeAsBytes),
-                                            mediaName = asset.Name,
-                                            mediaUrl = asset.Id,
-                                            mediaContent = content
-                                        };
-                                        documents.Add(media);
+                                            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(asset.Id);
+                                            Media media = new Media()
+                                            {
+                                                mediaId = System.Convert.ToBase64String(toEncodeAsBytes),
+                                                mediaName = asset.Name,
+                                                mediaUrl = asset.Id,
+                                                mediaContent = content
+                                            };
+                                            documents.Add(media);
+                                        }
                                         break;
                                     }
                                 }
@@ -1476,11 +1513,11 @@ namespace TestAMSWF
                 try
                 {
                     Microsoft.WindowsAzure.Storage.CloudStorageAccount storageAccount;
-                    storageAccount = new Microsoft.WindowsAzure.Storage.CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(_context.DefaultStorageAccount.Name, "06KUYkR81KFZDpmSw8NvArrXwW/qW3gW9J5Yt6hSEeadkt9+vhAZw3rirYVcfR84tTAGs4yWUGnZ/lNLkg2tEQ=="),true);
+                    storageAccount = new Microsoft.WindowsAzure.Storage.CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(textBoxStorageAccountName.Text, textBoxStorageAccountKey.Text),true);
                     var cloudBlobClient = storageAccount.CreateCloudBlobClient();
                     string containerName = "asset-" + SelectedAssetFile.Asset.Id.Replace("nb:cid:UUID:","");
                     Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer sourceContainer = cloudBlobClient.GetContainerReference(containerName);
-                    Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer targetContainer = cloudBlobClient.GetContainerReference("test");
+                    Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer targetContainer = cloudBlobClient.GetContainerReference(textBoxStorageContainerName.Text);
                     string blobName = SelectedAssetFile.Name;
                     Microsoft.WindowsAzure.Storage.Blob.CloudBlockBlob sourceBlob = sourceContainer.GetBlockBlobReference(blobName);
                     Microsoft.WindowsAzure.Storage.Blob.CloudBlockBlob targetBlob = targetContainer.GetBlockBlobReference(blobName);
@@ -1504,35 +1541,37 @@ namespace TestAMSWF
 
         private void buttonPlaySubtitle_Click_1(object sender, EventArgs e)
         {
-         //   http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?
-
-            var SelectedAssetFiles = ReturnSelectedAssetFiles();
-            var SelectedInputAssetFiles = ReturnSelectedInputAssetFiles();
-            if ((SelectedAssetFiles.Count > 0)&& (SelectedInputAssetFiles.Count > 0))
+            //   http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?
+            using (new CursorHandler())
             {
-                var af = SelectedAssetFiles.FirstOrDefault();
-                string destUri = GetDuplicateUri(af);
-                var inputaf = SelectedInputAssetFiles.FirstOrDefault();
-                ILocator locator = GetTemporaryLocator(af.Asset);
-                ILocator Inputlocator = GetTemporaryInputLocator(inputaf.Asset);
-                if ((locator != null)&& (Inputlocator != null))
+                var SelectedAssetFiles = ReturnSelectedAssetFiles();
+                var SelectedInputAssetFiles = ReturnSelectedInputAssetFiles();
+                if ((SelectedAssetFiles.Count > 0) && (SelectedInputAssetFiles.Count > 0))
                 {
-                    try
+                    var af = SelectedAssetFiles.FirstOrDefault();
+                    string destUri = GetDuplicateUri(af);
+                    var inputaf = SelectedInputAssetFiles.FirstOrDefault();
+                    ILocator locator = GetTemporaryLocator(af.Asset);
+                    ILocator Inputlocator = GetTemporaryInputLocator(inputaf.Asset);
+                    if ((locator != null) && (Inputlocator != null))
                     {
-                        foreach (var assetfile in SelectedAssetFiles)
+                        try
                         {
-                            TextBoxLogWriteLine("Url for TTML file: " + destUri);
-                            string ttmlencoded = Base64Encode(destUri);
-                            TextBoxLogWriteLine("Url for MP3 file: " + inputaf.GetSasUri(Inputlocator).ToString());
-                            string mp3encoded = Base64Encode(inputaf.GetSasUri(Inputlocator).ToString());
-                            string uri = "http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?audiourl=" + mp3encoded + "&ttmlurl=" + ttmlencoded;
-                            TextBoxLogWriteLine("Url for player: " + uri);
-                            System.Diagnostics.Process.Start(uri);
+                            foreach (var assetfile in SelectedAssetFiles)
+                            {
+                                TextBoxLogWriteLine("Url for TTML file: " + destUri);
+                                string ttmlencoded = Base64Encode(destUri);
+                                TextBoxLogWriteLine("Url for MP3 file: " + inputaf.GetSasUri(Inputlocator).ToString());
+                                string mp3encoded = Base64Encode(inputaf.GetSasUri(Inputlocator).ToString());
+                                string uri = "http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?audiourl=" + mp3encoded + "&ttmlurl=" + ttmlencoded;
+                                TextBoxLogWriteLine("Url for player: " + uri);
+                                System.Diagnostics.Process.Start(uri);
+                            }
                         }
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Error when accessing temporary SAS locator");
+                        catch(Exception ex)
+                        {
+                            TextBoxLogWriteLine("Error when accessing temporary SAS locator: " + ex.Message);
+                        }
                     }
                 }
             }
