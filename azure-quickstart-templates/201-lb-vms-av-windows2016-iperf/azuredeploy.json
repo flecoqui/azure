@@ -752,7 +752,7 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('dnsLabelPrefix'), copyindex())]",
+      "name": "[concat(parameters('dnsLabelBackendPrefix'), copyindex())]",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "vmbackendloop",
