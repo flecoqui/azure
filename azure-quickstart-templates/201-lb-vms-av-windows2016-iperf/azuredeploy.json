@@ -77,15 +77,39 @@
         "description": "powershell.exe -ExecutionPolicy Unrestricted -File [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
       },
       "defaultValue": "install-iperf-test.ps1"
+    },
+    "dnsLabelBackendPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique backend dns prefix"
+      }
+
+    },
+    "vmBackendSize": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Size"
+      },
+      "defaultValue": "Standard_A1"
+    },
+    "vmBackendCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VMs"
+      },
+      "defaultValue": 2,
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ]
     }
+
   },
   "variables": {
     "storageAccountNamePrefix": "[toLower(substring(concat(parameters('dnsLabelPrefix'), uniqueString(resourceGroup().id)), 0, 8))]",
     "uniqueStorageAccountNameArray": [
-      "[concat(variables('storageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'), '0')),'sa0')]",
-      "[concat(variables('storageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'), '1')),'sa1')]",
-      "[concat(variables('storageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'), '2')),'sa2')]",
-      "[concat(variables('storageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'), '3')),'sa3')]",
       "[concat(variables('storageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'), '0')),'sa0')]",
       "[concat(variables('storageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'), '1')),'sa1')]",
       "[concat(variables('storageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'), '2')),'sa2')]",
@@ -118,6 +142,16 @@
     "virtualNetworkName": "[concat(parameters('dnsLabelPrefix'), 'vnet')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+    "storageAccountNameBackendPrefix": "[toLower(substring(concat(parameters('dnsLabelBackendPrefix'), uniqueString(resourceGroup().id)), 0, 8))]",
+    "uniqueStorageAccountNameBackendArray": [
+      "[concat(variables('storageAccountNameBackendPrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNameBackendPrefix'), '0')),'sa0')]",
+      "[concat(variables('storageAccountNameBackendPrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNameBackendPrefix'), '1')),'sa1')]",
+      "[concat(variables('storageAccountNameBackendPrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNameBackendPrefix'), '2')),'sa2')]",
+      "[concat(variables('storageAccountNameBackendPrefix'),uniqueString(concat(resourceGroup().id, variables('storageAccountNameBackendPrefix'), '3')),'sa3')]"
+    ],
+    "nicBackendName": "[concat(parameters('dnsLabelBackendPrefix'), 'nic')]",
+    "vmBackendIPPrefix": "10.0.0.8",
+    "vmBackendName": "[concat(parameters('dnsLabelBackendPrefix'), 'vm')]",
     "apiVersion": "2015-06-15"
   },
   "resources": [
@@ -129,6 +163,19 @@
       "copy": {
         "name": "vmstorageloop",
         "count": "[parameters('vmCount')]"
+      },
+      "properties": {
+        "accountType": "Standard_LRS"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[concat(variables('uniqueStorageAccountNameBackendArray')[copyIndex()])]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmstoragebackendloop",
+        "count": "[parameters('vmBackendCount')]"
       },
       "properties": {
         "accountType": "Standard_LRS"
@@ -663,6 +710,104 @@
         },
         "protectedSettings": null
       }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('nicBackendName'), copyindex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmnicbackendloop",
+        "count": "[parameters('vmBackendCount')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[concat(variables('vmBackendIPPrefix'), copyindex())]",
+              "subnet": {
+                "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(variables('lbID'), '/backendAddressPools/',variables('bePoolName'))]"
+                }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[concat(variables('lbID'),'/inboundNatRules/rdp', copyindex())]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(parameters('dnsLabelPrefix'), copyindex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "vmbackendloop",
+        "count": "[parameters('vmBackendCount')]"
+      },
+      "dependsOn": [
+        "vmstoragebackendloop",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "vmnicbackendloop",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('vmAvailabilitySetName'))]"
+      ],
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('vmAvailabilitySetName'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmBackendSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vmBackendName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('osVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat('http://',variables('uniqueStorageAccountNameBackendArray')[copyIndex()],'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),copyIndex(),'.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicBackendName'), copyindex()))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "true",
+            "storageUri": "[concat('http://',variables('uniqueStorageAccountNameBackendArray')[copyIndex()],'.blob.core.windows.net')]"
+          }
+        }
+      }
+
     }
 
   ],

@@ -31,6 +31,16 @@
     },
     "initScriptFileName": {
       "value": "install-iperf-test.ps1"
+    },
+    "dnsLabelBackendPrefix": {
+      "value": "backendvm"
+    },
+    "vmBackendSize": {
+      "value": "Standard_D1_v2"
+    },
+    "vmBackendCount": {
+      "value": 2
     }
+
   }
 }
