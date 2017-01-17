@@ -1,0 +1,36 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "adminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "dnsLabelPrefix": {
+      "value": "iperflbvm"
+    },
+    "vmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "vmCount": {
+      "value": 2
+    },
+    "osVersion": {
+      "value": "2016-Datacenter"
+    },
+    "modulesUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-as-windows2016-iperf/iperfWebsite.zip"
+    },
+    "configurationFunction": {
+      "value": "iperfWebsite.ps1\\iperfWebsite"
+    },
+    "initscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-as-windows2016-iperf/install-iperf-test.ps1"
+    },
+    "initScriptFileName": {
+      "value": "install-iperf-test.ps1"
+    }
+  }
+}
