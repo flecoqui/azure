@@ -1,0 +1,1211 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "User name for the Virtual Machine."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "frontendDnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine. DNS name: <dnsLabelPrefix>.<Region>.cloudapp.azure.com"
+      }
+    },
+    "frontendVmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Size"
+      },
+      "defaultValue": "Standard_A1"
+    },
+    "frontendVmCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VMs"
+      },
+      "defaultValue": 2,
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "osVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "OS Version - Image SKU"
+      },
+      "defaultValue": "2016-Datacenter",
+      "allowedValues": [
+        "2008-R2-SP1",
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
+      ]
+    },
+    "modulesUrl": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-outbound-windows2016-iperf/iperfWebSite.zip",
+      "metadata": {
+        "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
+      }
+    },
+    "configurationFunction": {
+      "type": "string",
+      "defaultValue": "iperfWebsite.ps1\\iperfWebsite",
+      "metadata": {
+        "description": "DSC configuration function to call"
+      }
+    },
+    "initscriptUrl": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-outbound-windows2016-iperf/install-iperf-test.ps1"
+    },
+    "initScriptFileName": {
+      "type": "string",
+      "metadata": {
+        "description": "powershell.exe -ExecutionPolicy Unrestricted -File [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      },
+      "defaultValue": "install-iperf-test.ps1"
+    },
+    "backendDnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique backend dns prefix"
+      }
+
+    },
+    "backendVmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Size"
+      },
+      "defaultValue": "Standard_A1"
+    },
+    "backendVmCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VMs"
+      },
+      "defaultValue": 2,
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "forwardDnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique forward dns prefix"
+      }
+
+    },
+    "forwardVmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Forward VM Size"
+      },
+      "defaultValue": "Standard_A1"
+    },
+    "forwardVmCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of Forward VMs"
+      },
+      "defaultValue": 1,
+      "allowedValues": [
+        1
+      ]
+    }
+
+  },
+  "variables": {
+    "loadBalancerName": "[concat(parameters('frontendDnsLabelPrefix'), 'lb')]",
+    "lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName'))]",
+    "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
+    "lbPoolID": "[concat(variables('lbID'),'/backendAddressPools/', variables('bePoolName'))]",
+    "lbProbeID": "[concat(variables('lbID'),'/probes/tcpProbe')]",
+    "natPoolName": "[concat(parameters('frontendDnsLabelPrefix'), 'natpool')]",
+    "bePoolName": "[concat(parameters('frontendDnsLabelPrefix'), 'bepool')]",
+    "virtualNetworkName": "[concat(parameters('frontendDnsLabelPrefix'), 'vnet')]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+    "vnetAddressPrefix": "10.0.0.0/16",
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageOffer": "WindowsServer",
+    "storageAccountType": "Standard_LRS",
+    "vmStorageAccountContainerName": "vhds",
+
+    "frontendStorageAccountNamePrefix": "[toLower(substring(concat(parameters('frontendDnsLabelPrefix'), uniqueString(resourceGroup().id)), 0, 8))]",
+    "frontendUniqueStorageAccountNameArray": [
+      "[concat(variables('frontendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('frontendStorageAccountNamePrefix'), '0')),'sa0')]",
+      "[concat(variables('frontendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('frontendStorageAccountNamePrefix'), '1')),'sa1')]",
+      "[concat(variables('frontendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('frontendStorageAccountNamePrefix'), '2')),'sa2')]",
+      "[concat(variables('frontendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('frontendStorageAccountNamePrefix'), '3')),'sa3')]"
+    ],
+    "frontendVmAvailabilitySetName": "[concat(parameters('frontendDnsLabelPrefix'), 'avset')]",
+    "frontendNetworkSecurityGroupName": "[concat(parameters('frontendDnsLabelPrefix'), 'nsg')]",
+    "frontendDataDiskVhdName": "[concat(parameters('frontendDnsLabelPrefix'), 'datadisk')]",
+    "frontendPublicIPAddressName": "[concat(parameters('frontendDnsLabelPrefix'), 'ipip')]",
+    "frontendPublicIPAddressType": "Dynamic",
+    "frontendPublicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('frontendPublicIPAddressName'))]",
+    "frontendOSDiskName": "[concat(parameters('frontendDnsLabelPrefix'), 'osdisk')]",
+    "frontendNicName": "[concat(parameters('frontendDnsLabelPrefix'), 'nic')]",
+    "frontendSubnetName": "[concat(parameters('frontendDnsLabelPrefix'), 'subnet')]",
+    "frontendSubnetRef": "[concat(variables('vnetID'),'/subnets/',variables('frontendSubnetName'))]",
+    "frontendSubnetAddressPrefix": "10.0.0.0/24",
+    "frontendVmIPPrefix": "10.0.0.1",
+    "frontendVmName": "[concat(parameters('frontendDnsLabelPrefix'), 'vm')]",
+
+    "backendOSDiskName": "[concat(parameters('backendDnsLabelPrefix'), 'osdisk')]",
+    "backendSubnetName": "[concat(parameters('backendDnsLabelPrefix'), 'subnet')]",
+    "backendSubnetAddressPrefix": "10.0.2.0/24",
+    "backendNetworkSecurityGroupName": "[concat(parameters('backendDnsLabelPrefix'), 'nsg')]",
+    "backendVmIPPrefix": "10.0.1.1",
+    "backendVmName": "[concat(parameters('backendDnsLabelPrefix'), 'vm')]",
+
+    "backendStorageAccountNamePrefix": "[toLower(substring(concat(parameters('backendDnsLabelPrefix'), uniqueString(resourceGroup().id)), 0, 8))]",
+    "backendUniqueStorageAccountNameArray": [
+      "[concat(variables('backendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('backendStorageAccountNamePrefix'), '0')),'sa0')]",
+      "[concat(variables('backendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('backendStorageAccountNamePrefix'), '1')),'sa1')]",
+      "[concat(variables('backendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('backendStorageAccountNamePrefix'), '2')),'sa2')]",
+      "[concat(variables('backendStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('backendStorageAccountNamePrefix'), '3')),'sa3')]"
+    ],
+    "backendNicName": "[concat(parameters('backendDnsLabelPrefix'), 'nic')]",
+    "backendVmAvailabilitySetName": "[concat(parameters('backendDnsLabelPrefix'), 'avset')]",
+    "backendRouteTableName": "backendRouteTable",
+    "InternetSubnetPrefix": "0.0.0.0/0",
+    "forwardOSDiskName": "[concat(parameters('backendDnsLabelPrefix'), 'osdisk')]",
+    "forwardSubnetName": "[concat(parameters('forwardDnsLabelPrefix'), 'subnet')]",
+    "forwardSubnetAddressPrefix": "10.0.2.0/24",
+    "forwardVmIPPrefix": "10.0.2.1",
+    "forwardVmName": "[concat(parameters('forwardDnsLabelPrefix'), 'vm')]",
+    "forwardNetworkSecurityGroupName": "[concat(parameters('forwardDnsLabelPrefix'), 'nsg')]",
+    "forwardPublicIPAddressName": "[concat(parameters('forwardDnsLabelPrefix'), 'opip')]",
+    "forwardPublicIPAddressType": "Static",
+    "forwardPublicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('forwardPublicIPAddressName'))]",
+    "forwardStorageAccountNamePrefix": "[toLower(substring(concat(parameters('forwardDnsLabelPrefix'), uniqueString(resourceGroup().id)), 0, 8))]",
+    "forwardUniqueStorageAccountNameArray": [
+      "[concat(variables('forwardStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('forwardStorageAccountNamePrefix'), '0')),'sa0')]",
+      "[concat(variables('forwardStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('forwardStorageAccountNamePrefix'), '1')),'sa1')]",
+      "[concat(variables('forwardStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('forwardStorageAccountNamePrefix'), '2')),'sa2')]",
+      "[concat(variables('forwardStorageAccountNamePrefix'),uniqueString(concat(resourceGroup().id, variables('forwardStorageAccountNamePrefix'), '3')),'sa3')]"
+    ],
+    "forwardNicName": "[concat(parameters('forwardDnsLabelPrefix'), 'nic')]",
+    "forwardVmAvailabilitySetName": "[concat(parameters('forwardDnsLabelPrefix'), 'avset')]",
+
+    "apiVersion": "2015-06-15"
+  },
+          "resources": [
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Storage/storageAccounts",
+              "name": "[concat(variables('frontendUniqueStorageAccountNameArray')[copyIndex()])]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "frontendvmstorageloop",
+                "count": "[parameters('frontendVmCount')]"
+              },
+              "properties": {
+                "accountType": "Standard_LRS"
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Storage/storageAccounts",
+              "name": "[concat(variables('backendUniqueStorageAccountNameArray')[copyIndex()])]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "backendvmstorageloop",
+                "count": "[parameters('backendVmCount')]"
+              },
+              "properties": {
+                "accountType": "Standard_LRS"
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Storage/storageAccounts",
+              "name": "[concat(variables('forwardUniqueStorageAccountNameArray')[copyIndex()])]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "forwardvmstorageloop",
+                "count": "[parameters('forwardVmCount')]"
+              },
+              "properties": {
+                "accountType": "Standard_LRS"
+              }
+            },
+            {
+              "type": "Microsoft.Compute/availabilitySets",
+              "name": "[variables('frontendVmAvailabilitySetName')]",
+              "apiVersion": "2015-05-01-preview",
+              "location": "[resourceGroup().location]",
+              "properties": {}
+            },
+            {
+              "type": "Microsoft.Compute/availabilitySets",
+              "name": "[variables('backendVmAvailabilitySetName')]",
+              "apiVersion": "2015-05-01-preview",
+              "location": "[resourceGroup().location]",
+              "properties": {}
+            },
+            {
+              "type": "Microsoft.Compute/availabilitySets",
+              "name": "[variables('forwardVmAvailabilitySetName')]",
+              "apiVersion": "2015-05-01-preview",
+              "location": "[resourceGroup().location]",
+              "properties": {}
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/publicIPAddresses",
+              "name": "[variables('frontendPublicIPAddressName')]",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "publicIPAllocationMethod": "[variables('frontendPublicIPAddressType')]",
+                "dnsSettings": {
+                  "domainNameLabel": "[parameters('frontendDnsLabelPrefix')]"
+                }
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/publicIPAddresses",
+              "name": "[variables('forwardPublicIPAddressName')]",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "publicIPAllocationMethod": "[variables('forwardPublicIPAddressType')]",
+                "dnsSettings": {
+                  "domainNameLabel": "[parameters('forwardDnsLabelPrefix')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/loadBalancers",
+              "name": "[variables('loadBalancerName')]",
+              "location": "[resourceGroup().location]",
+              "apiVersion": "[variables('apiVersion')]",
+              "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('frontendPublicIPAddressName'))]"
+              ],
+              "properties": {
+                "frontendIPConfigurations": [
+                  {
+                    "name": "LoadBalancerFrontEnd",
+                    "properties": {
+                      "publicIPAddress": {
+                        "id": "[variables('frontendPublicIPAddressID')]"
+                      }
+                    }
+                  }
+                ],
+                "backendAddressPools": [
+                  {
+                    "name": "[variables('bePoolName')]"
+                  }
+                ],
+                "inboundNatRules": [
+                  {
+                    "name": "rdp0",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 50000,
+                      "backendPort": 3389,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "rdp1",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 50001,
+                      "backendPort": 3389,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "rdp2",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 50002,
+                      "backendPort": 3389,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "rdp3",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 50003,
+                      "backendPort": 3389,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperftcp0",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 52000,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperftcp1",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 52001,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperftcp2",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 52002,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperftcp3",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "tcp",
+                      "frontendPort": 52003,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperfudp0",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "udp",
+                      "frontendPort": 52000,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperfudp1",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "udp",
+                      "frontendPort": 52001,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperfudp2",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "udp",
+                      "frontendPort": 52002,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  },
+                  {
+                    "name": "iperfudp3",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "protocol": "udp",
+                      "frontendPort": 52003,
+                      "backendPort": 5201,
+                      "enableFloatingIP": false
+                    }
+                  }
+
+                ],
+                "loadBalancingRules": [
+                  {
+                    "name": "LBRule",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[variables('frontEndIPConfigID')]"
+                      },
+                      "backendAddressPool": {
+                        "id": "[variables('lbPoolID')]"
+                      },
+                      "protocol": "Tcp",
+                      "frontendPort": 80,
+                      "backendPort": 80,
+                      "enableFloatingIP": false,
+                      "idleTimeoutInMinutes": 10,
+                      "probe": {
+                        "id": "[variables('lbProbeID')]"
+                      }
+                    }
+                  }
+                ],
+                "probes": [
+                  {
+                    "name": "tcpProbe",
+                    "properties": {
+                      "protocol": "Tcp",
+                      "port": 80,
+                      "intervalInSeconds": 5,
+                      "numberOfProbes": 2
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "name": "[variables('frontendNetworkSecurityGroupName')]",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "securityRules": [
+                  {
+                    "name": "RDP",
+                    "properties": {
+                      "description": "RDP",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "3389",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "http",
+                    "properties": {
+                      "description": "http server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "80",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 101,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "https",
+                    "properties": {
+                      "description": "https server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "443",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 102,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "winrm1",
+                    "properties": {
+                      "description": "winrm1 server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5985",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 103,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "winrm2",
+                    "properties": {
+                      "description": "winrm2 server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5986",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 104,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "iperf3-udp",
+                    "properties": {
+                      "description": "iperf3 udp port",
+                      "protocol": "Udp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5201",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 105,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "iperf3-tcp",
+                    "properties": {
+                      "description": "iperf3 tcp port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5201",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 106,
+                      "direction": "Inbound"
+                    }
+                  }
+                ]
+              }
+            },
+
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "name": "[variables('backendNetworkSecurityGroupName')]",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "securityRules": [
+                  {
+                    "name": "RDP",
+                    "properties": {
+                      "description": "RDP",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "3389",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "winrm1",
+                    "properties": {
+                      "description": "winrm1 server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5985",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 103,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "winrm2",
+                    "properties": {
+                      "description": "winrm2 server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5986",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 104,
+                      "direction": "Inbound"
+                    }
+                  }
+                ]
+              }
+            },
+
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "name": "[variables('forwardNetworkSecurityGroupName')]",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "securityRules": [
+                  {
+                    "name": "RDP",
+                    "properties": {
+                      "description": "RDP",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "3389",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "winrm1",
+                    "properties": {
+                      "description": "winrm1 server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5985",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 103,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "winrm2",
+                    "properties": {
+                      "description": "winrm2 server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "5986",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 104,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "http",
+                    "properties": {
+                      "description": "http server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "80",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 101,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "https",
+                    "properties": {
+                      "description": "https server port",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "443",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 102,
+                      "direction": "Inbound"
+                    }
+                  }
+
+                ]
+              }
+            },
+
+
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/virtualNetworks",
+              "name": "[variables('virtualNetworkName')]",
+              "location": "[resourceGroup().location]",
+              "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('frontendNetworkSecurityGroupName'))]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('backendNetworkSecurityGroupName'))]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('forwardNetworkSecurityGroupName'))]",
+                "[concat('Microsoft.Network/loadBalancers/',variables('loadBalancerName'))]"
+              ],
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": [
+                    "[variables('vnetAddressPrefix')]"
+                  ]
+                },
+                "subnets": [
+                  {
+                    "name": "[variables('frontendSubnetName')]",
+                    "properties": {
+                      "addressPrefix": "[variables('frontendSubnetAddressPrefix')]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontendNetworkSecurityGroupName'))]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "[variables('backendSubnetName')]",
+                    "properties": {
+                      "addressPrefix": "[variables('backendSubnetAddressPrefix')]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('backendNetworkSecurityGroupName'))]"
+                      },
+                      "routeTable": {
+                        "id": "[resourceId('Microsoft.Network/routeTables', variables('backendRouteTableName'))]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "[variables('forwardSubnetName')]",
+                    "properties": {
+                      "addressPrefix": "[variables('forwardSubnetAddressPrefix')]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('forwardNetworkSecurityGroupName'))]"
+                      }
+                    }
+                  }
+
+
+                ]
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/networkInterfaces",
+              "name": "[concat(variables('frontendNicName'), copyindex())]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "frontendvmnicloop",
+                "count": "[parameters('frontendVmCount')]"
+              },
+              "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('frontendPublicIPAddressName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+              ],
+              "properties": {
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "privateIPAllocationMethod": "Static",
+                      "privateIPAddress": "[concat(variables('frontendVmIPPrefix'), copyindex())]",
+                      "subnet": {
+                        "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('frontendSubnetName'))]"
+                      },
+                      "loadBalancerBackendAddressPools": [
+                        {
+                          "id": "[concat(variables('lbID'), '/backendAddressPools/',variables('bePoolName'))]"
+                        }
+                      ],
+                      "loadBalancerInboundNatRules": [
+                        {
+                          "id": "[concat(variables('lbID'),'/inboundNatRules/rdp', copyindex())]"
+                        },
+                        {
+                          "id": "[concat(variables('lbID'),'/inboundNatRules/iperftcp', copyindex())]"
+                        },
+                        {
+                          "id": "[concat(variables('lbID'),'/inboundNatRules/iperfudp', copyindex())]"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/networkInterfaces",
+              "name": "[concat(variables('backendNicName'), copyindex())]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "backendvmnicloop",
+                "count": "[parameters('backendVmCount')]"
+              },
+              "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+              ],
+              "properties": {
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "privateIPAllocationMethod": "Static",
+                      "privateIPAddress": "[concat(variables('backendVmIPPrefix'), copyindex())]",
+                      "subnet": {
+                        "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('backendSubnetName'))]"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Network/networkInterfaces",
+              "name": "[concat(variables('forwardNicName'), copyindex())]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "forwardvmnicloop",
+                "count": "[parameters('forwardVmCount')]"
+              },
+              "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('forwardPublicIPAddressName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+              ],
+              "properties": {
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "enableIPForwarding": true,
+                      "privateIPAllocationMethod": "Static",
+                      "privateIPAddress": "[concat(variables('forwardVmIPPrefix'), copyindex())]",
+                      "publicIPAddress": {
+                        "id": "[variables('forwardPublicIPAddressID')]"
+                      },
+                      "subnet": {
+                        "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('forwardSubnetName'))]"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "apiVersion": "2015-06-15",
+              "type": "Microsoft.Network/routeTables",
+              "name": "[variables('backendRouteTableName')]",
+              "location": "[resourceGroup().location]",
+              "tags": {
+                "displayName": "UDR - FrontEnd"
+              },
+              "properties": {
+                "routes": [
+                  {
+                    "name": "RouteToLocal",
+                    "properties": {
+                      "addressPrefix": "[variables('backendSubnetAddressPrefix')]",
+                      "nextHopType": "VirtualAppliance",
+                      "nextHopIpAddress": "[concat(variables('forwardVmIPPrefix'), 0)]"
+                    }
+                  },
+                  {
+                    "name": "RouteToVNET",
+                    "properties": {
+                      "addressPrefix": "[variables('vnetAddressPrefix')]",
+                      "nextHopType": "VirtualAppliance",
+                      "nextHopIpAddress": "[concat(variables('forwardVmIPPrefix'), 0)]"
+                    }
+                  },
+                  {
+                    "name": "RouteToInternet",
+                    "properties": {
+                      "addressPrefix": "[variables('InternetSubnetPrefix')]",
+                      "nextHopType": "VirtualAppliance",
+                      "nextHopIpAddress": "[concat(variables('forwardVmIPPrefix'), 0)]"
+                    }
+                  }
+
+                ]
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Compute/virtualMachines",
+              "name": "[concat(variables('frontendVmName'), copyindex())]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "frontendvmloop",
+                "count": "[parameters('frontendVmCount')]"
+              },
+              "dependsOn": [
+                "frontendvmstorageloop",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "frontendvmnicloop",
+                "[concat('Microsoft.Compute/availabilitySets/', variables('frontendVmAvailabilitySetName'))]"
+              ],
+              "properties": {
+                "availabilitySet": {
+                  "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('frontendVmAvailabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                  "vmSize": "[parameters('frontendVmSize')]"
+                },
+                "osProfile": {
+                  "computerName": "[variables('frontendVmName')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                  "imageReference": {
+                    "publisher": "[variables('imagePublisher')]",
+                    "offer": "[variables('imageOffer')]",
+                    "sku": "[parameters('osVersion')]",
+                    "version": "latest"
+                  },
+                  "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                      "uri": "[concat('http://',variables('frontendUniqueStorageAccountNameArray')[copyIndex()],'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('frontendOSDiskName'),copyIndex(),'.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                  },
+                  "dataDisks": [
+                    {
+                      "name": "datadisk1",
+                      "diskSizeGB": "100",
+                      "lun": 0,
+                      "vhd": {
+                        "uri": "[concat('http://',variables('frontendUniqueStorageAccountNameArray')[copyIndex()],'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('frontenddataDiskVhdName'),copyIndex(),'.vhd')]"
+                      },
+                      "createOption": "Empty"
+                    }
+                  ]
+                },
+
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('frontendNicName'), copyindex()))]"
+                    }
+                  ]
+                },
+                "diagnosticsProfile": {
+                  "bootDiagnostics": {
+                    "enabled": "true",
+                    "storageUri": "[concat('http://',variables('frontendUniqueStorageAccountNameArray')[copyIndex()],'.blob.core.windows.net')]"
+                  }
+                }
+              }
+
+            },
+            {
+              "name": "[concat(variables('frontendVmName'), copyindex(), '/init')]",
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "location": "[resourceGroup().location]",
+              "apiVersion": "[variables('apiVersion')]",
+              "tags": {
+                "displayName": "[concat(variables('frontendVmName'), copyindex(), 'init')]"
+              },
+              "copy": {
+                "name": "frontendvminitloop",
+                "count": "[parameters('frontendVmCount')]"
+              },
+              "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('frontendVmName'), copyindex())]"
+              ],
+
+              "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.7",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                  "fileUris": [
+                    "[parameters('initscriptUrl')]"
+                  ],
+                  "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('initScriptFileName'),' \"',  parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "name": "[concat(variables('frontendVmName'), copyindex(), '/dsc')]",
+              "apiVersion": "[variables('apiVersion')]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "frontendvmdscloop",
+                "count": "[parameters('frontendVmCount')]"
+              },
+              "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('frontendVmName'), copyindex())]"
+              ],
+              "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                  "modulesUrl": "[parameters('modulesUrl')]",
+                  "configurationFunction": "[parameters('configurationFunction')]",
+                  "Properties": {
+                    "MachineName": "[variables('frontendVmName')]"
+                  }
+                },
+                "protectedSettings": null
+              }
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Compute/virtualMachines",
+              "name": "[concat(variables('backendVmName'), copyindex())]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "backendvmloop",
+                "count": "[parameters('backendVmCount')]"
+              },
+              "dependsOn": [
+                "backendvmstorageloop",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "backendvmnicloop",
+                "[concat('Microsoft.Compute/availabilitySets/', variables('backendVmAvailabilitySetName'))]"
+              ],
+              "properties": {
+                "availabilitySet": {
+                  "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('backendVmAvailabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                  "vmSize": "[parameters('backendVmSize')]"
+                },
+                "osProfile": {
+                  "computerName": "[variables('backendVmName')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                  "imageReference": {
+                    "publisher": "[variables('imagePublisher')]",
+                    "offer": "[variables('imageOffer')]",
+                    "sku": "[parameters('osVersion')]",
+                    "version": "latest"
+                  },
+                  "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                      "uri": "[concat('http://',variables('backendUniqueStorageAccountNameArray')[copyIndex()],'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('backendOSDiskName'),copyIndex(),'.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                  },
+                  "dataDisks": [
+                  ]
+                },
+
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('backendNicName'), copyindex()))]"
+                    }
+                  ]
+                },
+                "diagnosticsProfile": {
+                  "bootDiagnostics": {
+                    "enabled": "true",
+                    "storageUri": "[concat('http://',variables('backendUniqueStorageAccountNameArray')[copyIndex()],'.blob.core.windows.net')]"
+                  }
+                }
+              }
+
+            },
+            {
+              "apiVersion": "[variables('apiVersion')]",
+              "type": "Microsoft.Compute/virtualMachines",
+              "name": "[concat(variables('forwardVmName'), copyindex())]",
+              "location": "[resourceGroup().location]",
+              "copy": {
+                "name": "forwardvmloop",
+                "count": "[parameters('forwardVmCount')]"
+              },
+              "dependsOn": [
+                "forwardvmstorageloop",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "forwardvmnicloop",
+                "[concat('Microsoft.Compute/availabilitySets/', variables('forwardVmAvailabilitySetName'))]"
+              ],
+              "properties": {
+                "availabilitySet": {
+                  "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('forwardVmAvailabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                  "vmSize": "[parameters('forwardVmSize')]"
+                },
+                "osProfile": {
+                  "computerName": "[variables('forwardVmName')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                  "imageReference": {
+                    "publisher": "[variables('imagePublisher')]",
+                    "offer": "[variables('imageOffer')]",
+                    "sku": "[parameters('osVersion')]",
+                    "version": "latest"
+                  },
+                  "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                      "uri": "[concat('http://',variables('forwardUniqueStorageAccountNameArray')[copyIndex()],'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('forwardOSDiskName'),copyIndex(),'.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                  },
+                  "dataDisks": [
+                  ]
+                },
+
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardNicName'), copyindex()))]"
+                    }
+                  ]
+                },
+                "diagnosticsProfile": {
+                  "bootDiagnostics": {
+                    "enabled": "true",
+                    "storageUri": "[concat('http://',variables('forwardUniqueStorageAccountNameArray')[copyIndex()],'.blob.core.windows.net')]"
+                  }
+                }
+              }
+
+            },
+
+
+            "outputs",
+            {
+              "hostname": {
+                "type": "string",
+                "value": "[concat(parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+              },
+              "mstscCommand": {
+                "type": "string",
+                "value": "[concat('mstsc /admin /v:', parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com:5000X')]"
+              },
+              "httpClient": {
+                "type": "string",
+                "value": "[concat('http://', parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+              },
+              "iperf3client": {
+                "type": "string",
+                "value": "[concat('iperf3 -c ', parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com -p 5200X --parallel 32') ]"
+              }
+            }
+        }
