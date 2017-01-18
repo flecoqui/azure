@@ -55,7 +55,7 @@
     },
     "modulesUrl": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-as-windows2016-iperf/iperfWebSite.zip",
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-av-windows2016-iperf/iperfWebSite.zip",
       "metadata": {
         "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
       }
@@ -69,7 +69,7 @@
     },
     "initscriptUrl": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-as-windows2016-iperf/install-iperf-test.ps1"
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-av-windows2016-iperf/install-iperf-test.ps1"
     },
     "initScriptFileName": {
       "type": "string",
@@ -152,6 +152,7 @@
     "nicBackendName": "[concat(parameters('dnsLabelBackendPrefix'), 'nic')]",
     "vmBackendIPPrefix": "10.0.0.8",
     "vmBackendName": "[concat(parameters('dnsLabelBackendPrefix'), 'vm')]",
+    "vmBackendAvailabilitySetName": "[concat(parameters('dnsLabelBackendPrefix'), 'avset')]",
     "apiVersion": "2015-06-15"
   },
   "resources": [
@@ -368,7 +369,56 @@
               "backendPort": 5201,
               "enableFloatingIP": false
             }
+          },
+          {
+            "name": "backendrdp0",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 60000,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "backendrdp1",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 60001,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "backendrdp2",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 60002,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "backendrdp3",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('frontEndIPConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 60003,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
           }
+
         ],
         "loadBalancingRules": [
           {
@@ -587,7 +637,7 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('dnsLabelPrefix'), copyindex())]",
+      "name": "[concat(variables('vmName'), copyindex())]",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "vmloop",
@@ -656,19 +706,19 @@
 
     },
     {
-      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), '/init')]",
+      "name": "[concat(variables('vmName'), copyindex(), '/init')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('apiVersion')]",
       "tags": {
-        "displayName": "[concat(parameters('dnsLabelPrefix'), copyindex(), 'init')]"
+        "displayName": "[concat(variables('vmName'), copyindex(), 'init')]"
       },
       "copy": {
         "name": "vminitloop",
         "count": "[parameters('vmCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelPrefix'), copyindex())]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyindex())]"
       ],
 
       "properties": {
@@ -686,7 +736,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('dnsLabelPrefix'), copyindex(), '/dsc')]",
+      "name": "[concat(variables('vmName'), copyindex(), '/dsc')]",
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
       "copy": {
@@ -694,7 +744,7 @@
         "count": "[parameters('vmCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelPrefix'), copyindex())]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyindex())]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
@@ -741,7 +791,7 @@
               ],
               "loadBalancerInboundNatRules": [
                 {
-                  "id": "[concat(variables('lbID'),'/inboundNatRules/rdp', copyindex())]"
+                  "id": "[concat(variables('lbID'),'/inboundNatRules/backendrdp', copyindex())]"
                 }
               ]
             }
@@ -752,7 +802,7 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('dnsLabelBackendPrefix'), copyindex())]",
+      "name": "[concat(variables('vmBackendName'),  copyindex())]",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "vmbackendloop",
