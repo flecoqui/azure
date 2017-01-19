@@ -126,8 +126,7 @@
       },
       "defaultValue": 1,
       "allowedValues": [
-        1,
-        2
+        1
       ]
     },
     "forwardModulesUrl": {
