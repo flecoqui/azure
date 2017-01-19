@@ -1250,6 +1250,7 @@
         "forwardvmstorageloop",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
         "forwardvmnicloop",
+        "forwardexternalvmnicloop",
         "[concat('Microsoft.Compute/availabilitySets/', variables('forwardVmAvailabilitySetName'))]"
       ],
       "properties": {
@@ -1286,13 +1287,14 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardNicName'), copyindex()))]",
-              "properties": { "primary": false }
-            },
-            {
               "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardExternalNicName'), copyindex()))]",
               "properties": { "primary": true }
+            },
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardNicName'), copyindex()))]",
+              "properties": { "primary": false }
             }
+
           ]
         },
         "diagnosticsProfile": {
