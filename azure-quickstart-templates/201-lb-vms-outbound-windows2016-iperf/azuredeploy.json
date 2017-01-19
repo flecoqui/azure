@@ -1025,8 +1025,7 @@
             "name": "RouteToLocal",
             "properties": {
               "addressPrefix": "[variables('backendSubnetAddressPrefix')]",
-              "nextHopType": "VnetLocal",
-              "nextHopIpAddress": "[concat(variables('forwardVmIPPrefix'), 0)]"
+              "nextHopType": "VnetLocal"
             }
           },
           {
