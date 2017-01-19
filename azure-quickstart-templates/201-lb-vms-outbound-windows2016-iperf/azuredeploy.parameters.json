@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "frontendDnsLabelPrefix": {
-      "value": "iperflbvm"
+      "value": "piperflbvm"
     },
     "frontendVmSize": {
       "value": "Standard_D1_v2"
@@ -33,22 +33,28 @@
       "value": "install-iperf-test.ps1"
     },
     "backendDnsLabelPrefix": {
-      "value": "backendvm"
+      "value": "pbackendvm"
     },
-    "backednVmSize": {
+    "backendVmSize": {
       "value": "Standard_D1_v2"
     },
     "backendVmCount": {
       "value": 2
     },
     "forwardDnsLabelPrefix": {
-      "value": "forwardvm"
+      "value": "pforwardvm"
     },
     "forwardVmSize": {
       "value": "Standard_D1_v2"
     },
     "forwardVmCount": {
       "value": 1
+    },
+    "forwardModulesUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-outbound-windows2016-iperf/RRAS.zip"
+    },
+    "forwardConfigurationFunction": {
+      "value": "RRAS.ps1\\RRAS"
     }
   }
 }
