@@ -1,0 +1,60 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "adminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "frontendDnsLabelPrefix": {
+      "value": "yiperflbvm"
+    },
+    "frontendVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "frontendVmCount": {
+      "value": 2
+    },
+    "osVersion": {
+      "value": "2016-Datacenter"
+    },
+    "modulesUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/iperfWebsite.zip"
+    },
+    "configurationFunction": {
+      "value": "iperfWebsite.ps1\\iperfWebsite"
+    },
+    "initscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/install-iperf-test.ps1"
+    },
+    "initScriptFileName": {
+      "value": "install-iperf-test.ps1"
+    },
+    "backendDnsLabelPrefix": {
+      "value": "ybackendvm"
+    },
+    "backendVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "backendVmCount": {
+      "value": 2
+    },
+    "forwardDnsLabelPrefix": {
+      "value": "yforwardvm"
+    },
+    "forwardVmSize": {
+      "value": "Standard_D2_v2"
+    },
+    "forwardVmCount": {
+      "value": 1
+    },
+    "forwardModulesUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/RRAS.zip"
+    },
+    "forwardConfigurationFunction": {
+      "value": "RRAS.ps1\\RRAS"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Deploy 2 simple Windows Server 2016 (nano server 2016) VM behind a Load Balancer",
+  "description": "This template allows you to deploy 2 simple  VM running nano server 2016 with IIS and iperf behind a Load Balancer",
+  "summary": "This template takes a minimum amount of parameters and deploys a nano server 2016 VM, using the latest patched version.",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2016-11-16"
+}
