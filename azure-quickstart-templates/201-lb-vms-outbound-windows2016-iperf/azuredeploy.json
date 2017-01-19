@@ -1287,10 +1287,12 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardNicName'), copyindex()))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardNicName'), copyindex()))]",
+              "properties": { "primary": false }
             },
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardExternalNicName'), copyindex()))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('forwardExternalNicName'), copyindex()))]",
+              "properties": { "primary": true }
             }
           ]
         },
