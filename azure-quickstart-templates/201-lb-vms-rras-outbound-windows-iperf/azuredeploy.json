@@ -809,18 +809,7 @@
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('forwardNetworkSecurityGroupName'))]"
               }
             }
-          },
-          {
-            "name": "[variables('forwardExternalSubnetName')]",
-            "properties": {
-              "addressPrefix": "[variables('forwardExternalSubnetAddressPrefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('forwardExternalNetworkSecurityGroupName'))]"
-              }
-            }
           }
-
-
         ]
       }
     },
