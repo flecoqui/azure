@@ -4,13 +4,7 @@ Configuration RRAS
 
   Node $MachineName
   {
-    #Install the IIS Role
-    WindowsFeature RemoteAccess
-    {
-      Ensure = "Present"
-      Name = "RemoteAccess"
-    }
-
+    #Install the Routing Role
      WindowsFeature Routing
     {
         Name = "Routing"
