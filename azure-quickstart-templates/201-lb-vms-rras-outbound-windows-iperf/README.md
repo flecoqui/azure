@@ -95,68 +95,83 @@ For instance:
 
     azure group deployment create rraslbgrp deprraslbtest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
-In order to complete the installation you need to install and configure manually the RRAS on the foward VM:
 
+In order to complete the installation you need to install and configure manually the RRAS on the foward VM. So far, I didn't manage to get an automated installation step.
+</p>
 
-
+1. Once the deployment is done in the output section you can see the mstsc command line to establish a RDP session with the VMs in the frontend subnet.  
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/1-mstsc.png)
 </p>
-
+2. Launch the mstsc command to open a session with the first VM using port 50000. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/2-mstsc.png)
 </p>
-
+3. Once connected with the VM in the frontend subnet, open a RDP session with the Forward VM (10.0.2.10). 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/3-mstsc.png)
 </p>
-
+4. Add the role Remote Access on the Forward VM . 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/4-addrole.png)
 </p>
-
+5. Select Remote Access role in the list. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/5-remoteaccess.png)
 </p>
+6. Select the Direct Access service and the Routing service. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/6-routing.png)
 </p>
+7. Once the installation is done click on the "Close" button. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/7-install.png)
 </p>
+8. Now we need to configure the RRAS service: from the Start Menu select Windows Administrative Tools button. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/8-menu.png)
 </p>
+9. Select the Computer Management application. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/10-computermanagement.png)
 </p>
+10. Select Routing and Remote Access item in the tree and right-click, and select the popup menu Configure and Enable Routing and Remote Access. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/11-enableroutin.png)
 </p>
+11. Select the Network Address Translation configuration. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/12-nat.png)
 </p>
+12. If on the NAT Internet Connection page you don't see any Network Interface reboot the VM.
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/13-failed.png)
 </p>
+13. On the NAT Internet Connection select the NIC card associated with IP address 10.0.2.10.
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/14-nic.png)
 </p>
+14. When the configuration is done click on the Finish button to close the dialog box.
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/15-config.png)
 </p>
+15. You should see the NAT item in the tree meaning the NAT service is running 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/16-check.png)
 </p>
+16. Now the RRAS is configured and running, open a RDP session with the VM in the backend subnet(10.0.1.10). 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/17-mstsc.png)
 </p>
+17. Launch the Web Browser. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/18-explorer.png)
 </p>
+17. Open a Web site which displays the public IP address associated with your VM. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/19-myip.png)
 </p>
+18. The IP address displayed should the same as the one associated with the public IP of the Forward VM on the Azure portal. 
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/20-myip.png)
 </p>
