@@ -49,12 +49,6 @@
     },
     "forwardVmCount": {
       "value": 1
-    },
-    "forwardModulesUrl": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/RRAS.zip"
-    },
-    "forwardConfigurationFunction": {
-      "value": "RRAS.ps1\\RRAS"
     }
   }
 }

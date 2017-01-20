@@ -13,7 +13,7 @@ An Azure Load Balancer which routes the inbound traffic towards an availability 
 Moreover, all the VMs in the backend subnet must use the same outbount IP address as the service they need to reach is protected with a whitelist of IP addresses.
 A route table associated with the backend subnet will route all the outbound traffic towards a VM running RRAS between two NIC cards: one connected to the backend subnet and the second one connected a a public IP address.
 </p>
-![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/architecture.png)
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/architecture.png)
 </p>
 ###The main parameters are:</p>
 - The VM oS Version (Windows 2008 R2, 2012, 2012 R2, 2016)</p>
@@ -95,7 +95,71 @@ For instance:
 
     azure group deployment create rraslbgrp deprraslbtest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
-In order to complete the installation you need to configure manually the RRAS on the foward VM:
+In order to complete the installation you need to install and configure manually the RRAS on the foward VM:
+
+
+
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/1-mstsc.png)
+</p>
+
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/2-mstsc.png)
+</p>
+
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/3-mstsc.png)
+</p>
+
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/4-addrole.png)
+</p>
+
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/5-remoteaccess.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/6-routing.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/7-install.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/8-menu.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/10-computermanagement.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/11-enableroutin.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/12-nat.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/13-failed.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/14-nic.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/15-config.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/16-check.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/17-mstsc.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/18-explorer.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/19-myip.png)
+</p>
+</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/Docs/20-myip.png)
+</p>
 
 
 ##DELETE THE RESOURCE GROUP:

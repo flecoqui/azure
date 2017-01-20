@@ -118,30 +118,6 @@
         "description": "Forward VM Size"
       },
       "defaultValue": "Standard_A1"
-    },
-    "forwardVmCount": {
-      "type": "int",
-      "metadata": {
-        "description": "Number of Forward VMs"
-      },
-      "defaultValue": 1,
-      "allowedValues": [
-        1
-      ]
-    },
-    "forwardModulesUrl": {
-      "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/RRAS.zip",
-      "metadata": {
-        "description": "URL for the DSC configuration module for RRAS"
-      }
-    },
-    "forwardConfigurationFunction": {
-      "type": "string",
-      "defaultValue": "RRAS.ps1\\RRAS",
-      "metadata": {
-        "description": "DSC configuration function to install RRAS"
-      }
     }
   },
   "variables": {
@@ -1108,33 +1084,6 @@
         }
       }
 
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('forwardVmName'), copyindex(), '/dsc')]",
-      "apiVersion": "[variables('virtualMachineAPIVersion')]",
-      "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "forwardvmdscloop",
-        "count": "[parameters('forwardVmCount')]"
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('forwardVmName'), copyindex())]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.19",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "modulesUrl": "[parameters('forwardModulesUrl')]",
-          "configurationFunction": "[parameters('forwardConfigurationFunction')]",
-          "Properties": {
-            "MachineName": "[variables('forwardVmName')]"
-          }
-        },
-        "protectedSettings": null
-      }
     }
   ],
   "outputs":
