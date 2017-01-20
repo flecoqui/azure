@@ -16,6 +16,7 @@ A route table associated with the backend subnet will route all the outbound tra
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-windows-iperf/architecture.png)
 </p>
 ###The main parameters are:</p>
+- The VM oS Version (Windows 2008 R2, 2012, 2012 R2, 2016)</p>
 - The VM size for the VM in the frontend subnet</p>
 - The number of VM in the frontend subnet</p>
 - The VM size for the VM in the backend subnet</p>
