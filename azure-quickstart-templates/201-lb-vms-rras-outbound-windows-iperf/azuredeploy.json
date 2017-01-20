@@ -25,7 +25,7 @@
       "metadata": {
         "description": "VM Size"
       },
-      "defaultValue": "Standard_A1"
+      "defaultValue": "Standard_D2_v2"
     },
     "frontendVmCount": {
       "type": "int",
@@ -143,8 +143,6 @@
         "description": "DSC configuration function to install RRAS"
       }
     }
-
-
   },
   "variables": {
     "defaultAPIVersion": "2016-10-01",
@@ -571,34 +569,6 @@
             }
           },
           {
-            "name": "winrm1",
-            "properties": {
-              "description": "winrm1 server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "5985",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 103,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "winrm2",
-            "properties": {
-              "description": "winrm2 server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "5986",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 104,
-              "direction": "Inbound"
-            }
-          },
-          {
             "name": "iperf3-udp",
             "properties": {
               "description": "iperf3 udp port",
@@ -649,34 +619,6 @@
               "priority": 100,
               "direction": "Inbound"
             }
-          },
-          {
-            "name": "winrm1",
-            "properties": {
-              "description": "winrm1 server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "5985",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 103,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "winrm2",
-            "properties": {
-              "description": "winrm2 server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "5986",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 104,
-              "direction": "Inbound"
-            }
           }
         ]
       }
@@ -701,64 +643,7 @@
               "priority": 100,
               "direction": "Inbound"
             }
-          },
-          {
-            "name": "winrm1",
-            "properties": {
-              "description": "winrm1 server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "5985",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 103,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "winrm2",
-            "properties": {
-              "description": "winrm2 server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "5986",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 104,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "http",
-            "properties": {
-              "description": "http server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "80",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 101,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "https",
-            "properties": {
-              "description": "https server port",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "443",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 102,
-              "direction": "Inbound"
-            }
           }
-
         ]
       }
     },
@@ -950,24 +835,10 @@
       "name": "[variables('backendRouteTableName')]",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName": "UDR - FrontEnd"
+        "displayName": "UDR for Backend"
       },
       "properties": {
         "routes": [
-          {
-            "name": "RouteToLocal",
-            "properties": {
-              "addressPrefix": "[variables('backendSubnetAddressPrefix')]",
-              "nextHopType": "VnetLocal"
-            }
-          },
-          {
-            "name": "RouteToFrontend",
-            "properties": {
-              "addressPrefix": "[variables('frontendSubnetAddressPrefix')]",
-              "nextHopType": "VnetLocal"
-            }
-          },
           {
             "name": "RouteToInternet",
             "properties": {

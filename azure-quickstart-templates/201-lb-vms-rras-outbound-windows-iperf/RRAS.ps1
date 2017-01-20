@@ -5,9 +5,19 @@ Configuration RRAS
   Node $MachineName
   {
     #Install the Routing Role
-     WindowsFeature Routing
+    WindowsFeature RemoteAccess
+    {
+        Name = "RemoteAccess"
+        Ensure = "Present"
+    }    
+    WindowsFeature Routing
     {
         Name = "Routing"
+        Ensure = "Present"
+    }
+    WindowsFeature DirectAccess-VPN
+    {
+        Name = "DirectAccess-VPN"
         Ensure = "Present"
     }
   }

@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "frontendDnsLabelPrefix": {
-      "value": "riperflbvm"
+      "value": "xfrontendvm"
     },
     "frontendVmSize": {
       "value": "Standard_D1_v2"
@@ -33,7 +33,7 @@
       "value": "install-iperf-test.ps1"
     },
     "backendDnsLabelPrefix": {
-      "value": "rbackendvm"
+      "value": "xbackendvm"
     },
     "backendVmSize": {
       "value": "Standard_D1_v2"
@@ -42,7 +42,7 @@
       "value": 2
     },
     "forwardDnsLabelPrefix": {
-      "value": "rforwardvm"
+      "value": "xforwardvm"
     },
     "forwardVmSize": {
       "value": "Standard_D2_v2"
