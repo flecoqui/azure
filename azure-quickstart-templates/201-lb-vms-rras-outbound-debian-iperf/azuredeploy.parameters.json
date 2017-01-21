@@ -1,0 +1,54 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "adminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "frontendDnsLabelPrefix": {
+      "value": "frontendvm"
+    },
+    "frontendVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "frontendVmCount": {
+      "value": 2
+    },
+    "osVersion": {
+      "value": "8"
+    },
+    "initscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/install-iperf-apache.sh"
+    },
+    "initScriptFileName": {
+      "value": "install-iperf-apached.sh"
+    },
+    "backendDnsLabelPrefix": {
+      "value": "backendvm"
+    },
+    "backendVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "backendVmCount": {
+      "value": 2
+    },
+    "forwardDnsLabelPrefix": {
+      "value": "forwardvm"
+    },
+    "forwardVmSize": {
+      "value": "Standard_D2_v2"
+    },
+    "forwardVmCount": {
+      "value": 1
+    },
+    "forwardinitscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/install-nat.sh"
+    },
+    "forwardinitScriptFileName": {
+      "value": "install-nat.sh"
+    }
+  }
+}
