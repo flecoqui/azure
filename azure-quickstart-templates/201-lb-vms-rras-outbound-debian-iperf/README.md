@@ -1,4 +1,4 @@
-# Deployment of N VMs running Apache (port 80) and iperf3 (port 5201) behind a Load Balancer and N VM in a backend network using the same IP address for the outbound traffic.
+# Deployment of N Debian VMs running Apache (port 80) and iperf3 (port 5201) behind a Load Balancer and N Debian VM in a backend network using the same IP address for the outbound traffic.
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F201-lb-vms-rras-outbound-debian-iperf%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
