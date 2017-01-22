@@ -105,20 +105,23 @@ In order to valid the installation, you need to check the outbound IP Address.
 For instance: </p>
 
 	 ssh -p 50000 VMAdmin@frontendvm.eastus2.cloudapp.azure.com
-
+</p>
 2. From the VMs in the frontend subnet, you can establish a SSH session with the VMs in the backend subnet.
 </p>
 For instance: </p>
 
 	 ssh -p 22 VMAdmin@10.0.1.10
-
+</p>
 3. Once connected with the VM in the backend subnet, you need to install curl on your VM.</p>
 Launch the following commands: </p>
 
+</p>
 	 sudo -i
 
+</p>
 	 apt-get -y install curl
 
+</p>
 4. Once curl is installed, run the following command to get the outbound IP address of the VM in the backend subnet
 </p>
 	 curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
