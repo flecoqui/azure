@@ -114,16 +114,16 @@ For instance: </p>
 </p>
 3. Once connected with the VM in the backend subnet, you need to install curl on your VM.</p>
 Launch the following commands: </p>
-
 </p>
+
 	 sudo -i
-
 </p>
-	 apt-get -y install curl
 
+	 apt-get -y install curl
 </p>
 4. Once curl is installed, run the following command to get the outbound IP address of the VM in the backend subnet
-</p>
+Command:</p>
+
 	 curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/1-myip.png)
