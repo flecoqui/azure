@@ -98,37 +98,25 @@ For instance:
 
 In order to valid the installation, you need to check the outbound IP Address.
 </p>
-
 1. Once the deployment is done in the output section you can see the ssh command line to establish a SSH session with the VMs in the frontend subnet.  
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/1-ssh.png)
 </p>
-
 For instance: </p>
-
 	 ssh -p 50000 VMAdmin@frontendvm.eastus2.cloudapp.azure.com
-
 2. From the VMs in the frontend subnet, you can establish a SSH session with the VMs in the backend subnet.
-
 For instance: </p>
-
 	 ssh VMAdmin@10.0.1.10
-
 3. Once connected with the VM in the backend subnet, you need to install curl on your VM.
-Launch the following commands:
-
+Launch the following commands: </p>
 	 sudo -i
-
 	 apt-get -y install curl 
-
 4. Once curl is installed run the following command to get the outbound IP address of the VM in the backend subnet
-
+</p>
 	 curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
-
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/1-myip.png)
 </p>
-
 5. On this Azure portal check the Public IP address of the forward VM is the same:
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/2-myip.png)
