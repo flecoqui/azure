@@ -12,10 +12,10 @@ echo "#####  hostname: $usp_hostname"
 echo "Installation script start : $(date)"
 
 # firewall configuration 
-sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 5201 -j ACCEPT
-sudo iptables -A INPUT -p udp --dport 5201 -j ACCEPT
+#sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+#sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+#sudo iptables -A INPUT -p tcp --dport 5201 -j ACCEPT
+#sudo iptables -A INPUT -p udp --dport 5201 -j ACCEPT
 
 
 # Configure the general settings
