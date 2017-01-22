@@ -24,7 +24,7 @@
       "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/install-iperf-apache.sh"
     },
     "initScriptFileName": {
-      "value": "install-iperf-apached.sh"
+      "value": "install-iperf-apache.sh"
     },
     "backendDnsLabelPrefix": {
       "value": "backendvm"
