@@ -70,14 +70,14 @@
     },
     "frontendInitScriptUrl": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-iperf-apache.sh"
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-apache.sh"
     },
     "frontendInitScriptFileName": {
       "type": "string",
       "metadata": {
         "description": "sh [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
       },
-      "defaultValue": "install-iperf-apache.sh"
+      "defaultValue": "install-apache.sh"
     },
     "backendDnsLabelPrefix": {
       "type": "string",
@@ -135,14 +135,14 @@
     },
     "backendInitScriptUrl": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-iperf-apache.sh"
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-apache.sh"
     },
     "backendInitScriptFileName": {
       "type": "string",
       "metadata": {
         "description": "sh [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
       },
-      "defaultValue": "install-iperf-apache.sh"
+      "defaultValue": "install-apache.sh"
     }
   },
   "variables": {
@@ -474,9 +474,6 @@
               "addressPrefix": "[variables('backendSubnetAddressPrefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('backendNetworkSecurityGroupName'))]"
-              },
-              "routeTable": {
-                "id": "[resourceId('Microsoft.Network/routeTables', variables('backendRouteTableName'))]"
               }
             }
           }
@@ -730,7 +727,6 @@
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('backendVmName'), copyindex())]"
       ],
-
       "properties": {
         "publisher": "Microsoft.OSTCExtensions",
         "type": "CustomScriptForLinux",
@@ -761,10 +757,6 @@
     "httpClient": {
       "type": "string",
       "value": "[concat('http://', parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
-    },
-    "iperf3client": {
-      "type": "string",
-      "value": "[concat('iperf3 -c ', parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com -p 5200X --parallel 32') ]"
     }
   }
 }

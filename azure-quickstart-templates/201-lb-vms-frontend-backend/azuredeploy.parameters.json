@@ -30,10 +30,10 @@
       "value": 2
     },
     "frontendInitScriptUrl": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-iperf-apache.sh"
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-apache.sh"
     },
     "frontendInitScriptFileName": {
-      "value": "install-iperf-apache.sh"
+      "value": "install-apache.sh"
     },
     "backendDnsLabelPrefix": {
       "value": "backendvm"
@@ -54,10 +54,10 @@
       "value": "latest"
     },
     "backendInitScriptUrl": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-iperf-apache.sh"
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-apache.sh"
     },
     "backendInitScriptFileName": {
-      "value": "install-iperf-apache.sh"
+      "value": "install-apache.sh"
     },
     "backendVmCount": {
       "value": 2
