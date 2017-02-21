@@ -12,7 +12,7 @@
       "value": "frontendvm"
     },
     "frontendVmSize": {
-      "value": "Standard_D1_v2"
+      "value": "Standard_F1"
     },
     "frontendImagePublisher": {
       "value": "credativ"
@@ -39,7 +39,7 @@
       "value": "backendvm"
     },
     "backendVmSize": {
-      "value": "Standard_D1_v2"
+      "value": "Standard_F1"
     },
     "backendImagePublisher": {
       "value": "credativ"
