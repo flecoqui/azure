@@ -1,0 +1,66 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "adminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "frontendDnsLabelPrefix": {
+      "value": "frontendvm"
+    },
+    "frontendVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "frontendImagePublisher": {
+      "value": "credativ"
+    },
+    "frontendImageOffer": {
+      "value": "Debian"
+    },
+    "frontendImageSku": {
+      "value": "8"
+    },
+    "frontendImageVersion": {
+      "value": "latest"
+    },
+    "frontendVmCount": {
+      "value": 2
+    },
+    "frontendInitScriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-iperf-apache.sh"
+    },
+    "frontendInitScriptFileName": {
+      "value": "install-iperf-apache.sh"
+    },
+    "backendDnsLabelPrefix": {
+      "value": "backendvm"
+    },
+    "backendVmSize": {
+      "value": "Standard_D1_v2"
+    },
+    "backendImagePublisher": {
+      "value": "credativ"
+    },
+    "backendImageOffer": {
+      "value": "Debian"
+    },
+    "backendImageSku": {
+      "value": "8"
+    },
+    "backendImageVersion": {
+      "value": "latest"
+    },
+    "backendInitScriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/install-iperf-apache.sh"
+    },
+    "backendInitScriptFileName": {
+      "value": "install-iperf-apache.sh"
+    },
+    "backendVmCount": {
+      "value": 2
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Deployment of N VMs running Apache (port 80) and iperf3 (port 5201) behind a Load Balancer and N VM in a backend network using the same IP address for the outbound traffic.",
+  "description": "This template allows you to deploy N VMs running Apache (port 80) and iperf3 (port 5201) behind a Load Balancer and N VM in a backend network using the same IP address for the outbound traffic.",
+  "summary": "This template takes a minimum amount of parameters and deploys Debian VMs, using the latest patched version.",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2016-11-16"
+}
