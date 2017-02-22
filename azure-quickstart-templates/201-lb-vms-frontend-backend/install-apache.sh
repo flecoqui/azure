@@ -43,10 +43,19 @@ cat <<EOF > $directory/index.php
       <tr>
         <td>
           <h1>Hello from $azure_hostname</h1>
-			<p>Local IP Address: </p>
-			<?php echo shell_exec("ifconfig eth0 |  grep 'inet ' | awk '{print $2}' | sed 's/addr://'"); ?>
-			<p>Public IP Address: </p>
-			<?php echo shell_exec("curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'"); ?>
+<p>Local IP Address: </p>
+
+<?php
+system("ifconfig eth0 |  grep 'inet ' | awk '{print \$2}' | sed 's/addr://'");
+
+?>
+
+<p>Public IP Address: </p>
+<?php
+system("curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'");
+
+?>
+
         </td>
       </tr>
     </table>
