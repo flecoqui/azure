@@ -750,7 +750,7 @@
     },
     "httpClient": {
       "type": "string",
-      "value": "[concat('http://', parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('http://', parameters('frontendDnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
     }
   }
 }

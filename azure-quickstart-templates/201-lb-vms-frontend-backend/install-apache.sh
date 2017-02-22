@@ -14,6 +14,8 @@ echo "Installation script start : $(date)"
 # Apache installation 
 apt-get -y update
 apt-get -y install apache2
+apt-get -y install php5-common libapache2-mod-php5 php5-cli
+apt-get -y install curl
 # firewall configuration 
 sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
@@ -30,7 +32,7 @@ if [ ! -d $directory ]; then
 mkdir $directory
 fi
 
-cat <<EOF > $directory/index.html 
+cat <<EOF > $directory/index.php 
 <html>
   <head>
     <title>Sample "Hello from $azure_hostname" </title>
@@ -41,6 +43,10 @@ cat <<EOF > $directory/index.html
       <tr>
         <td>
           <h1>Hello from $azure_hostname</h1>
+			<p>Local IP Address: </p>
+			<?php echo shell_exec("ifconfig eth0 |  grep 'inet ' | awk '{print $2}' | sed 's/addr://'"); ?>
+			<p>Public IP Address: </p>
+			<?php echo shell_exec("curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'"); ?>
         </td>
       </tr>
     </table>
@@ -56,13 +62,13 @@ EOF
 
 
 echo "Configuring Web Site for Apache: $(date)"
-cat <<EOF > /etc/apache2/conf-available/test-web.conf 
+cat <<EOF > /etc/apache2/sites-available/html.conf 
 ServerName "$azure_hostname"
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
         ServerName "$azure_hostname"
 
-        DocumentRoot /var/www/test-web
+        DocumentRoot /var/www/html
         <Directory />
                 Options FollowSymLinks
                 AllowOverride None
@@ -77,10 +83,8 @@ ServerName "$azure_hostname"
         # Possible values include: debug, info, notice, warn, error, crit,
         # alert, emerg.
         LogLevel warn
-        ErrorLog /var/log/httpd/usp-evaluation-error.log
-        CustomLog /var/log/httpd/usp-evaluation-access.log combined
+        ErrorLog /var/log/apache2/azure-evaluation-error.log
+        CustomLog /var/log/apache2/azure-evaluation-access.log combined
 </VirtualHost>
 EOF
 apachectl restart
-exit 0 
-
