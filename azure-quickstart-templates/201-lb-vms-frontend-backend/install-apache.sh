@@ -56,6 +56,12 @@ system("curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<
 
 ?>
 
+<p>Client IP Address: </p>
+<?php
+echo $_SERVER['REMOTE_ADDR'];
+
+?>
+
         </td>
       </tr>
     </table>
