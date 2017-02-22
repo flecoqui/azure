@@ -577,7 +577,7 @@
             "publisher": "[parameters('frontendImagePublisher')]",
             "offer": "[parameters('frontendImageOffer')]",
             "sku": "[parameters('frontendImageSku')]",
-            "version": "[parameters('frontendImageOsVersion')]"
+            "version": "[parameters('frontendImageVersion')]"
           },
           "osDisk": {
             "name": "osdisk",
