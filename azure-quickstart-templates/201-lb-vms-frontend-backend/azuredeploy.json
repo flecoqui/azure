@@ -511,12 +511,6 @@
               "loadBalancerInboundNatRules": [
                 {
                   "id": "[concat(variables('lbID'),'/inboundNatRules/ssh', copyindex())]"
-                },
-                {
-                  "id": "[concat(variables('lbID'),'/inboundNatRules/iperftcp', copyindex())]"
-                },
-                {
-                  "id": "[concat(variables('lbID'),'/inboundNatRules/iperfudp', copyindex())]"
                 }
               ]
             }
