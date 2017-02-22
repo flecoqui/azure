@@ -94,18 +94,18 @@ azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group create rraslbgrp eastus2
+    azure group create lbfrbagrp eastus2
 
 ##DEPLOY THE VMs:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
 
-    azure group deployment create rraslbgrp deprraslbtest -f azuredeploy.json -e azuredeploy.parameters.json -vv
+    azure group deployment create lbfrbagrp deprraslbtest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
 ##DELETE THE RESOURCE GROUP:
 azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group delete rraslbgrp eastus2
+    azure group delete lbfrbagrp 
