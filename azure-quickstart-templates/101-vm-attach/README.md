@@ -15,10 +15,14 @@ This template is useful if you need to create a VM in Azure from an existing VHD
 
 For instance, if you have an existing VirtualBox VM, you need first to convert the image of this VM into a VHD file with fixed size.
  
-1. Convert the existing VM image file into a RAW file , command below:
-VBoxManage.exe clonemedium [path-to-existing-VM-image] [path-to-the-raw-file] --format RAW 
-2. Convert the RAW file into a VHD file with fixed size, command below: 
-VBoxManage.exe convertfromraw  [path-to-the-raw-file] [path-to-the-vhd-file] --format VHD --variant Fixed 
+1. Convert the existing VM image file into a RAW file , command below:</p>
+
+ VBoxManage.exe clonemedium [path-to-existing-VM-image] [path-to-the-raw-file] --format RAW 
+
+2. Convert the RAW file into a VHD file with fixed size, command below:</p>
+ 
+ VBoxManage.exe convertfromraw  [path-to-the-raw-file] [path-to-the-vhd-file] --format VHD --variant Fixed 
+
 3. With tools like Azure Storage Explorer [here](http://storageexplorer.com/) upload the VHD file with fixed size on your Storage Account in your Region. The VHD file uploaded will be defined with:</p>
 	- the Storage Account Name</p>
 	- the Container Name</p>
