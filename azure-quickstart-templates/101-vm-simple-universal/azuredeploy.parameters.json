@@ -1,0 +1,27 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "adminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "dnsLabelPrefix": {
+      "value": "iperfdebianvm001"
+    },
+    "debianOSVersion": {
+      "value": "8"
+    },
+    "vmSize": {
+      "value": "Standard_F1_v2"
+    },
+    "initscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software.sh"
+    },
+    "initScriptFileName": {
+      "value": "install-software.sh"
+    }
+  }
+}
