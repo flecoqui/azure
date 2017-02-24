@@ -51,13 +51,13 @@ cat <<EOF > $directory/index.php
 <p>Local IP Address: </p>
 
 <?php
-echo $azure_localip;
+echo "$azure_localip";
 
 ?>
 
 <p>Public IP Address: </p>
 <?php
-echo $azure_publicip;
+echo "$azure_publicip";
 
 ?>
 
