@@ -74,4 +74,30 @@ echo $azure_publicip;
 </html>
 EOF
 
+echo "Configuring Web Site for Apache: $(date)"
+cat <<EOF > /etc/apache2/sites-available/html.conf 
+ServerName "$azure_hostname"
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName "$azure_hostname"
+
+        DocumentRoot /var/www/html
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+
+       # Add CORS headers for HTML5 players
+        Header always set Access-Control-Allow-Headers "origin, range"
+        Header always set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        Header always set Access-Control-Allow-Origin "*"
+        Header always set Access-Control-Expose-Headers "Server,range"
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+        ErrorLog /var/log/apache2/azure-evaluation-error.log
+        CustomLog /var/log/apache2/azure-evaluation-access.log combined
+</VirtualHost>
+EOF
 apachectl restart
