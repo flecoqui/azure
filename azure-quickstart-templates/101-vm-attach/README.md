@@ -20,9 +20,9 @@ VBoxManage.exe clonemedium [path-to-existing-VM-image] [path-to-the-raw-file] --
 2. Convert the RAW file into a VHD file with fixed size, command below: 
 VBoxManage.exe convertfromraw  [path-to-the-raw-file] [path-to-the-vhd-file] --format VHD --variant Fixed 
 3. With tools like Azure Storage Explorer [here](http://storageexplorer.com/) upload the VHD file with fixed size on your Storage Account in your Region. The VHD file uploaded will be defined with:</p>
-- the Storage Account Name</p>
-- the Container Name</p>
-- the VHD File Name</p>
+	the Storage Account Name</p>
+	the Container Name</p>
+	the VHD File Name</p>
 4. Create a resource group in the same region with Azure CLI, command below:
 azure group create attachgrp [region]
 6. Use the current ARM template (attach option) to create your VM from the existing VHD file, command below:
