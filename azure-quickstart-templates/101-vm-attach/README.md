@@ -27,8 +27,10 @@ For instance, if you have an existing VirtualBox VM, you need first to convert t
 	- the Storage Account Name</p>
 	- the Container Name</p>
 	- the VHD File Name</p>
-4. Create a resource group in the same region with Azure CLI, command below:
+4. Create a resource group in the same region with Azure CLI, command below:</p>
+
 azure group create attachgrp [region]
+
 6. Use the current ARM template (attach option) to create your VM from the existing VHD file, command below:
 azure group deployment create attachgrp attachdep -f azuredeploy.json -e azuredeploy.parameters.json  -vv 
 Using the following parameters:
