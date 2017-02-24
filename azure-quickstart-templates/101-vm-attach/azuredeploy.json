@@ -176,7 +176,7 @@
     },
     "httpClient": {
       "type": "string",
-      "value": "[concat('http://', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
+      "value": "[concat('http://', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com/')]"
     }
   }
 

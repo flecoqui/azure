@@ -3,16 +3,16 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "userImageStorageAccountName": {
-      "value": "blobstoragebackup"
+      "value": "attachstorage"
     },
     "userImageStorageContainerName": {
-      "value": "debiangpt"
+      "value": "attachcontainer"
     },
     "userImageVhdName": {
-      "value": "debiangptfix.vhd"
+      "value": "attach.vhd"
     },
     "dnsNameForPublicIP": {
-      "value": "debiangpt"
+      "value": "attachdns"
     },
     "osType": {
       "value": "linux"
