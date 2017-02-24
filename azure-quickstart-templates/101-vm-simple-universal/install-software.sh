@@ -5,6 +5,7 @@ azure_hostname=$1
 
 
 environ=`env`
+
 echo "Environment before installation: $environ"
 
 echo "Installation script start : $(date)"
@@ -16,6 +17,10 @@ apt-get -y update
 apt-get -y install apache2
 apt-get -y install php5-common libapache2-mod-php5 php5-cli
 apt-get -y install curl
+azure_localip=`ifconfig eth0 |  grep 'inet ' | awk '{print \$2}' | sed 's/addr://'`
+azure_publicip=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+echo "Local IP address: $azure_localip"
+echo "Public IP address: $azure_publicip"
 # firewall configuration 
 sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
@@ -46,19 +51,13 @@ cat <<EOF > $directory/index.php
 <p>Local IP Address: </p>
 
 <?php
-system("ifconfig eth0 |  grep 'inet ' | awk '{print \$2}' | sed 's/addr://'");
+echo $azure_localip;
 
 ?>
 
 <p>Public IP Address: </p>
 <?php
-system("curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'");
-
-?>
-
-<p>Client IP Address: </p>
-<?php
-echo $_SERVER['REMOTE_ADDR'];
+echo $azure_publicip;
 
 ?>
 
@@ -75,31 +74,4 @@ echo $_SERVER['REMOTE_ADDR'];
 </html>
 EOF
 
-
-echo "Configuring Web Site for Apache: $(date)"
-cat <<EOF > /etc/apache2/sites-available/html.conf 
-ServerName "$azure_hostname"
-<VirtualHost *:80>
-        ServerAdmin webmaster@localhost
-        ServerName "$azure_hostname"
-
-        DocumentRoot /var/www/html
-        <Directory />
-                Options FollowSymLinks
-                AllowOverride None
-        </Directory>
-
-       # Add CORS headers for HTML5 players
-        Header always set Access-Control-Allow-Headers "origin, range"
-        Header always set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-        Header always set Access-Control-Allow-Origin "*"
-        Header always set Access-Control-Expose-Headers "Server,range"
-
-        # Possible values include: debug, info, notice, warn, error, crit,
-        # alert, emerg.
-        LogLevel warn
-        ErrorLog /var/log/apache2/azure-evaluation-error.log
-        CustomLog /var/log/apache2/azure-evaluation-access.log combined
-</VirtualHost>
-EOF
 apachectl restart

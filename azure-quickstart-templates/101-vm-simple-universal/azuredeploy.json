@@ -315,7 +315,7 @@
     },
     "httpClient": {
       "type": "string",
-      "value": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
     },
     "iperf3client": {
       "type": "string",
