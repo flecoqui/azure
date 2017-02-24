@@ -1,0 +1,24 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "userImageStorageAccountName": {
+      "value": "blobstoragebackup"
+    },
+    "userImageStorageContainerName": {
+      "value": "debiangpt"
+    },
+    "userImageVhdName": {
+      "value": "debiangptfix.vhd"
+    },
+    "dnsNameForPublicIP": {
+      "value": "debiangpt"
+    },
+    "osType": {
+      "value": "linux"
+    },
+    "vmSize": {
+      "value": "Standard_F1"
+    }
+  }
+}
