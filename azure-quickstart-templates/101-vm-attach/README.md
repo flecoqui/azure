@@ -17,11 +17,11 @@ For instance, if you have an existing VirtualBox VM, you need first to convert t
  
 1. Convert the existing VM image file into a RAW file , command below:</p>
 
- VBoxManage.exe clonemedium [path-to-existing-VM-image] [path-to-the-raw-file] --format RAW 
+      VBoxManage.exe clonemedium [path-to-existing-VM-image] [path-to-the-raw-file] --format RAW 
 
 2. Convert the RAW file into a VHD file with fixed size, command below:</p>
  
- VBoxManage.exe convertfromraw  [path-to-the-raw-file] [path-to-the-vhd-file] --format VHD --variant Fixed 
+      VBoxManage.exe convertfromraw  [path-to-the-raw-file] [path-to-the-vhd-file] --format VHD --variant Fixed 
 
 3. With tools like Azure Storage Explorer [here](http://storageexplorer.com/) upload the VHD file with fixed size on your Storage Account in your Region. The VHD file uploaded will be defined with:</p>
 	- the Storage Account Name</p>
@@ -29,11 +29,11 @@ For instance, if you have an existing VirtualBox VM, you need first to convert t
 	- the VHD File Name</p>
 4. Create a resource group in the same region with Azure CLI, command below:</p>
 
-      azure group create attachgrp [region]
+     azure group create attachgrp [region]
 
 6. Use the current ARM template (attach option) to create your VM from the existing VHD file, command below: </p>
 
-      azure group deployment create attachgrp attachdep -f azuredeploy.json -e azuredeploy.parameters.json  -vv 
+     azure group deployment create attachgrp attachdep -f azuredeploy.json -e azuredeploy.parameters.json  -vv 
 
 Using the following parameters:
 
