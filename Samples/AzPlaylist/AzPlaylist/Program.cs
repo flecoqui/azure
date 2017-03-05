@@ -33,11 +33,22 @@ namespace AzPlaylist
             }
             return result;
         }
-        static string GetFileName(string uri)
+        static string GetUriFileName(string uri)
         {
             string result = string.Empty;
             int pos = 0;
             if ((pos = uri.LastIndexOf("/")) > 0)
+            {
+                if (pos + 1 < uri.Length)
+                    result = uri.Substring(pos + 1);
+            }
+            return result;
+        }
+        static string GetFileName(string uri)
+        {
+            string result = string.Empty;
+            int pos = 0;
+            if ((pos = uri.LastIndexOf("\\")) > 0)
             {
                 if (pos + 1 < uri.Length)
                     result = uri.Substring(pos + 1);
@@ -62,6 +73,26 @@ namespace AzPlaylist
                     int pos = uri.LastIndexOf('/');
                     if (pos > 0)
                         result = uri.Substring(0, pos + 1) + "artwork.jpg";
+                }
+            }
+            return result;
+        }
+        static string GetPosterFile(string path, string extensions)
+        {
+            string result = "ms-appx:///Assets/MP4.png";
+            char[] sep = { '\\' };
+            string[] res = path.Split(sep);
+            if ((res != null) && (res.Length > 3))
+            {
+                string artist = res[res.Length - 3];
+                string album = res[res.Length - 2];
+                string title = res[res.Length-1];
+                string ext = GetExtension(title);
+                if ((!string.IsNullOrEmpty(ext)) && (extensions.Contains(ext)))
+                {
+                    int pos = path.LastIndexOf('\\');
+                    if (pos > 0)
+                        result = path.Substring(0, pos + 1) + "artwork.jpg";
                 }
             }
             return result;
@@ -104,7 +135,7 @@ namespace AzPlaylist
                                 string artist = string.Empty ;
                                 string album = string.Empty;
                                 string posteruri = GetPosterUri(unescapeuri,extensions);
-                                string title = GetFileName(unescapeuri);
+                                string title = GetUriFileName(unescapeuri);
                                 if(!string.IsNullOrEmpty(title))
                                 { 
                                     string uri = Uri.EscapeUriString(unescapeuri);
@@ -168,11 +199,125 @@ namespace AzPlaylist
             }
             return false;
         }
+        // Process all files in the directory passed in, recurse on any directories 
+        // that are found, and process the files they contain.
+        public static void ProcessDirectory(ref ulong counter, string extensions, System.IO.StreamWriter writer, string targetDirectory)
+        {
+            // Process the list of files found in the directory.
+            string[] fileEntries = System.IO.Directory.GetFiles(targetDirectory);
+            foreach (string fileName in fileEntries)
+                ProcessFile(ref counter, extensions, writer,fileName);
+
+            // Recurse into subdirectories of this directory.
+            string[] subdirectoryEntries = System.IO.Directory.GetDirectories(targetDirectory);
+            foreach (string subdirectory in subdirectoryEntries)
+                ProcessDirectory(ref counter, extensions, writer,subdirectory);
+        }
+
+        // Insert logic for processing found files here.
+        public static void ProcessFile(ref ulong counter, string extensions, System.IO.StreamWriter writer, string path)
+        {
+            Console.WriteLine("Processed file '{0}'.", path);
+            string ext = GetExtension(path);
+            if ((!string.IsNullOrEmpty(ext)) && (extensions.Contains(ext)))
+            {
+                string artist = string.Empty;
+                string album = string.Empty;
+                string posteruri = GetPosterFile(path, extensions);
+                string title = GetFileName(path);
+                if (!string.IsNullOrEmpty(title))
+                {
+                    string uri = path;
+                    if (counter == 0)
+                    {
+                        if(writer!=null)
+                        {
+                            writer.WriteLine(header);
+                            writer.Write("{");
+                            uri = "file://" + uri.Replace("\\", "\\\\"); 
+                            posteruri = "file://" + posteruri.Replace("\\","\\\\");
+                            writer.Write(string.Format(songItem, counter.ToString(), title, uri, posteruri));
+                            writer.Write("}");
+                        }
+                        else
+                            Console.Write(uri + "\n");
+                    }
+                    else
+                    {
+                        if (writer != null)
+                        {
+                            writer.WriteLine(",\r\n");
+                            writer.Write("{");
+                            uri = "file://" + uri.Replace("\\", "\\\\");
+                            posteruri = "file://" + posteruri.Replace("\\", "\\\\");
+                            writer.Write(string.Format(songItem, counter.ToString(), title, uri, posteruri));
+                            writer.Write("}");
+                        }
+                        else
+                            Console.Write(uri + "\n");
+                    }
+                    counter++;
+                }
+            }
+        }
+        static bool CreateLocalPlayList(string FolderName, string extensions, string outputFile, out string errorMessage)
+        {
+            ulong counter = 0;
+            List<string> blobs = new List<string>();
+            errorMessage = string.Empty;
+
+            try
+            {
+                string ext = string.Empty;
+                System.IO.StreamWriter writer = null;
+                if (!string.IsNullOrEmpty(outputFile))
+                    writer = new System.IO.StreamWriter(outputFile, false, Encoding.UTF8);
+                if ((writer != null) || string.IsNullOrEmpty(outputFile))
+                {
+
+                    if (System.IO.File.Exists(FolderName))
+                    {
+                        // This path is a file
+                        ProcessFile(ref counter, extensions, writer, FolderName);
+                    }
+                    else if (System.IO.Directory.Exists(FolderName))
+                    {
+                        // This path is a directory
+                        ProcessDirectory(ref counter, extensions, writer, FolderName);
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0} is not a valid file or directory.", FolderName);
+                    }
+                    if (!string.IsNullOrEmpty(outputFile))
+                    {
+                        writer.WriteLine(footer);
+                        writer.Close();
+                    }
+                    else
+                        Console.Write(counter.ToString() + " files discovered on Azure storage\n");
+                    return true;
+                }
+                else
+                    errorMessage = "Can't create file : " + outputFile;
+
+            }
+            catch (Exception e)
+            {
+                if (string.IsNullOrEmpty(outputFile))
+                    errorMessage = "Exception while dumping playlist: " + e.Message;
+                else
+                    errorMessage = "Exception while creating playlist: " + e.Message;
+            }
+            return false;
+        }
         enum Action
         {
             None = 0,
             Create,
             Dump,
+            LocalCreate,
+            LocalDump
         }
 
         struct ArgsParsed
@@ -183,19 +328,20 @@ namespace AzPlaylist
             public string StorageAccountName;
             public string StorageAccountKey;
             public string ContainerName;
+            public string Folder;
             public string extensions;
             public string outputFileName;
         }
         static void DumpSyntax(string ErrorMessage)
         {
-            Console.WriteLine("AzPlaylist Application version 1.0");
+            Console.WriteLine("AzPlaylist Application version 1.0.1");
             if (!string.IsNullOrEmpty(ErrorMessage)) Console.WriteLine("Error: " + ErrorMessage);
             Console.WriteLine("Syntax:");
             Console.WriteLine("AzPlaylist -action <Action> ");
             Console.WriteLine("                 -storageaccountname <StorageAccountName> -storageaccountkey <StorageAccountKey> ");
             Console.WriteLine("                 -containername <ContainerName> -extensions <extensions> ");
             Console.WriteLine("                 [ -outputfilename <outputFileName> ]  ");
-            Console.WriteLine("Where <Action>: 'create' or 'dump' ");
+            Console.WriteLine("Where <Action>: 'create' or 'dump' or 'localcreate' or 'localdump' ");
             Console.WriteLine("For instance: ");
             Console.WriteLine("AzPlaylist -action create  ");
             Console.WriteLine("                 -storageaccountname <StorageAccountName> -storageaccountkey <StorageAccountKey> -containername ");
@@ -203,6 +349,10 @@ namespace AzPlaylist
             Console.WriteLine("AzPlaylist -action dump  ");
             Console.WriteLine("                 -storageaccountname <StorageAccountName> -storageaccountkey <StorageAccountKey> -containername ");
             Console.WriteLine("                 <ContainerName> -extensions mp3;m4a;aac;flac  ");
+            Console.WriteLine("AzPlaylist -action localcreate  ");
+            Console.WriteLine("                 -folder <FolderName> -extensions mp3;m4a;aac;flac -outputfilename <outputFileName> ");
+            Console.WriteLine("AzPlaylist -action localdump  ");
+            Console.WriteLine("                 -folder <FolderName> -extensions mp3;m4a;aac;flac ");
         }
         static void CheckArgs(ArgsParsed arg)
         {
@@ -249,6 +399,10 @@ namespace AzPlaylist
                                 result.action = Action.Create;
                             else if (args[i] == "dump")
                                 result.action = Action.Dump;
+                            else if (args[i] == "localcreate")
+                                result.action = Action.LocalCreate;
+                            else if (args[i] == "localdump")
+                                result.action = Action.LocalDump;
                             else
                                 result.action = Action.None;
                         }
@@ -277,6 +431,12 @@ namespace AzPlaylist
                             result.ContainerName = args[i];
                         }
                         break;
+                    case "-folder":
+                        if (++i < args.Length)
+                        {
+                            result.Folder = args[i];
+                        }
+                        break;
                     case "-extensions":
                         if (++i < args.Length)
                         {
@@ -302,6 +462,16 @@ namespace AzPlaylist
                 else if (arg.action == Action.Dump)
                 {
                     if (CreatePlayList(arg.StorageAccountName, arg.StorageAccountKey, arg.ContainerName, arg.extensions, null, out arg.ErrorMessage) != true)
+                        DumpSyntax(arg.ErrorMessage);
+                }
+                else if (arg.action == Action.LocalCreate)
+                {
+                    if (CreateLocalPlayList(arg.Folder, arg.extensions, arg.outputFileName, out arg.ErrorMessage) != true)
+                        DumpSyntax(arg.ErrorMessage);
+                }
+                else if (arg.action == Action.LocalDump)
+                {
+                    if (CreateLocalPlayList(arg.Folder, arg.extensions, null, out arg.ErrorMessage) != true)
                         DumpSyntax(arg.ErrorMessage);
                 }
                 else
