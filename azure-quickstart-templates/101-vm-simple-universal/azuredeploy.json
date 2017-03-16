@@ -153,7 +153,8 @@
       }
     },
     "configurationSize": "[variables(concat('configurationSize', parameters('configurationSize')))]",
-    "storageAccountName": "[concat(parameters('dnsLabelPrefix'), uniqueString(concat(resourceGroup().id, parameters('dnsLabelPrefix'))),'sa')]",
+    "storageAccountNamePrefix": "[toLower(substring(concat(parameters('dnsLabelPrefix'), uniqueString(resourceGroup().id)), 0, 8))]",
+    "storageAccountName": "[concat(variables('storageAccountNamePrefix'), uniqueString(concat(resourceGroup().id, variables('storageAccountNamePrefix'))),'sa')]",
     "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'), 'nsg')]",
     "dataDisk1VhdName": "[concat(parameters('dnsLabelPrefix'), 'datadisk')]",
     "imagePublisher": "credativ",
@@ -173,7 +174,8 @@
     "virtualNetworkName": "[concat(parameters('dnsLabelPrefix'), 'vnet')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-    "apiVersion": "2015-06-15"
+    "apiVersion": "no",
+    "2015-06-15"
   },
   "resources": [
     {
