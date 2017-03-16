@@ -353,7 +353,7 @@
           "dataDisks": [
             {
               "name": "datadisk1",
-              "diskSizeGB": "[variables('vmDataDiskSize')",
+              "diskSizeGB": "[variables('vmDataDiskSize')]",
               "lun": 0,
               "vhd": {
                 "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('dataDisk1VhdName'),'.vhd')]"
