@@ -12,7 +12,7 @@
       "value": "vmiperf001"
     },
     "configurationOS": {
-      "value": "centos"
+      "value": "ubuntu"
     },
     "configurationSize": {
       "value": "Small"

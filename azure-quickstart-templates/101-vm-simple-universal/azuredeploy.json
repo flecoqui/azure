@@ -20,43 +20,145 @@
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine. DNS name: <dnsLabelPrefix>.<Region>.cloudapp.azure.com"
       }
     },
-    "debianOSVersion": {
+    "configurationOS": {
       "type": "string",
-      "defaultValue": "8",
+      "defaultValue": "debian",
       "allowedValues": [
-        "7",
-        "8"
+        "debian",
+        "ubuntu",
+        "centos",
+        "redhat",
+        "nanoserver2016",
+        "windowsserver2016"
       ],
       "metadata": {
-        "description": "The Debian version for the VM. This will pick a fully patched image of this given Ubuntu version. Allowed values: 7.2.20160303, 7.2.20160308."
+        "description": "\"The Operating System to be installed on the VM. Default value debian. Allowed values: debian,ubuntu,centos,redhat,nanoserver2016,windowsserver2016"
       }
     },
-    "vmSize": {
+    "configurationSize": {
       "type": "string",
+      "defaultValue": "Small",
+      "allowedValues": [
+        "Small",
+        "Medium",
+        "Large",
+        "XLarge"
+      ],
       "metadata": {
-        "description": "VM Size"
-      },
-      "defaultValue": "Standard_F1"
-    },
-    "initscriptUrl": {
-      "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software.sh"
-    },
-    "initScriptFileName": {
-      "type": "string",
-      "metadata": {
-        "description": "sh [initScriptFileName]. Logs in this file /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
-      },
-      "defaultValue": "install-software.sh"
+        "description": "Configuration Size: VM Size + Disk Size"
+      }
     }
   },
   "variables": {
+    "configurationSizeSmall": {
+      "vmSize": "Standard_F1",
+      "diskSize": 128
+    },
+    "configurationSizeMedium": {
+      "vmSize": "Standard_F2",
+      "diskSize": 256
+    },
+    "configurationSizeLarge": {
+      "vmSize": "Standard_F3",
+      "diskSize": 512
+    },
+    "configurationSizeXLarge": {
+      "vmSize": "Standard_F4",
+      "diskSize": 1024
+    },
+    "configurationOS": {
+      "debian": {
+        "publisher": "credativ",
+        "offer": "Debian",
+        "sku": "8",
+        "version": "latest",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software.sh",
+        "installScriptFileName": "install-software.sh",
+        "commandToExecute": "[concat('sh install-software.sh \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]",
+        "extensionPublisher": "Microsoft.OSTCExtensions",
+        "extensionType": "CustomScriptForLinux",
+        "extensionTypeHandlerVersion": "1.4",
+        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      },
+      "ubuntu": {
+        "publisher": "Canonical",
+        "offer": "UbuntuServer",
+        "sku": "16.04.0-LTS",
+        "version": "latest",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software.sh",
+        "installScriptFileName": "install-software.sh",
+        "commandToExecute": "[concat('sh install-software.sh \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]",
+        "extensionPublisher": "Microsoft.OSTCExtensions",
+        "extensionType": "CustomScriptForLinux",
+        "extensionTypeHandlerVersion": "1.4",
+        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      },
+      "centos": {
+        "publisher": "openlogic",
+        "offer": "centos",
+        "sku": "7.2",
+        "version": "latest",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software.sh",
+        "installScriptFileName": "install-software.sh",
+        "commandToExecute": "[concat('sh install-software.sh \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]",
+        "extensionPublisher": "Microsoft.OSTCExtensions",
+        "extensionType": "CustomScriptForLinux",
+        "extensionTypeHandlerVersion": "1.4",
+        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      },
+      "redhat": {
+        "publisher": "",
+        "offer": "",
+        "sku": "",
+        "version": "",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software.sh",
+        "installScriptFileName": "install-software.sh",
+        "commandToExecute": "[concat('sh install-software.sh \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]",
+        "extensionPublisher": "Microsoft.OSTCExtensions",
+        "extensionType": "CustomScriptForLinux",
+        "extensionTypeHandlerVersion": "1.4",
+        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      },
+      "windowsserver2016": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2016-Datacenter-Server-Core",
+        "version": "latest",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software-windows.ps1",
+        "installScriptFileName": "install-software-windows.ps1",
+        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File install-software-windows.ps1 \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]",
+        "extensionPublisher": "Microsoft.Compute",
+        "extensionType": "CustomScriptExtension",
+        "extensionTypeHandlerVersion": "1.7",
+        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      },
+      "nanoserver2016": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2016-Nano-Server",
+        "version": "latest",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software-windows.ps1",
+        "installScriptFileName": "install-software-nano.ps1",
+        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File install-software-nano.ps1 \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]",
+        "extensionPublisher": "Microsoft.Compute",
+        "extensionType": "CustomScriptExtension",
+        "extensionTypeHandlerVersion": "1.7",
+        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+      }
+    },
+    "configurationSize": "[variables(concat('configurationSize', parameters('configurationSize')))]",
     "storageAccountName": "[concat(parameters('dnsLabelPrefix'), 'storage')]",
     "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'), 'nsg')]",
     "dataDisk1VhdName": "[concat(parameters('dnsLabelPrefix'), 'datadisk')]",
     "imagePublisher": "credativ",
     "imageOffer": "Debian",
-    "OSDiskName": "osdiskfordebiansimple",
+    "OSDiskName": "osdisksimplevm",
     "nicName": "[concat(parameters('dnsLabelPrefix'), 'nic')]",
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "[concat(parameters('dnsLabelPrefix'), 'subnet')]",
@@ -66,7 +168,8 @@
     "publicIPAddressType": "Dynamic",
     "vmStorageAccountContainerName": "vhds",
     "vmName": "[concat(parameters('dnsLabelPrefix'), 'vm')]",
-    "vmSize": "Standard_A1",
+    "vmSize": "[variables('configurationSize').vmSize]",
+    "vmDataDiskSize": "[variables('configurationSize').diskSize]",
     "virtualNetworkName": "[concat(parameters('dnsLabelPrefix'), 'vnet')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
@@ -233,10 +336,10 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('debianOSVersion')]",
-            "version": "latest"
+            "publisher": "[variables('configurationOS')[parameters('configurationOS')].publisher]",
+            "offer": "[variables('configurationOS')[parameters('configurationOS')].offer]",
+            "sku": "[variables('configurationOS')[parameters('configurationOS')].sku]",
+            "version": "[variables('configurationOS')[parameters('configurationOS')].version]"
           },
           "osDisk": {
             "name": "osdisk",
@@ -249,7 +352,7 @@
           "dataDisks": [
             {
               "name": "datadisk1",
-              "diskSizeGB": "100",
+              "diskSizeGB": "[variables('vmDataDiskSize')",
               "lun": 0,
               "vhd": {
                 "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('dataDisk1VhdName'),'.vhd')]"
@@ -285,15 +388,15 @@
             "displayName": "init"
           },
           "properties": {
-            "publisher": "Microsoft.OSTCExtensions",
-            "type": "CustomScriptForLinux",
-            "typeHandlerVersion": "1.4",
+            "publisher": "[variables('configurationOS')[parameters('configurationOS')].extensionPublisher]",
+            "type": "[variables('configurationOS')[parameters('configurationOS')].extensionType]",
+            "typeHandlerVersion": "[variables('configurationOS')[parameters('configurationOS')].extensionTypeHandlerVersion]",
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "[parameters('initscriptUrl')]"
+                "[variables('configurationOS')[parameters('configurationOS')].installScriptUrl]"
               ],
-              "commandToExecute": "[concat('sh ', parameters('initScriptFileName'),' \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]"
+              "commandToExecute": "[variables('configurationOS')[parameters('configurationOS')].commandToExecute]"
             }
           }
         }
@@ -305,13 +408,13 @@
       "type": "string",
       "value": "[concat(parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
-    "sshCommand": {
+    "remoteCommand": {
       "type": "string",
-      "value": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[variables('configurationOS')[parameters('configurationOS')].remoteCommand]"
     },
-    "resultScript": {
+    "logInformation": {
       "type": "string",
-      "value": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout" 
+      "value": "[variables('configurationOS')[parameters('configurationOS')].logInformation]"
     },
     "httpClient": {
       "type": "string",
