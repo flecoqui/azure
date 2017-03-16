@@ -52,19 +52,19 @@
   "variables": {
     "configurationSizeSmall": {
       "vmSize": "Standard_F1",
-      "diskSize": 128
+      "diskSize": "128"
     },
     "configurationSizeMedium": {
       "vmSize": "Standard_F2",
-      "diskSize": 256
+      "diskSize": "256"
     },
     "configurationSizeLarge": {
       "vmSize": "Standard_F3",
-      "diskSize": 512
+      "diskSize": "512"
     },
     "configurationSizeXLarge": {
       "vmSize": "Standard_F4",
-      "diskSize": 1024
+      "diskSize": "1024"
     },
     "configurationOS": {
       "debian": {
