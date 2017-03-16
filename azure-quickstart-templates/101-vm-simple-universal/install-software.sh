@@ -72,6 +72,7 @@ cat <<EOF > $directory/index.php
       <tr>
         <td>
           <h1>Hello from $azure_hostname</h1>
+		  <p>OS $OS Version $VER Architecture $ARCH </p>
 		  <p>Local IP Address: </p>
 
 <?php
