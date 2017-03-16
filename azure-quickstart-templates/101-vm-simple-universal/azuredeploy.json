@@ -153,7 +153,7 @@
       }
     },
     "configurationSize": "[variables(concat('configurationSize', parameters('configurationSize')))]",
-    "storageAccountName": "[concat(parameters('dnsLabelPrefix'), 'storage')]",
+    "storageAccountName": "[concat(parameters('dnsLabelPrefix'), uniqueString(concat(resourceGroup().id, parameters('dnsLabelPrefix'))),'sa')]",
     "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'), 'nsg')]",
     "dataDisk1VhdName": "[concat(parameters('dnsLabelPrefix'), 'datadisk')]",
     "imagePublisher": "credativ",
