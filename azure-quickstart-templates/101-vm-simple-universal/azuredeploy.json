@@ -32,7 +32,7 @@
         "windowsserver2016"
       ],
       "metadata": {
-        "description": "\"The Operating System to be installed on the VM. Default value debian. Allowed values: debian,ubuntu,centos,redhat,nanoserver2016,windowsserver2016"
+        "description": "The Operating System to be installed on the VM. Default value debian. Allowed values: debian,ubuntu,centos,redhat,nanoserver2016,windowsserver2016"
       }
     },
     "configurationSize": {
@@ -59,7 +59,7 @@
       "diskSize": "256"
     },
     "configurationSizeLarge": {
-      "vmSize": "Standard_F3",
+      "vmSize": "Standard_F4",
       "diskSize": "512"
     },
     "configurationSizeXLarge": {
