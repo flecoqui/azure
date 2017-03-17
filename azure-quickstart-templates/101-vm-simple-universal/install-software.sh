@@ -45,7 +45,11 @@ configure_apache(){
 # Apache installation 
 apt-get -y update
 apt-get -y install apache2
-apt-get -y install php7.0-common libapache2-mod-php7.0 php7.0-cli
+if [ $isdebian -eq 0 ]; then
+   apt-get -y install php5-common libapache2-mod-php5 php5-cli
+else
+   apt-get -y install php7.0-common libapache2-mod-php7.0 php7.0-cli
+fi
 apt-get -y install curl
 azure_localip=`ifconfig eth0 |  grep 'inet ' | awk '{print \$2}' | sed 's/addr://'`
 azure_publicip=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
@@ -224,7 +228,7 @@ else
     log "configure network"
     configure_network
     log "configure apache"
-    configure_apache
+	configure_apache
     if [ $isubuntu -eq 0 ] && [ "$VER" = "14" ]; then
       log "configure iperf for ubuntu 14"
       configure_iperf_ubuntu_14
