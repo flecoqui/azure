@@ -11,7 +11,7 @@
 This template allows you to deploy create a simple VM (Windows or Linux) from an existing VHD file in a storage account in the same region.
 This template is useful if you need to create a VM in Azure from an existing VHD stored in a storage account in the same region.
 
-##USING THIS TEMPLATE:
+## USING THIS TEMPLATE:
 
 For instance, if you have an existing VirtualBox VM, you need first to convert the image of this VM into a VHD file with fixed size.
  
@@ -88,21 +88,21 @@ OS Type (Windows or linux):
 
 With Azure CLI you can create this VM with 2 command lines:
 
-##CREATE RESOURCE GROUP:
+## CREATE RESOURCE GROUP:
 azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
     azure group create attachgrp eastus2
 
-##DEPLOY THE VM:
+## DEPLOY THE VM:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
 
     azure group deployment create attachgrp -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
-##DELETE THE RESOURCE GROUP:
+## DELETE THE RESOURCE GROUP:
 azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:

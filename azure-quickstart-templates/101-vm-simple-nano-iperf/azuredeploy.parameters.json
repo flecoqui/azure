@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "iperfvm001"
+      "value": "ifnanovm01"
     },
     "vmSize": {
       "value": "Standard_D3_v2"

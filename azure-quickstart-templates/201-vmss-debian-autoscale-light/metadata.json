@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Deploy a VM Scale set running Debian with apache components",
+  "description": "This template allows you to deploy a VM scaleset running Debian with apache components",
+  "summary": "This template takes a minimum amount of parameters and deploys a scaleset of Linux VM, using the latest patched version.",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2016-05-16"
+}

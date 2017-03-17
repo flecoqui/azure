@@ -14,7 +14,7 @@ Moreover, VMs are also deployed in the backend subnet .
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/Docs/architecture.png)
 </p>
-###The main parameters are:</p>
+### The main parameters are:</p>
 - The VM provider, VM Offer, VM Sku and VM Version for the VM in the frontend</p>
 - The VM size for the VM in the frontend subnet</p>
 - The number of VM in the frontend subnet</p>
@@ -83,27 +83,27 @@ VM Publisher, Offer, Sku and Version:
 
 
 The Load Balancer is configured to forward the following ports:
-###SSH TCP 22 (command line: "ssh -p 5000X VMAdmin@[PublicIPAddress]")
+### SSH TCP 22 (command line: "ssh -p 5000X VMAdmin@[PublicIPAddress]")
 Load Balancer Public IP Address : port tcp 50000   ->   VM0 port tcp 22</p>
 Load Balancer Public IP Address : port tcp 50001   ->   VM1 port tcp 22</p>
 
 With Azure CLI you can deploy these VMs and the Load Balancer with 2 following command lines:
 
-##CREATE RESOURCE GROUP:
+## CREATE RESOURCE GROUP:
 azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
     azure group create lbfrbagrp eastus2
 
-##DEPLOY THE VMs:
+## DEPLOY THE VMs:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
 
     azure group deployment create lbfrbagrp deprraslbtest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
-##DELETE THE RESOURCE GROUP:
+## DELETE THE RESOURCE GROUP:
 azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:

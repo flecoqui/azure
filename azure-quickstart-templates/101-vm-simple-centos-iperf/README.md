@@ -11,21 +11,21 @@
 This template allows you to deploy a simple Centos VM running Apache and iPerf3, using the latest patched version. This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.
 With Azure CLI you can deploy this VM with 2 command lines:
 
-##CREATE RESOURCE GROUP:
+## CREATE RESOURCE GROUP:
 azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
     azure group create iperfgrpeu2 eastus2
 
-##DEPLOY THE VM:
+## DEPLOY THE VM:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
 
     azure group deployment create iperfgrpeu2 depiperftest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
-##DELETE THE RESOURCE GROUP:
+## DELETE THE RESOURCE GROUP:
 azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:

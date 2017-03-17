@@ -15,7 +15,7 @@ A route table associated with the backend subnet will route all the outbound tra
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/architecture.png)
 </p>
-###The main parameters are:</p>
+### The main parameters are:</p>
 - The VM oS Debian Version (7, 8)</p>
 - The VM size for the VM in the frontend subnet</p>
 - The number of VM in the frontend subnet</p>
@@ -65,28 +65,28 @@ osVersion (7, 8):
     },
 
 The Load Balancer is configured to forward the following ports:
-###SSH TCP 22 (command line: "ssh -p 5000X VMAdmin@[PublicIPAddress]")
+### SSH TCP 22 (command line: "ssh -p 5000X VMAdmin@[PublicIPAddress]")
 Load Balancer Public IP Address : port tcp 50000   ->   VM0 port tcp 22</p>
 Load Balancer Public IP Address : port tcp 50001   ->   VM1 port tcp 22</p>
 
-###iPerf TCP (command line: "iperf3 -c [PublicIPAddress] -p [5200X]")
+### iPerf TCP (command line: "iperf3 -c [PublicIPAddress] -p [5200X]")
 Load Balancer Public IP Address : port tcp 52000   ->   VM0 port tcp 5201</p>
 Load Balancer Public IP Address : port tcp 52001   ->   VM1 port tcp 5201</p>
 
-###iPerf UDP (command line: "iperf3 -c [PublicIPAddress] -u -p [5200X]")
+### iPerf UDP (command line: "iperf3 -c [PublicIPAddress] -u -p [5200X]")
 Load Balancer Public IP Address : port udp 52000   ->   VM0 port udp 5201</p>
 Load Balancer Public IP Address : port udp 52001   ->   VM1 port udp 5201</p>
 
 With Azure CLI you can deploy these VMs and the Load Balancer with 2 following command lines:
 
-##CREATE RESOURCE GROUP:
+## CREATE RESOURCE GROUP:
 azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
     azure group create rraslbgrp eastus2
 
-##DEPLOY THE VMs:
+## DEPLOY THE VMs:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
@@ -94,7 +94,7 @@ For instance:
     azure group deployment create rraslbgrp deprraslbtest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
 
-##CHECK THE OUTBOUND IP ADDRESS:
+## CHECK THE OUTBOUND IP ADDRESS:
 
 In order to valid the installation, you need to check the outbound IP Address.
 </p>
@@ -134,7 +134,7 @@ Command:</p>
 </p>
 
 
-##DELETE THE RESOURCE GROUP:
+## DELETE THE RESOURCE GROUP:
 azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:
