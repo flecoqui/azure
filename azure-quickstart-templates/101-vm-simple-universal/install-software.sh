@@ -46,8 +46,10 @@ configure_apache(){
 apt-get -y update
 apt-get -y install apache2
 if [ $isubuntu -eq 0 ]; then
+log "Install PHP 7.0"
 apt-get -y install php7.0-common libapache2-mod-php7.0 php7.0-cli
 else
+log "Install PHP 5"
 apt-get -y install php5-common libapache2-mod-php5 php5-cli
 fi
 apt-get -y install curl
