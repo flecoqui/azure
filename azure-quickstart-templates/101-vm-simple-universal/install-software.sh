@@ -222,8 +222,8 @@ ServerName "$azure_hostname"
         # alert, emerg.
         LogLevel warn
         LogLevel warn
-        ErrorLog /var/log/apache2/azure-evaluation-error.log
-        CustomLog /var/log/apache2/azure-evaluation-access.log combined
+        ErrorLog /var/log/httpd/azure-evaluation-error.log
+        CustomLog /var/log/httpd/azure-evaluation-access.log combined
 </VirtualHost>
 EOF
 
