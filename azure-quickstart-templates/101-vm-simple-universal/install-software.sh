@@ -45,7 +45,7 @@ configure_apache(){
 # Apache installation 
 apt-get -y update
 apt-get -y install apache2
-apt-get -y install php5-common libapache2-mod-php5 php5-cli
+apt-get -y install php7.0-common libapache2-mod-php7.0 php7.0-cli
 apt-get -y install curl
 azure_localip=`ifconfig eth0 |  grep 'inet ' | awk '{print \$2}' | sed 's/addr://'`
 azure_publicip=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`

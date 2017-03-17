@@ -92,6 +92,7 @@ WriteLog "Firewall configured"
 
 
 WriteLog "Creating Home Page" 
+$EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
 If (!(Test-Path -Path C:\inetpub -PathType Container)) {New-Item -Path C:\inetpub -ItemType Directory | Out-Null} 
 If (!(Test-Path -Path C:\inetpub\wwwroot -PathType Container)) {New-Item -Path C:\inetpub\wwwroot -ItemType Directory | Out-Null} 
 $content = @'
@@ -104,6 +105,7 @@ $content = @'
       <tr>
         <td>
           <h1>Hello from {0}</h1>
+		  <p>OS Windows Server 2016 Version {1} Architecture 64 </p>
         </td>
       </tr>
     </table>
@@ -119,6 +121,7 @@ $content = @'
 </html>
 '@
 $content = $content -replace "\{0\}",$dnsName
+$content = $content -replace "\{1\}",$EditionId
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 
  

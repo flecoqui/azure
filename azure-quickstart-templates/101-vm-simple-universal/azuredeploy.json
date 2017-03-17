@@ -79,7 +79,8 @@
         "extensionType": "CustomScript",
         "extensionTypeHandlerVersion": "2.0",
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
+        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
       },
       "ubuntu": {
         "publisher": "Canonical",
@@ -93,7 +94,8 @@
         "extensionType": "CustomScript",
         "extensionTypeHandlerVersion": "2.0",
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
+        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
       },
       "centos": {
         "publisher": "openlogic",
@@ -107,7 +109,8 @@
         "extensionType": "CustomScript",
         "extensionTypeHandlerVersion": "2.0",
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
+        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
       },
       "redhat": {
         "publisher": "",
@@ -121,7 +124,8 @@
         "extensionType": "CustomScript",
         "extensionTypeHandlerVersion": "2.0",
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
+        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
       },
       "windowsserver2016": {
         "publisher": "MicrosoftWindowsServer",
@@ -135,7 +139,8 @@
         "extensionType": "CustomScriptExtension",
         "extensionTypeHandlerVersion": "1.7",
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
+        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
       },
       "nanoserver2016": {
         "publisher": "MicrosoftWindowsServer",
@@ -149,7 +154,8 @@
         "extensionType": "CustomScriptExtension",
         "extensionTypeHandlerVersion": "1.7",
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout"
+        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout",
+        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
       }
     },
     "configurationSize": "[variables(concat('configurationSize', parameters('configurationSize')))]",
@@ -419,7 +425,7 @@
     },
     "httpClient": {
       "type": "string",
-      "value": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
+      "value": "[variables('configurationOS')[parameters('configurationOS')].httpUrl]"
     },
     "iperf3client": {
       "type": "string",
