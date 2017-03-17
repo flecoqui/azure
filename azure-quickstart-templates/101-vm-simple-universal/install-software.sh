@@ -353,7 +353,7 @@ else
     log "configure network"
     configure_network
     log "configure apache"
-	if [ $iscentos -ne 0 ] ;
+	if [ $iscentos -eq 0 ] ;
     then
 		configure_apache_centos
 	else
@@ -366,7 +366,12 @@ else
       start_iperf_ubuntu_14
     else
       log "configure iperf"
-      configure_iperf
+      if [ $iscentos -eq 0 ] ;
+	  then
+			configure_iperf_centos
+	  else
+			configure_iperf
+	  fi
       log "start iperf"
       start_iperf
     fi
