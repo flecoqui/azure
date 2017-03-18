@@ -92,6 +92,9 @@ WriteLog "Firewall configured"
 
 
 WriteLog "Creating Home Page" 
+$ExternalIP = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
+$LocalIP = Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4
+$OSInfo = Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version, ServicePackMajorVersion, OSArchitecture, CSName, WindowsDirectory, NumberOfUsers, BootDevice
 $EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
 If (!(Test-Path -Path C:\inetpub -PathType Container)) {New-Item -Path C:\inetpub -ItemType Directory | Out-Null} 
 If (!(Test-Path -Path C:\inetpub\wwwroot -PathType Container)) {New-Item -Path C:\inetpub\wwwroot -ItemType Directory | Out-Null} 
@@ -105,7 +108,9 @@ $content = @'
       <tr>
         <td>
           <h1>Hello from {0}</h1>
-		  <p>OS Nano Server 2016 Version {1} Architecture 64 </p>
+		  <p>OS {1} Version {2} Architecture {3} </p>
+		  <p>Local IP Address: {4} </p>
+		  <p>External IP Address: {5} </p>
         </td>
       </tr>
     </table>
@@ -121,7 +126,12 @@ $content = @'
 </html>
 '@
 $content = $content -replace "\{0\}",$dnsName
-$content = $content -replace "\{1\}",$EditionId
+$content = $content -replace "\{1\}",$OSInfo.Caption
+$content = $content -replace "\{2\}",$OSInfo.Version
+$content = $content -replace "\{3\}",$OSInfo.OSArchitecture
+$content = $content -replace "\{4\}",$LocalIP.IPAddress
+$content = $content -replace "\{5\}",$ExternalIP
+
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 
  
