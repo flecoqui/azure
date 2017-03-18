@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmiperf001"
+      "value": "vmnanos001"
     },
     "configurationOS": {
       "value": "nanoserver2016"

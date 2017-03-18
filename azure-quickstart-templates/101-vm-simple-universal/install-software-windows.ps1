@@ -86,6 +86,7 @@ New-NetFirewallRule -Name "HTTP" -DisplayName "HTTP" -Protocol TCP -LocalPort 80
 New-NetFirewallRule -Name "HTTPS" -DisplayName "HTTPS" -Protocol TCP -LocalPort 443 -Action Allow -Enabled True
 New-NetFirewallRule -Name "WINRM1" -DisplayName "WINRM TCP/5985" -Protocol TCP -LocalPort 5985 -Action Allow -Enabled True
 New-NetFirewallRule -Name "WINRM2" -DisplayName "WINRM TCP/5986" -Protocol TCP -LocalPort 5986 -Action Allow -Enabled True
+New-NetFirewallRule -Name "RDP" -DisplayName "RDP TCP/3389" -Protocol TCP -LocalPort 3389 -Action Allow -Enabled True
 }
 Add-FirewallRules
 WriteLog "Firewall configured" 
@@ -93,7 +94,7 @@ WriteLog "Firewall configured"
 
 WriteLog "Creating Home Page" 
 $ExternalIP = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
-$LocalIP = Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4
+$LocalIP = Get-NetIPAddress -InterfaceAlias 'Ethernet 2' -AddressFamily IPv4
 $OSInfo = Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version, ServicePackMajorVersion, OSArchitecture, CSName, WindowsDirectory, NumberOfUsers, BootDevice
 $EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
 If (!(Test-Path -Path C:\inetpub -PathType Container)) {New-Item -Path C:\inetpub -ItemType Directory | Out-Null} 

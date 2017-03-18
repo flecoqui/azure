@@ -138,8 +138,8 @@
         "extensionPublisher": "Microsoft.Compute",
         "extensionType": "CustomScriptExtension",
         "extensionTypeHandlerVersion": "1.7",
-        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
+        "remoteCommand": "[concat('mstsc /admin /v:', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "type c:\\source\\install.log",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
       },
       "nanoserver2016": {
@@ -147,14 +147,14 @@
         "offer": "WindowsServer",
         "sku": "2016-Nano-Server",
         "version": "latest",
-        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software-windows.ps1",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software-nano.ps1",
         "installScriptFileName": "install-software-nano.ps1",
         "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File install-software-nano.ps1 \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]",
         "extensionPublisher": "Microsoft.Compute",
         "extensionType": "CustomScriptExtension",
         "extensionTypeHandlerVersion": "1.7",
-        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "logInformation": "sudo cat /var/lib/waagent/Microsoft.OSTCExtensions.CustomScriptForLinux-1.5.2.0/download/0/stdout",
+        "remoteCommand": "[concat('Set-Item WSMan:\\localhost\\Client\\TrustedHosts ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com',' Enter-PSSession -ComputerName  \"', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com', '\"  -Credential ', parameters('adminUsername') )]",
+        "logInformation": "type c:\\source\\install.log",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
       }
     },

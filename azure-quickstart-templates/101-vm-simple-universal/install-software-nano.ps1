@@ -93,7 +93,7 @@ WriteLog "Firewall configured"
 
 WriteLog "Creating Home Page" 
 $ExternalIP = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
-$LocalIP = Get-NetIPAddress -InterfaceAlias Ethernet -AddressFamily IPv4
+$LocalIP = Get-NetIPAddress -InterfaceAlias 'Ethernet 2' -AddressFamily IPv4
 $OSInfo = Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version, ServicePackMajorVersion, OSArchitecture, CSName, WindowsDirectory, NumberOfUsers, BootDevice
 $EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
 If (!(Test-Path -Path C:\inetpub -PathType Container)) {New-Item -Path C:\inetpub -ItemType Directory | Out-Null} 

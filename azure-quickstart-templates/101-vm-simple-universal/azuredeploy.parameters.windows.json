@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmiperf001"
+      "value": "vmwins001"
     },
     "configurationOS": {
       "value": "windowsserver2016"
