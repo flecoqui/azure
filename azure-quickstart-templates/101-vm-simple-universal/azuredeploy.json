@@ -197,65 +197,107 @@
        "type": "Microsoft.Network/networkSecurityGroups", 
        "name": "[variables('networkSecurityGroupName')]", 
        "location": "[resourceGroup().location]", 
-       "properties": { 
-         "securityRules": [ 
-           { 
-             "name": "ssh", 
-             "properties": { 
-               "description": "SSH port", 
-               "protocol": "Tcp", 
-               "sourcePortRange": "*", 
-               "destinationPortRange": "22", 
-               "sourceAddressPrefix": "Internet", 
-               "destinationAddressPrefix": "*", 
-               "access": "Allow", 
-               "priority": 100, 
-               "direction": "Inbound" 
-             } 
-           }, 
-           { 
-             "name": "http", 
-             "properties": { 
-               "description": "http server port", 
-               "protocol": "Tcp", 
-               "sourcePortRange": "*", 
-               "destinationPortRange": "80", 
-               "sourceAddressPrefix": "Internet", 
-               "destinationAddressPrefix": "*", 
-               "access": "Allow", 
-               "priority": 101, 
-               "direction": "Inbound" 
-             } 
-           },
-           { 
-             "name": "iperf3-udp", 
-             "properties": { 
-               "description": "iperf3 udp port", 
-               "protocol": "Udp", 
-               "sourcePortRange": "*", 
-               "destinationPortRange": "5201", 
-               "sourceAddressPrefix": "Internet", 
-               "destinationAddressPrefix": "*", 
-               "access": "Allow", 
-               "priority": 102, 
-               "direction": "Inbound" 
-             } 
-           },
-           { 
-             "name": "iperf3-tcp", 
-             "properties": { 
-               "description": "iperf3 tcp port", 
-               "protocol": "Tcp", 
-               "sourcePortRange": "*", 
-               "destinationPortRange": "5201", 
-               "sourceAddressPrefix": "Internet", 
-               "destinationAddressPrefix": "*", 
-               "access": "Allow", 
-               "priority": 103, 
-               "direction": "Inbound" 
-             } 
-           }             
-         ] 
+       "properties": {
+        "securityRules": [
+          {
+            "name": "ssh",
+            "properties": {
+              "description": "SSH port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "rdp",
+            "properties": {
+              "description": "RDP port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "winrm1",
+            "properties": {
+              "description": "WINRM1 port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5985",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "winrm1",
+            "properties": {
+              "description": "WINRM2 port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5986",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "http",
+            "properties": {
+              "description": "http server port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 104,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "iperf3-udp",
+            "properties": {
+              "description": "iperf3 udp port",
+              "protocol": "Udp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5201",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "iperf3-tcp",
+            "properties": {
+              "description": "iperf3 tcp port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5201",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 111,
+              "direction": "Inbound"
+            }
+          }
+        ] 
        } 
      },     
     {
