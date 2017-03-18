@@ -130,7 +130,7 @@
       "windowsserver2016": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
-        "sku": "2016-Datacenter-Server-Core",
+        "sku": "2016-Datacenter",
         "version": "latest",
         "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal/install-software-windows.ps1",
         "installScriptFileName": "install-software-windows.ps1",
