@@ -7,14 +7,15 @@
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-
 This template allows you to deploy the following configuration:
 An Azure Load Balancer which routes the inbound traffic towards an availability set of VMs running a Web Site and iperf3 in server mode in the frontend subnet.
 Moreover, all the VMs in the backend subnet must use the same outbount IP address as the service they need to reach is protected with a whitelist of IP addresses.
 A route table associated with the backend subnet will route all the outbound traffic towards a VM running RRAS between two NIC cards: one connected to the backend subnet and the second one connected a a public IP address.
+
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/architecture.png)
 </p>
+
 ### The main parameters are:
 - The VM oS Debian Version (7, 8)</p>
 - The VM size for the VM in the frontend subnet</p>
