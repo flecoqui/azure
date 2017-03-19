@@ -126,6 +126,7 @@ $content = @'
 </html>
 '@
 $content = $content -replace "\{0\}",$dnsName
+
 $content = $content -replace "\{1\}",$EditionId
 $content = $content -replace "\{2\}",$BuildNumber
 $content = $content -replace "\{4\}",$LocalIP.IPAddress
