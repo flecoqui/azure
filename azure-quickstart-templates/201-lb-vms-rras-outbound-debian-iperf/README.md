@@ -15,7 +15,7 @@ A route table associated with the backend subnet will route all the outbound tra
 </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/architecture.png)
 </p>
-### The main parameters are:</p>
+### The main parameters are:
 - The VM oS Debian Version (7, 8)</p>
 - The VM size for the VM in the frontend subnet</p>
 - The number of VM in the frontend subnet</p>
