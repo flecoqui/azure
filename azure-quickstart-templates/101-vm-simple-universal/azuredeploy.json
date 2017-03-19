@@ -242,7 +242,7 @@
             }
           },
           {
-            "name": "winrm1",
+            "name": "winrm2",
             "properties": {
               "description": "WINRM2 port",
               "protocol": "Tcp",
