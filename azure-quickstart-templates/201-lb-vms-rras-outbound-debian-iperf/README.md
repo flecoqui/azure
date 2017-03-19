@@ -13,7 +13,9 @@ Moreover, all the VMs in the backend subnet must use the same outbount IP addres
 A route table associated with the backend subnet will route all the outbound traffic towards a VM running RRAS between two NIC cards: one connected to the backend subnet and the second one connected a a public IP address.
 
 </p>
+
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/architecture.png)
+
 </p>
 
 ### The main parameters are:
@@ -101,7 +103,9 @@ In order to valid the installation, you need to check the outbound IP Address.
 </p>
 1. Once the deployment is done in the output section you can see the ssh command line to establish a SSH session with the VMs in the frontend subnet.  
 </p>
+
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/1-ssh.png)
+
 </p>
 For instance: </p>
 
@@ -127,11 +131,15 @@ Command:</p>
 
 	 curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
 </p>
+
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/1-myip.png)
+
 </p>
 5. On this Azure portal check the Public IP address of the forward VM is the same:
 </p>
+
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-rras-outbound-debian-iperf/Docs/2-myip.png)
+
 </p>
 
 
