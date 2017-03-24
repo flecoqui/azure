@@ -242,6 +242,21 @@ iptables -A INPUT -p tcp --dport 5201 -j ACCEPT
 iptables -A INPUT -p udp --dport 5201 -j ACCEPT
 }
 #############################################################################
+configure_network_centos(){
+# firewall configuration 
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 5201 -j ACCEPT
+iptables -A INPUT -p udp --dport 5201 -j ACCEPT
+
+service firewalld start
+firewall-cmd --permanent --add-port=5201/tcp
+firewall-cmd --permanent --add-port=5201/udp
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --permanent --add-port=443/tcp
+firewall-cmd --reload
+}
+#############################################################################
 configure_iperf(){
 #
 # install iperf3
@@ -322,13 +337,13 @@ ln -s /etc/init/iperf3.conf /etc/init.d/iperf3
 }
 #############################################################################
 start_apache(){
-if [ $iscentos -eq 0 ]; then
+apachectl restart
+}
+#############################################################################
+start_apache_centos(){
 systemctl restart httpd
 systemctl enable httpd
 systemctl status httpd
-else
-apachectl restart
-fi
 }
 #############################################################################
 start_iperf(){
@@ -355,14 +370,20 @@ then
     log "unsupported operating system"
     exit 1 
 else
-    log "configure network"
-    configure_network
-    log "configure apache"
 	if [ $iscentos -eq 0 ] ; then
+	    log "configure network centos"
+		configure_network_centos
+	    log "configure apache centos"
 		configure_apache_centos
 	elif [ $isredhat -eq 0 ] ; then
+	    log "configure network redhat"
+		configure_network_centos
+	    log "configure apache redhat"
 		configure_apache_centos
 	else
+	    log "configure network"
+		configure_network
+	    log "configure apache"
 		configure_apache
 	fi
     if [ $isubuntu -eq 0 ] && [ "$VER" = "14" ]; then
@@ -383,7 +404,13 @@ else
       start_iperf
     fi
     log "start apache"
-    start_apache
+      if [ $iscentos -eq 0 ] ; then
+	    start_apache_centos
+	  elif [ $isredhat -eq 0 ] ; then
+	    start_apache_centos
+      else
+	    start_apache
+	  fi
 fi
 exit 0 
 
