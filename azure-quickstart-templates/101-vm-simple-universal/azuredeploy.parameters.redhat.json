@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmiperf001"
+      "value": "vmrhs001"
     },
     "configurationOS": {
       "value": "redhat"
