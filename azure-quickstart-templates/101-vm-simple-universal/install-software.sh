@@ -16,6 +16,8 @@ check_os() {
     isubuntu=${?}
     grep centos /proc/version > /dev/null 2>&1
     iscentos=${?}
+    grep redhat /proc/version > /dev/null 2>&1
+    isredhat=${?}	
 	if [ -f /etc/debian_version ]; then
     isdebian=0
 	else
@@ -28,6 +30,9 @@ check_os() {
 	elif [ $iscentos -eq 0 ]; then
 		OS=Centos
 		VER=$(cat /etc/centos-release)
+	elif [ $isredhat -eq 0 ]; then
+		OS=RedHat
+		VER=$(cat /etc/redhat-release)
 	elif [ $isdebian -eq 0 ];then
 		OS=Debian  # XXX or Ubuntu??
 		VER=$(cat /etc/debian_version)
@@ -345,7 +350,7 @@ log "Apache Installation: $(date)"
 log "#####  azure_hostname: $azure_hostname"
 log "Installation script start : $(date)"
 check_os
-if [ $iscentos -ne 0 ] && [ $isubuntu -ne 0 ] && [ $isdebian -ne 0 ];
+if [ $iscentos -ne 0 ] && [ $isredhat -ne 0 ] && [ $isubuntu -ne 0 ] && [ $isdebian -ne 0 ];
 then
     log "unsupported operating system"
     exit 1 
@@ -353,8 +358,9 @@ else
     log "configure network"
     configure_network
     log "configure apache"
-	if [ $iscentos -eq 0 ] ;
-    then
+	if [ $iscentos -eq 0 ] ; then
+		configure_apache_centos
+	elif [ $isredhat -eq 0 ] ; then
 		configure_apache_centos
 	else
 		configure_apache
@@ -366,10 +372,11 @@ else
       start_iperf_ubuntu_14
     else
       log "configure iperf"
-      if [ $iscentos -eq 0 ] ;
-	  then
+      if [ $iscentos -eq 0 ] ; then
 			configure_iperf_centos
-	  else
+	  elif [ $isredhat -eq 0 ] ; then
+			configure_iperf_centos
+      else
 			configure_iperf
 	  fi
       log "start iperf"
