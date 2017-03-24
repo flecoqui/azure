@@ -9,12 +9,12 @@
 
 
 This template allows you to deploy a simple VM running: </p>
-### Debian: Apache and Iperf3 ,
-### Ubuntu: Apache and Iperf3, 
-### Centos: Apache and Iperf3, 
-### Red Hat: Apache and Iperf3,
-### Windows Server 2016: IIS and Iperf3,
-### Nano Server 2016: IIS and Iperf3
+#### Debian: Apache and Iperf3 ,
+#### Ubuntu: Apache and Iperf3, 
+#### Centos: Apache and Iperf3, 
+#### Red Hat: Apache and Iperf3,
+#### Windows Server 2016: IIS and Iperf3,
+#### Nano Server 2016: IIS and Iperf3
 This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.
 With Azure CLI you can deploy this VM with 2 command lines:
 
@@ -78,11 +78,11 @@ configurationOS (debian, ubuntu, centos, redhat, nano server 2016, windows serve
 Once the VM has been deployed, you can open the Web page hosted on the VM.
 For instance for Linux VM:
 
-http://vmubus001.eastus2.cloudapp.azure.com/index.php 
+     http://vmubus001.eastus2.cloudapp.azure.com/index.php 
 
 for Windows VM:
 
-http://vmnanos001.eastus2.cloudapp.azure.com/index.html 
+     http://vmnanos001.eastus2.cloudapp.azure.com/index.html 
 
 </p>
 You can also use Iperf3 to test the ingress/egress between the VM and an Iperf3 client.
