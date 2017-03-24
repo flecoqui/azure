@@ -113,7 +113,7 @@
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
       },
       "redhat": {
-        "publisher": "RedHat  ",
+        "publisher": "RedHat",
         "offer": "RHEL",
         "sku": "7.2",
         "version": "latest",
