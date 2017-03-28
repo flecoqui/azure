@@ -11,9 +11,11 @@
 This template allows you to deploy the following configuration:
 An Azure Load Balancer which routes the inbound traffic towards an availability set of VMs running a Web Site in server mode in the frontend subnet.
 Moreover, VMs are also deployed in the backend subnet .
-</p>
+
+
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-lb-vms-frontend-backend/Docs/architecture.png)
-</p>
+
+
 ### The main parameters are:</p>
 - The VM provider, VM Offer, VM Sku and VM Version for the VM in the frontend</p>
 - The VM size for the VM in the frontend subnet</p>
