@@ -40,9 +40,27 @@ function ResetState() {
 function LoadVideoSource(url, subarray) {
     if (subarray.length > 0)
         LoadSubtitle(subarray[0].src);
+
+    mimeType = "application/vnd.ms-sstr+xml";
+    if ((url.trim().toLowerCase().match('.ism/manifest')) || (url.trim().toLowerCase().match('.isml/manifest'))) {
+    } else if (url.toLowerCase().match('.mpd$')) {
+        mimeType = "application/dash+xml";
+    } else if (url.toLowerCase().match('.flv$')) {
+        mimeType = "video/x-flv";
+    } else if (url.toLowerCase().match('.ogv$')) {
+        mimeType = "video/ogg";
+    } else if (url.toLowerCase().match('.webm$')) {
+        mimeType = "video/webm";
+    } else if (url.toLowerCase().match('.3gp$')) {
+        mimeType = "video/3gp";
+    } else if (url.toLowerCase().match('.mp4')) {
+        mimeType = "video/mp4";
+    } else if (url.toLowerCase().match('.mp3')) {
+        mimeType = "audio/mp3";
+    }
     myPlayer.src(
     [
-        { src: url, type: "application/vnd.ms-sstr+xml" },
+        { src: url, type: mimeType }
     ],
     subarray
     );
@@ -655,9 +673,18 @@ var videourl = undefined;
 var audiourl = undefined;
 // Player Options
 var myOptions = {
-    autoplay: true,
-    controls: true,
-    poster: ""
+   // "nativeControlsForTouch": false,
+    "autoplay": true,
+    "controls": true,
+ //   "poster": "",
+    "muted": false,
+    "language": "en",
+    logo: {
+        "enabled": false
+    },
+    "heuristicProfile": "Hybrid",
+    "techOrder": ["azureHtml5JS", "flashSS", "silverlightSS", "html5"]
+
 };
 var autoPauseAtTime = -1;
 //  keep track of whether we've attached an error handler to the video element
@@ -689,7 +716,7 @@ if (audioencodedurl !== undefined) {
 var videoencodedurl = getParamFromUrl(window.location.href, "url");
 if (videoencodedurl !== undefined) {
     videourl = decodeURIComponent(videoencodedurl);
-    $("#inputVideoUrl").val(videoourl);
+    $("#inputVideoUrl").val(videourl);
 }
 // Retrieve subtitlesUrls from the url
 var subtitlesurl = undefined;

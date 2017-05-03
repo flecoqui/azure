@@ -1499,7 +1499,10 @@ namespace TestAMSWF
         {
             Search(textBoxSearch.Text);
         }
-
+        public static string UriEncode(string plainText)
+        {
+            return Uri.EscapeDataString(plainText);
+        }
         public static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
@@ -1560,10 +1563,13 @@ namespace TestAMSWF
                             foreach (var assetfile in SelectedAssetFiles)
                             {
                                 TextBoxLogWriteLine("Url for TTML file: " + destUri);
-                                string ttmlencoded = Base64Encode(destUri);
+//                                string ttmlencoded = Base64Encode(destUri);
+                                string ttmlencoded = UriEncode(destUri);
                                 TextBoxLogWriteLine("Url for MP3 file: " + inputaf.GetSasUri(Inputlocator).ToString());
-                                string mp3encoded = Base64Encode(inputaf.GetSasUri(Inputlocator).ToString());
-                                string uri = "http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?audiourl=" + mp3encoded + "&ttmlurl=" + ttmlencoded;
+//                                string mp3encoded = Base64Encode(inputaf.GetSasUri(Inputlocator).ToString());
+                                string mp3encoded = UriEncode(inputaf.GetSasUri(Inputlocator).ToString());
+                                string uri = "http://azurewebplayer.azurewebsites.net/player.html?audiourl=" + mp3encoded + "&subtitles=en,en," + ttmlencoded;
+                                //string uri = "http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?audiourl=" + mp3encoded + "&ttmlurl=" + ttmlencoded;
                                 TextBoxLogWriteLine("Url for player: " + uri);
                                 System.Diagnostics.Process.Start(uri);
                             }
