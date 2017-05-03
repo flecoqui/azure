@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Azure Media Player</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
+    <!-- Libraries  -->
+    <script src="assets/js/modernizr-2.7.1.min.js"></script>
+    <script src="assets/js/jquery-1.11.2.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!--*****START OF Azure Media Player Scripts*****-->
+    <link href="assets/css/azuremediaplayer.min.css" type="text/css" rel="stylesheet">
+    <script src="assets/js/azuremediaplayer.min.js"></script>
+    <!--*****END OF Azure Media Player Scripts*****-->
+
+</head>
+
+<body>
+    <!-- header -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="z-index:10000; background-color: cornflowerblue;">
+        <div class="container">
+            <div class="navbar-header col-sm-12">
+                <a class="navbar-brand" href="http://aka.ms/ampinfo" target="_blank">
+                    <img width="27" height="30" title="" style="display:inline" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAApCAMAAACFghBKAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB6VBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAACMv10hAAAAoXRSTlMASdBSKqXCLw5//aEhV+P0ew00s+lbEpLJTl3n+J9lPuiiOcoaC3qOEBeWwwlz8cYBi0ekyAITiczfRpS888+nWQO1M0LX4KN09V/84rKgLDxca6oy0W32ChHcsCfUQNNefWqrdpivMNthuh2Vgcs/ImOHhmbynLYGbtg7cM5xD7/vFM3hxzcpdZogvhs4VE8VSBnaVnKIqbftI/7SaJPrZNytRAYAAAABYktHRACIBR1IAAAACXBIWXMAAAsSAAALEgHS3X78AAACTklEQVQ4y32U918TQRDFhyhigICSCAoGYqIISAjqKSogwWDBgiAWiA0VBEsQa7BgiRB7r4Bt/1NvZvYue7lL3g/5vHn7vc3e7O4BZKnAJVxLIL+WFgrUsqI8zHJ3sZAqKc0FecpERuUrVjoxFV5hlW+VjamsEnatXmOFqmsoXuuvrUPV+gPMrVNeIxjizL3ejDbUl3O2sYGDxiauXUHL9KWbOA7U60VzuIWrSGv2WjfL5YW2wFZptW3G4HYTa5NjO0DOu1NCu9o7Ond3Rbu5koN7QHYpRmnPXvn0vjBvBldeSTVRGFZ6tZ+SAyrV24zRQd0dMjE/YYfRHmGqD4OjtND+iIENYHgM3SBTxzE4QU0DOCmpU0N6OIwuDi799zRCZ2jorO7OnWdsBOML6OCi99IIdcFtUgCj5At5i8e8Y5lOX1YoGNd0P+FwvgIqBXClU5Q5UFet1DWf8DlQ1y1UQveTmcGe0RtTZG4qVHAS/S3yUwW3+0E/gMV3sBq6a1IJ7gQ9fU+/VhoksZ7G+j66BwBFGkO0IQ/RJbn3j2juGbyv8Ni4Qk8we6rs9jOiUs+FmJ0z7mMaoxeWk/OSX+WVeSJCrynQJPWG07eMvevD5vZ2eEB5b/1Ey7MaHzauWN37Dx+l/yQnboPP8l/ilbY+S+jLVyzSg1RMjGdB3+RE07IemKH6e6PCpH9Q9jOmZIl5jFraowutqIVoFzE11dbpU/KbsziLWuSiyr5W2/crUgFO8vxSGN9vyCX3vAGVNEBupf4Qk/cbjYolxd9/2eF/zeOQ+fvcwlgAAAAASUVORK5CYII=">
+                    <span style="color: azure">Azure Media Player</span>
+                </a>
+            </div>  
+            <div class="navbar-collapse collapse">
+            </div>      
+        </div>    
+    </div>
+    <div class="jumbotron player-page">
+        <center>
+            <!--<h3>Reach the most popular devices anywhere with the best possible format for the device!</h3>-->
+            <!--<h3>Reach popular devices anywhere with the best format for the device!</h3>-->
+            <h3 style="margin-top: 15px; margin-bottom: 0px;">One application to play video and audio content with subtitles.</h3>
+        </center>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row row-eq-height">
+
+            <!-- Audio/Video Players -->
+            <div class="col-sm-6">
+                <section>
+                    <div id="div1">
+                        <div style="padding-left: 10px;  background-color: lightgray ">
+                            <div style="padding-top: 5px;">
+                                <label style="font-size: 12px; width: 20%; ">Video url:</label>
+                                <input id="inputVideoUrl" type="url" style="margin-right: 10px; width: 70%; font-size: 12px;" />
+                            </div>
+                            <div style="padding-top: 5px;">
+                                <label style="font-size: 12px; width: 20%; ">Audio url:</label>
+                                <input id="inputAudioUrl" type="url" style="margin-right: 10px; width: 70%; font-size: 12px;" />
+                            </div>
+                            <div style="padding-top: 5px;">
+                                <label style="font-size: 12px; width: 20%; ">Subtitle url:</label>
+                                <input id="inputSubtitleUrl" type="url" style="margin-right: 10px; width: 70%; font-size: 12px;" />
+                            </div>
+                            <div style="padding-top: 5px;">
+                                <button id="loadButton" style="font-size: 12px; width: 20%">Load</button>
+
+                                    <label style="font-size: 12px;  ">Language:</label><input id="inputSubtitleLanguage" type="text" style="margin-right: 10px; font-size: 12px; width: 20px; " />
+                                    <label style="font-size: 12px;  ">Label:</label><input id="inputSubtitleLabel" type="text" style="margin-right: 10px; font-size: 12px; width: 100px;" />
+
+                            </div>
+                        </div>
+                        <div id="videoContainer" style="display: block;">
+                            <!--<video id="azuremediaplayer" class="azuremediaplayer amp-default-skin amp-big-play-centered" width="100%" height="auto" tabindex=0><p class="amp-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p></video>-->
+                            <script>
+                            var videoHeight = 500;
+                            if ($(window).width() < 750) {
+                                videoHeight = $(window).width() * 11 / 16;
+                            }
+                            document.getElementById("videoContainer").style.height = videoHeight + "px";
+                            //id="azuremediaplayer_Html5_api" class="vjs-tech" 
+                            $("#videoContainer").append('<video id="azuremediaplayer" class="azuremediaplayer amp-default-skin amp-big-play-centered" width="100%" height="100%" tabindex=0><p class="amp-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p></video>');
+                                //$("#videoContainer").append('<video id="azuremediaplayer" class="azuremediaplayer amp-default-skin amp-big-play-centered" width="100%" height="100%" tabindex=0><p class="amp-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p></video>');
+                            $(document).ready(function () {
+                                window.addEventListener('resize', function (event) {
+                                    if (window.innerWidth < 750) {
+                                        document.getElementById("videoContainer").style.height = $(window).width() * 11 / 16 + "px";
+                                    } else {
+                                        document.getElementById("videoContainer").style.height = "500px";
+                                    }
+                                });
+                            });
+                            </script>
+                        </div>
+                        <div id="audioplayer" style="background-color: lightgray; display: block;">
+                            <audio id="audioElm" style="width: 100%;" autoplay: true>
+                                <div class="videoError">HTML5 audio is not supported</div>
+                            </audio>
+                            <div id="videoError" class="videoError">
+                            </div>
+                        </div>
+                        <div style="background-color: lightgray; display: block;">
+
+                            <div id="captionTitle" style="padding-right: 10px; padding-left: 10px;">
+                                &nbsp;
+                            </div>
+                            <div style="padding-right: 10px; padding-left: 10px;">
+                                <textarea style="width: 100%; height: 100%;" id="textCaptionEntry"></textarea>
+                            </div>
+                            <div style="margin-top: 6px; text-align: center;">
+                                <div style="padding-top: 10px; padding-bottom: 10px;">
+                                    <button id="playButton">
+                                        Play
+                                    </button>
+                                    <button id="pauseButton" style="margin-left: 2em;">
+                                        Pause
+                                    </button>
+                                    <button id="justSaveCaption" style="margin-left: 2em;">
+                                        Save
+                                    </button>
+                                    <button id="saveCaptionAndPlay" style="margin-left: 2em;">
+                                        Save &amp; Continue
+                                    </button>
+
+                                </div>
+                                <div style="clear: both; padding-top: 10px;">
+                                    Choose caption file format:
+                                    <input type="radio" name="captionFormat" id="captionFormatTTML" style="margin-left: 0.5em;" />
+                                    <label for="captionFormatTTML">
+                                        TTML
+                                    </label>
+                                    <input type="radio" name="captionFormat" id="captionFormatVTT" style="margin-left: 0.5em;" />
+                                    <label for="captionFormatVTT">
+                                        WebVTT
+                                    </label>
+                                    <button id="blobBuilderSave">
+                                        Save to File
+                                    </button>
+                                    <button id="copyToClipboard">
+                                        Copy to Clipboard
+                                    </button>
+                                </div>
+                                <textarea id="captionFile" style="width: 100%; padding-left: 5px; padding-right: 5px; " rows="12" readonly="readonly"></textarea>                            
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Metadata and subtitles -->
+            <div class="col-sm-6 ">
+                <section>
+                    <div id="subtitleplayer" style="padding-left: 10px; padding-right: 10px; background-color: lightgray">
+
+                        <div style="display: inline-block; float: left; width: 100%;">
+                            <div style="padding-bottom: 4px; font-size: 12px; font-weight: 700">
+                                Caption list:
+                            </div>
+                            <div id="display">
+                            </div>
+                            <div style="margin-top: 6px; display:none;"><button id="clearAllCaptions">Clear All</button></div>
+                        </div>
+                        <!--
+                        <div style="clear: both; padding-top: 24px;">
+                            Choose caption file format:
+                            <input type="radio" name="captionFormat" id="captionFormatTTML" style="margin-left: 0.5em;" />
+                            <label for="captionFormatTTML">
+                                TTML
+                            </label>
+                            <input type="radio" name="captionFormat" id="captionFormatVTT" style="margin-left: 0.5em;" />
+                            <label for="captionFormatVTT">
+                                WebVTT
+                            </label>
+                            <input type="radio" name="captionFormat" id="captionFormatNone" style="margin-left: 0.5em;" />
+                            <label for="captionFormatNone">
+                                Hide caption file display
+                            </label>
+                        </div>
+                        <div id="captionFileAndMarkup" style="padding-top: 24px; padding-bottom: 24px;">
+                            <div style="padding-bottom: 4px;">
+                                Select and copy the caption file contents below and paste into a <span id="captionFileKind">
+                                    .vtt
+                                </span> file<span id="saveToDiskAdvice">
+                                    or save it to a file using the Save to File button
+                                    below
+                                </span>:
+                            </div>
+                            <div>
+                                <textarea id="captionFile" style="width: 100%;" rows="12" readonly="readonly"></textarea>
+                            </div>
+                            <div style="padding-top: 6px;">
+                                <button id="blobBuilderSave" style="margin-right: 2em;">
+                                    Save to File
+                                </button>
+                                <button id="copyToClipboard">
+                                    Copy to Clipboard
+                                </button>
+                            </div>
+                            <div style="padding-top: 24px;">
+                                <div style="padding-bottom: 4px;">
+                                    HTML5 &lt;video&gt; element with &lt;track&gt; element markup:
+                                </div>
+                            </div>
+                        </div>
+                            -->
+                    </div> 
+                </section>
+            </div>
+            </div>
+    </div>
+
+        <script src="./assets/js/loadplayer.js"></script>
+    <footer style="position:relative; bottom:0; width:100%; background-color:black; vertical-align:middle">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <br>
+                    <p style="color: white;">Sample Azure Media Player Application supporting subtitles</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+</body>
+
+</html>
