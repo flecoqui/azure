@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Azure Media Player</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <!-- Libraries  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--*****START OF Azure Media Player Scripts*****-->
+    <!--Note: DO NOT USE the "latest" folder in production. Replace "latest" with a version number like "1.0.0"-->
+    <!--EX:<script src="//amp.azure.net/libs/amp/1.0.0/azuremediaplayer.min.js"></script>-->
+    <!--Azure Media Player versions can be queried from //aka.ms/ampchangelog-->
+    <!--<link href="//amp.azure.net/libs/amp/latest/skins/amp-default/azuremediaplayer.min.css" rel="stylesheet">
+    <script src="//amp.azure.net/libs/amp/latest/azuremediaplayer.min.js"></script>-->
+   <!-- <link href="//amp.azure.net/libs/amp/2.1.0/skins/amp-default/azuremediaplayer.min.css" rel="stylesheet">
+    <script src="//amp.azure.net/libs/amp/2.1.0/azuremediaplayer.min.js"></script>-->
+    <!--*****END OF Azure Media Player Scripts*****-->
+
+</head>
+<body>
+    <h1>Sample: Clear</h1>
+    <div>
+        <section>
+            <div>
+<!--  <video id="azuremediaplayer" class="azuremediaplayer amp-default-skin amp-big-play-centered" tabindex="0">
+                    <p class="amp-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
+    -->
+                    <video id="azuremediaplayer"  width="640" height="360"  tabindex="0">
+                        
+                    </video>
+
+            </div>
+            <div style="padding-top: 10px; padding-bottom: 10px;">
+                <button id="playButton">
+                    Play
+                </button>
+                <button id="pauseButton" style="margin-left: 2em;">
+                    Pause
+                </button>
+                <button id="skipforwardButton" style="margin-left: 2em;">
+                    SkipForward
+                </button>
+                <button id="skipbackwardButton" style="margin-left: 2em;">
+                    SkipBackward
+                </button>
+                <textarea id="demo"></textarea>
+
+            </div>
+        </section>
+    </div>
+    <script>
+        function GetMediaControl() {
+
+                return $('video').get(0);
+ 
+        }
+        function GetMediaTag() {
+                 return $('video');
+
+        }
+        /*
+        var myOptions = {
+            autoplay: true,
+            controls: true,
+            width: "640",
+            height: "400",
+            poster: ""
+        };*/
+        /*
+        var myOptions = {
+            // "nativeControlsForTouch": false,
+            autoplay: true,
+            controls: true,
+            width: "640",
+            height: "400",
+            //   "poster": "",
+            muted: false,
+            language: "en",
+            logo: {
+                "enabled": true
+            },
+            heuristicProfile: "Hybrid",
+            techOrder: ["azureHtml5JS", "flashSS", "silverlightSS", "html5"]
+
+        };
+        */
+       // var myPlayer = amp("azuremediaplayer", myOptions);
+
+       // myPlayer.src([{ src: "http://testamsindexersto.blob.core.windows.net/test/switch.mp4", type: "video/mp4" }, ]);
+        // myPlayer.src([{ src: "https://testamsindexersto.blob.core.windows.net/asset-fae99b23-06e9-49d6-978d-36e57ea2b173/switch.mp4?sv=2015-07-08&sr=c&si=5616b9e4-2c0c-4288-a164-1d622a157ef3&sig=DEvwsbU06E7uF9MMC0dIqv45K4sxCi5PbpDKlmIE7uU%3D&se=2017-05-04T06:43:34Z", type: "video/mp4" }, ]);
+        //        myPlayer.src([{ src: "//amssamples.streaming.mediaservices.windows.net/91492735-c523-432b-ba01-faba6c2206a2/AzureMediaServicesPromo.ism/manifest", type: "application/vnd.ms-sstr+xml" }, ]);
+    
+        // Get the <audio> element with id="myVideo"
+        var aud = document.getElementById("azuremediaplayer");
+
+        // Assign an ontimeupdate event to the <audio> element, and execute a function if the current playback position has changed
+        aud.ontimeupdate = function () { myFunction() };
+
+        function myFunction() {
+            // Display the current position of the audio in a <p> element with id="demo"
+            document.getElementById("demo").innerHTML = aud.currentTime;
+        }
+        //aud.currentTime = 5;
+        //aud.src = "http://testamsindexersto.blob.core.windows.net/test/switch.mp4";
+        aud.src = "https://testamsindexersto.blob.core.windows.net/asset-37e39464-1c42-4e6f-9ae7-31c0c41cc558/switch.mp4?sv=2015-07-08&sr=c&si=58f87b4c-6b85-47e8-b439-9a509220d095&sig=7fhVig3KYN%2BGXwntnbYkmX%2BRtFzTinHZo4MJy%2FGex%2FE%3D&se=2017-05-09T08:28:35Z";
+
+        aud.height = 480;
+        aud.width = 640;
+        aud.autoplay = true;
+        aud.load();
+        aud.play();
+
+        $("#playButton").click(function () {
+            var control = GetMediaControl();
+            if (control !== undefined) {
+                control.play();
+            }
+        });
+
+        $("#pauseButton").click(function () {
+            var control = GetMediaControl();
+            if (control !== undefined) {
+                control.pause();
+            }
+        });
+        $("#skipforwardButton").click(function () {
+            var control = GetMediaControl();
+            if (control !== undefined) {
+                control.pause();
+                var time = control.currentTime;
+                control.currentTime = time + 5;
+                control.play();
+
+            }
+        });
+        $("#skipbackwardButton").click(function () {
+            var control = GetMediaControl();
+            if (control !== undefined) {
+                control.pause();
+                var time = control.currentTime;
+                control.currentTime = time - 5;
+                control.play();
+            }
+        });
+    </script>
+    <footer>
+        <br />
+        <p>© Microsoft Corporation 2016</p>
+    </footer>
+
+</body>
+</html>

@@ -38,8 +38,12 @@ function ResetState() {
 }
 
 function LoadVideoSource(url, subarray) {
+    var subtitleUrl = undefined;
     if (subarray.length > 0)
-        LoadSubtitle(subarray[0].src);
+        subtitleUrl = subarray[0].src;
+    if ((subtitleUrl != undefined) && (subtitleUrl != ""))
+        LoadSubtitle(subtitleUrl);
+
 
     mimeType = "application/vnd.ms-sstr+xml";
     if ((url.trim().toLowerCase().match('.ism/manifest')) || (url.trim().toLowerCase().match('.isml/manifest'))) {
@@ -64,17 +68,56 @@ function LoadVideoSource(url, subarray) {
     ],
     subarray
     );
+    myPlayer.play();
 
 }
+function httpGet(theUrl) {
+    if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp = new XMLHttpRequest();
+    }
+    else {// code for IE6, IE5
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            return xmlhttp.responseText;
+        }
+    }
+    xmlhttp.open("GET", theUrl, false);
+    xmlhttp.send();
+}
+function httpGetAsync(theUrl, callback) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
 function LoadSubtitle(url) {
+
+   
+    $.get(url, function (data) {
+        var s = url.toLowerCase();
+        if (s.indexOf("vtt") > 0)
+            ParseAndLoadWebVTT(data);
+        else if (s.indexOf("ttml") > 0) {
+            var xmlString = (new XMLSerializer()).serializeToString(data);
+            ParseAndLoadTTML(xmlString);
+        }
+    });
+    
+    /*
     var s = document.createElement("script");
     s.setAttribute("type", "text/javascript");
     s.setAttribute("src", "http://www.baccano.com/proxyvtt.ashx?vtt=" + url);
     document.body.appendChild(s);
+    */
 }
 //  sets the video source to the URL s
 function LoadAudioSource(url, subarray) {
-    ResetState();
+
 
     if (!errorHandlerBound) {
         $("#audioElm").bind("error", function (event) {
@@ -145,6 +188,10 @@ function AdjustHeight() {
 }
 // Retrieve paramters from the url
 function LaunchPlayer(video, audio, subtitleurlarray) {
+    //  delete any captions we've got
+    ResetState();
+
+
     if ((audio != undefined) && (audio != "")) {
         if ($("#videoContainer") != undefined)
             $("#videoContainer").hide();
@@ -374,9 +421,17 @@ function PlayCaptionFromList(listRowId) {
     var captionsArrayIndex = parseInt(listRowId.match(/ci(\d+)/)[1]);
     var control = GetMediaControl();
     if (control != undefined) {
+        var tag = GetMediaTag();
+        if(tag != undefined){
+            tag.bind('loadedmetadata', function () {
+                control.currentTime = captionsArray[captionsArrayIndex].start;
+                autoPauseAtTime = captionsArray[captionsArrayIndex].end;
+            });
+        }
+        myPlayer.currentTime(captionsArray[captionsArrayIndex].start);
         control.currentTime = captionsArray[captionsArrayIndex].start;
         autoPauseAtTime = captionsArray[captionsArrayIndex].end;
-        control.play();
+      //  control.play();
     }
     /*
     if ($("#videoContainer").is(':visible')) {
@@ -765,22 +820,10 @@ if((videourl === undefined)&&(audiourl === undefined))
 //  index into captionsArray of the caption being displayed. -1 if none.
 var captionBeingDisplayed = -1;
 
-//  the video element's event handlers
-$("audio").bind({
-    play: mediaPlayEventHandler,
-    timeupdate: mediaTimeUpdateEventHandler,
-    pause: mediaPauseEventHandler,
-    canplay: EnableDemoAfterLoadVideo,
-    loadeddata: EnableDemoAfterLoadVideo    // opera doesn't appear to fire canplay but does fire loadeddata
-});
-//  the audio element's event handlers
-$("video").bind({
-    play: mediaPlayEventHandler,
-    timeupdate: mediaTimeUpdateEventHandler,
-    pause: mediaPauseEventHandler,
-    canplay: EnableDemoAfterLoadVideo,
-    loadeddata: EnableDemoAfterLoadVideo    // opera doesn't appear to fire canplay but does fire loadeddata
-});
+
+
+
+
 $("#playButton").click(function () {
     var control = GetMediaControl();
     if (control !== undefined) {
@@ -833,7 +876,21 @@ $("#saveCaptionAndPlay").click(function () {
 LaunchPlayer(videourl, audiourl, subtitlesArray);
 
 
-
-
+//  the audio element's event handlers
+$("audio").bind({
+    play: mediaPlayEventHandler,
+    timeupdate: mediaTimeUpdateEventHandler,
+    pause: mediaPauseEventHandler,
+    canplay: EnableDemoAfterLoadVideo,
+    loadeddata: EnableDemoAfterLoadVideo    // opera doesn't appear to fire canplay but does fire loadeddata
+});
+//  the video element's event handlers
+$("video").bind({
+    play: mediaPlayEventHandler,
+    timeupdate: mediaTimeUpdateEventHandler,
+    pause: mediaPauseEventHandler,
+    canplay: EnableDemoAfterLoadVideo,
+    loadeddata: EnableDemoAfterLoadVideo    // opera doesn't appear to fire canplay but does fire loadeddata
+});
 
 

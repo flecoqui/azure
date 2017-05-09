@@ -10,8 +10,9 @@ using System.Windows.Forms;
 using Microsoft.WindowsAzure.MediaServices.Client;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using TestAzureMediaIndexer;
 
-namespace TestAMSWF
+namespace TestAzureMediaIndexer
 {
 
     public partial class MainForm : Form
@@ -27,19 +28,101 @@ namespace TestAMSWF
             new Item("Arabic (Egyptian)", "ArEg"),
             new Item("Japanese", "JaJp")
         };
-        public MainForm()
+        void LoadSettings()
         {
-            InitializeComponent();
-            textBoxAccountName.Text = "testamsindexer";
-            textBoxAccountKey.Text = "7osPnuOAoPP3dY48IFLuJxY++V8nq4ICI0rCDy12Hsk=";
+            string a = string.Empty;
+            if(TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAccountName", out a))
+                textBoxMediaAccountName.Text = a;
+            else
+                textBoxMediaAccountName.Text = a;
+            a = string.Empty;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAccountKey", out a))
+                textBoxMediaAccountKey.Text = a;
+            else
+                textBoxMediaAccountKey.Text = a;
+
+            a = string.Empty;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureStorageAccountName", out a))
+                textBoxStorageAccountName.Text = a;
+            else
+                textBoxStorageAccountName.Text = a;
+            a = string.Empty;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureStorageAccountKey", out a))
+                textBoxStorageAccountKey.Text = a;
+            else
+                textBoxStorageAccountKey.Text = a;
+            a = string.Empty;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureStorageContainer", out a))
+                textBoxStorageContainerName.Text = a;
+            else
+                textBoxStorageContainerName.Text = a;
+
+            a = string.Empty;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureSearchAccountName", out a))
+                textBoxSearchAccountName.Text = a;
+            else
+                textBoxSearchAccountName.Text = a;
+            a = string.Empty;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureSearchAccountKey", out a))
+                textBoxSearchAccountKey.Text = a;
+            else
+                textBoxSearchAccountKey.Text = a;
+            a = "myapp";
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AssetPrefix", out a))
+            {
+                if (string.IsNullOrEmpty(a))
+                    a = "myapp";
+                textBoxAssetPrefix.Text = a;
+            }
+            else
+                textBoxAssetPrefix.Text = a;
+            a = "http://ampdemo.azureedge.net/azuremediaplayer.html";
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("PlayerUri", out a))
+            {
+                if (string.IsNullOrEmpty(a))
+                    a = "http://ampdemo.azureedge.net/azuremediaplayer.html";
+                textBoxPlayerUri.Text = a;
+            }
+            else
+                textBoxPlayerUri.Text = a;
+            a = string.Empty;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("TranslatorAPIKey", out a))
+                textBoxTranslatorAPIKey.Text = a;
+            else
+                textBoxTranslatorAPIKey.Text = a;
+            /*
+            textBoxMediaAccountName.Text = "testamsindexer";
+            textBoxMediaAccountKey.Text = "7osPnuOAoPP3dY48IFLuJxY++V8nq4ICI0rCDy12Hsk=";
             textBoxSearchAccountName.Text = "testamsindexsearch";
             textBoxSearchAccountKey.Text = "50373C7F6D3D38FEA3A672392E059AEA";
             textBoxStorageAccountName.Text = "testamsindexersto";
             textBoxStorageAccountKey.Text = "06KUYkR81KFZDpmSw8NvArrXwW/qW3gW9J5Yt6hSEeadkt9+vhAZw3rirYVcfR84tTAGs4yWUGnZ/lNLkg2tEQ==";
             textBoxStorageContainerName.Text = "test";
+            */
             comboBoxLanguages.Items.AddRange(LanguagesIndexV2.ToArray());
             comboBoxLanguages.SelectedIndex = 0;
+        }
+        void SaveSettings()
+        {
+            string a = string.Empty;
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAccountName", textBoxMediaAccountName.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAccountKey", textBoxMediaAccountKey.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureStorageAccountName", textBoxStorageAccountName.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureStorageAccountKey", textBoxStorageAccountKey.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureStorageContainer", textBoxStorageContainerName.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureSearchAccountName", textBoxSearchAccountName.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureSearchAccountKey", textBoxSearchAccountKey.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AssetPrefix", textBoxAssetPrefix.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("PlayerUri", textBoxPlayerUri.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("TranslatorAPIKey", textBoxTranslatorAPIKey.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.Save();
+        }
+        public MainForm()
+        {
+            
+            InitializeComponent();
             _context = null;
+            LoadSettings();
             UpdateControls();
 
         }
@@ -61,47 +144,110 @@ namespace TestAMSWF
                 return true;
             return false;
         }
+        bool IsAudioInputAssetSelected()
+        {
+            string name = "";
+            string s = (listInputAssets.Items.Count > 0 ? listInputAssets.SelectedItem as string : string.Empty);
+            if (!string.IsNullOrEmpty(s))
+            {
+                s = s.Replace("ASSET: ","");
+                int pos = s.IndexOf(" ASSET-ID ");
+                if (pos > 0)
+                {
+                    name = s.Substring(0, pos);
+                    if (name.StartsWith(GetInputAssetPrefix()))
+                        name = name.Replace(GetInputAssetPrefix(), "");
+                    if (name.StartsWith(GetAssetAudioMidfix()))
+                        return true;
+                }
+            }
+            return false;
+        }
+
         void UpdateControls()
         {
             if(IsConnected())
             {
-                textBoxAccountKey.Enabled = false;
-                textBoxAccountName.Enabled = false;
+                textBoxMediaAccountKey.Enabled = false;
+                textBoxMediaAccountName.Enabled = false;
                 textBoxSearchAccountKey.Enabled = false;
                 textBoxSearchAccountName.Enabled = false;
                 textBoxStorageAccountKey.Enabled = false;
                 textBoxStorageAccountName.Enabled = false;
                 textBoxStorageContainerName.Enabled = false;
+                textBoxTranslatorAPIKey.Enabled = false;
+                textBoxAssetPrefix.Enabled = false;
+                textBoxPlayerUri.Enabled = false;
                 buttonLogin.Enabled = false;
 
                 listInputAssets.Enabled = true;
                 listInputFiles.Enabled = true;
-                buttonAddAsset.Enabled = true;
-                buttonRemoveAsset.Enabled = true;
                 listOutputFiles.Enabled = true;
                 listOutputAssets.Enabled = true;
-                buttonGenerateSubtitle.Enabled = true;
-                buttonDonwloadSubtitle.Enabled = true;
                 richTextBoxLog.Enabled = true;
-                comboBoxLanguages.Enabled = true;
-                buttonOpenSubtitle.Enabled = true;
+                textBoxSearch.Enabled = true;
                 buttonDisplayJobs.Enabled = true;
 
-                buttonCreateIndex.Enabled = true;
-                buttonDeleteIndex.Enabled = true;
-                buttonPopulateIndex.Enabled = true;
-                buttonSearch.Enabled = true;
-                textBoxSearch.Enabled = true;
+                if ((bUploadingAsset != true)&&(bProcessingAsset != true))
+                {
+                    buttonAddAsset.Enabled = true;
+
+                    if (listInputAssets.SelectedIndex >= 0)
+                    {
+                        buttonRemoveAsset.Enabled = true;
+                        buttonGenerateSubtitle.Enabled = true;
+                        buttonPlayAudioSubtitle.Enabled = true;
+                        if(IsAudioInputAssetSelected()==true)
+                            buttonPlayVideoSubtitle.Enabled = false;
+                        else
+                            buttonPlayVideoSubtitle.Enabled = true;
+                    }
+                    else
+                    {
+                        buttonRemoveAsset.Enabled = false;
+                        buttonGenerateSubtitle.Enabled = false;
+                        buttonPlayAudioSubtitle.Enabled = false;
+                        buttonPlayVideoSubtitle.Enabled = false;
+                    }
+                    buttonDonwloadSubtitle.Enabled = true;
+                    comboBoxLanguages.Enabled = true;
+                    buttonOpenSubtitle.Enabled = true;
+
+
+                    buttonCreateIndex.Enabled = true;
+                    buttonDeleteIndex.Enabled = true;
+                    buttonPopulateIndex.Enabled = true;
+                    buttonSearch.Enabled = true;
+                }
+                else
+                {
+                    buttonAddAsset.Enabled = false;
+                    buttonRemoveAsset.Enabled = false;
+                    buttonGenerateSubtitle.Enabled = false;
+                    buttonDonwloadSubtitle.Enabled = false;
+                    comboBoxLanguages.Enabled = false;
+                    buttonOpenSubtitle.Enabled = false;
+                    buttonPlayAudioSubtitle.Enabled = false;
+                    buttonPlayVideoSubtitle.Enabled = false;
+                    buttonCreateIndex.Enabled = false;
+                    buttonDeleteIndex.Enabled = false;
+                    buttonPopulateIndex.Enabled = false;
+                    buttonSearch.Enabled = false;
+                }
+
             }
             else
             {
-                textBoxAccountKey.Enabled = true;
-                textBoxAccountName.Enabled = true;
+                textBoxMediaAccountKey.Enabled = true;
+                textBoxMediaAccountName.Enabled = true;
                 textBoxSearchAccountKey.Enabled = true;
                 textBoxSearchAccountName.Enabled = true;
                 textBoxStorageAccountKey.Enabled = true;
                 textBoxStorageAccountName.Enabled = true;
                 textBoxStorageContainerName.Enabled = true;
+                textBoxTranslatorAPIKey.Enabled = true;
+                textBoxAssetPrefix.Enabled = true;
+                textBoxPlayerUri.Enabled = true;
                 buttonLogin.Enabled = true;
 
                 listInputAssets.Enabled = false;
@@ -116,6 +262,8 @@ namespace TestAMSWF
                 comboBoxLanguages.Enabled = false;
                 buttonOpenSubtitle.Enabled = false;
                 buttonDisplayJobs.Enabled = false;
+                buttonPlayAudioSubtitle.Enabled = false;
+                buttonPlayVideoSubtitle.Enabled = false;
                 buttonCreateIndex.Enabled = false;
                 buttonDeleteIndex.Enabled = false;
                 buttonPopulateIndex.Enabled = false;
@@ -123,6 +271,95 @@ namespace TestAMSWF
                 textBoxSearch.Enabled = false;
 
             }
+        }
+        bool IsVideoFile(string filename)
+        {
+            string s = filename.ToLower();
+            if ((s.EndsWith(".wmv")) || (s.EndsWith(".mp4")) || (s.EndsWith(".mkv")))
+                return true;
+            return false;
+        }
+        string assetPrefix = string.Empty;
+        string GetInputAssetPrefix()
+        {
+            return assetPrefix + "_input_";
+        }
+        string GetOutputAssetPrefix()
+        {
+            return assetPrefix + "_output_";
+        }
+        string GetAssetVideoMidfix()
+        {
+            return "video_";
+        }
+        string GetAssetAudioMidfix()
+        {
+            return "audio_";
+        }
+        string GetAssetSubtitleMidfix()
+        {
+            return "subtitle_";
+        }
+        string GetAssetLanguageMidfix(string language)
+        {
+            return language.ToLower() + "_";
+        }
+        bool AreAssetsLinked(string InputAsset, string OutputAsset)
+        {
+            if(InputAsset.StartsWith(GetInputAssetPrefix()))
+            {
+                if (OutputAsset.StartsWith(GetOutputAssetPrefix()))
+                {
+                    string a = GetAssetNameSuffix(InputAsset);
+                    string b = GetAssetNameSuffix(OutputAsset);
+                    if (b.Equals(a))
+                        return true;
+                }
+
+            }
+            return false;
+        }
+        string[] langArray = new[] {"enus", "eses", "zhcn","frfr", "dede", "itit", "ptbr", "areg","jajp" };
+        string GetAssetNameSuffix(string InputAsset)
+        {
+            string result = string.Empty;
+            if (InputAsset.StartsWith(GetInputAssetPrefix()))
+                result = InputAsset.Replace(GetInputAssetPrefix(), "");
+            else if (InputAsset.StartsWith(GetOutputAssetPrefix()))
+                result = InputAsset.Replace(GetOutputAssetPrefix(), "");
+            if (result.StartsWith(GetAssetVideoMidfix()))
+                result = result.Replace(GetAssetVideoMidfix(), "");
+            if (result.StartsWith(GetAssetAudioMidfix()))
+                result = result.Replace(GetAssetAudioMidfix(), "");
+            if (result.StartsWith(GetAssetSubtitleMidfix()))
+                result = result.Replace(GetAssetSubtitleMidfix(), "");
+            if (result.IndexOf("_") == 4)
+            {
+                string lang = result.Substring(0, 4);
+                if(langArray.Contains(lang)) 
+                    result = result.Substring(5);
+            }
+            return result;           
+        }
+        string GetAssetNameLanguage(string InputAsset)
+        {
+            string lang = string.Empty;
+            string result = string.Empty;
+            if (InputAsset.StartsWith(GetInputAssetPrefix()))
+                result = InputAsset.Replace(GetInputAssetPrefix(), "");
+            else if (InputAsset.StartsWith(GetOutputAssetPrefix()))
+                result = InputAsset.Replace(GetOutputAssetPrefix(), "");
+            if (result.StartsWith(GetAssetVideoMidfix()))
+                result = result.Replace(GetAssetVideoMidfix(), "");
+            if (result.StartsWith(GetAssetAudioMidfix()))
+                result = result.Replace(GetAssetAudioMidfix(), "");
+            if (result.StartsWith(GetAssetSubtitleMidfix()))
+                result = result.Replace(GetAssetSubtitleMidfix(), "");
+            if (result.IndexOf("_") == 4) {
+                lang = result.Substring(0, 2);
+            }
+            lang.ToLower();
+            return lang;
         }
         void DeleteLocators()
         {
@@ -142,7 +379,7 @@ namespace TestAMSWF
         }
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textBoxAccountName.Text))
+            if (string.IsNullOrEmpty(textBoxMediaAccountName.Text))
             {
                 MessageBox.Show("The account name cannot be empty.");
                 return;
@@ -152,22 +389,25 @@ namespace TestAMSWF
                 try
                 {
                    
-                    _context = new Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext(textBoxAccountName.Text, textBoxAccountKey.Text);
+                    _context = new Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext(textBoxMediaAccountName.Text, textBoxMediaAccountKey.Text);
                     if (_context != null)
                     {
                         _searchContext =  new Microsoft.Azure.Search.SearchServiceClient(textBoxSearchAccountName.Text, new Microsoft.Azure.Search.SearchCredentials(textBoxSearchAccountKey.Text));
                         if (_searchContext != null)
                         {
                             _indexClient = _searchContext.Indexes.GetClient("media");
-
-
-                            _context.Credentials.RefreshToken();
-                            UpdateControls();
-                            PopulateInputAssets();
-                            PopulateInputFiles();
-                            PopulateOutputAssets();
-                            PopulateOutputFiles();
-                            DeleteLocators();
+                            if (_indexClient != null)
+                            {
+                                SaveSettings();
+                                assetPrefix = textBoxAssetPrefix.Text;
+                                _context.Credentials.RefreshToken();
+                                PopulateInputAssets();
+                                PopulateInputFiles();
+                                PopulateOutputAssets();
+                                PopulateOutputFiles();
+                                DeleteLocators();
+                                UpdateControls();
+                            }
                         }
                     }
                 }
@@ -178,17 +418,31 @@ namespace TestAMSWF
                 }
             }
         }
-        void PopulateInputAssets()
+        void PopulateInputAssets(string AssetName = null)
         {
+            int IndexToSelect = 0;
+            if (!string.IsNullOrEmpty(AssetName))
+            {
+                if (listInputAssets.Items.Count > 0)
+                    IndexToSelect = listInputAssets.SelectedIndex;
+            }
             listInputAssets.Items.Clear();
+            int Count = 0;
             foreach (var asset in _context.Assets)
             {
-                if (!asset.Name.EndsWith("Indexed"))
+                if (asset.Name.StartsWith(GetInputAssetPrefix()))
+                {
                     listInputAssets.Items.Add("ASSET: " + asset.Name + " ASSET-ID " + asset.Id);
+                    if (!string.IsNullOrEmpty(AssetName))
+                    {
+                        if (string.Equals(asset.Name, AssetName))
+                            IndexToSelect = Count;
+                    }
+                    Count++;
+                }
             }
-            if (listInputAssets.Items.Count > 0)
-                listInputAssets.SelectedItem = 0;
-
+            if ((listInputAssets.Items.Count > 0)&& (listInputAssets.Items.Count > IndexToSelect))
+                listInputAssets.SelectedIndex = IndexToSelect;
         }
         void PopulateInputFiles(string id)
         {
@@ -199,7 +453,7 @@ namespace TestAMSWF
                     listInputFiles.Items.Add("FILE: " + file.Name + " ASSET-ID " + file.Asset.Id);
             }
             if (listInputFiles.Items.Count > 0)
-                listInputFiles.SelectedItem = 0;
+                listInputFiles.SelectedIndex = 0;
 
         }
         void PopulateOutputAssets(string id)
@@ -218,14 +472,14 @@ namespace TestAMSWF
             {
                 foreach (var asset in _context.Assets)
                 {
-                    if (asset.Name.StartsWith(AssetName) && asset.Name.EndsWith("ndexed"))
+                    if (asset.Name.StartsWith(GetOutputAssetPrefix()) && AreAssetsLinked(AssetName, asset.Name))
                     {
                         listOutputAssets.Items.Add("ASSET: " + asset.Name + " ASSET-ID " + asset.Id);
                         break;
                     }
                 }
                 if (listOutputAssets.Items.Count > 0)
-                    listOutputAssets.SelectedItem = 0;
+                    listOutputAssets.SelectedIndex = 0;
             }
         }
         void PopulateOutputFiles(string id)
@@ -237,7 +491,7 @@ namespace TestAMSWF
                     listOutputFiles.Items.Add("FILE: " + file.Name + " ASSET-ID " + file.Asset.Id);
             }
             if (listOutputFiles.Items.Count > 0)
-                listOutputFiles.SelectedItem = 0;
+                listOutputFiles.SelectedIndex = 0;
 
         }
         private void listAssets_SelectedIndexChanged(object sender, EventArgs e)
@@ -250,6 +504,7 @@ namespace TestAMSWF
                 if(listOutputAssets.Items.Count>0)listOutputAssets.SelectedIndex = 0;
                 if (listOutputFiles.Items.Count > 0) listOutputFiles.SelectedIndex = 0;
                 if (listInputFiles.Items.Count > 0) listInputFiles.SelectedIndex = 0;
+                UpdateControls();
             }
         }
         void PopulateInputFiles()
@@ -295,19 +550,6 @@ namespace TestAMSWF
         }
         private void MyUploadProgressChanged(object sender, Microsoft.WindowsAzure.MediaServices.Client.UploadProgressChangedEventArgs e)
         {
-        }
-        private void ProcessUploadFileToAsset(string SafeFileName, string FileName, Microsoft.WindowsAzure.MediaServices.Client.IAsset MyAsset)
-        {
-            try
-            {
-                Microsoft.WindowsAzure.MediaServices.Client.IAssetFile UploadedAssetFile = MyAsset.AssetFiles.Create(SafeFileName);
-                UploadedAssetFile.UploadProgressChanged += MyUploadProgressChanged;
-                UploadedAssetFile.Upload(FileName as string);
-            }
-            catch
-            {
-                MessageBox.Show("Error when uploading the file");
-            }
         }
         private static readonly List<string> InvalidFileNamePrefixList = new List<string>
                 {
@@ -380,6 +622,38 @@ namespace TestAMSWF
             return true;
         }
         public string storageaccount;
+        string GetAssetUniqueName(string filename)
+        {
+            bool bAlreadyExist = true;
+            string name = filename;
+            int count = 0;
+            while (bAlreadyExist)
+            {
+                var a = _context.Assets.Where(j => j.Name == name).FirstOrDefault();
+                if (a != null)
+                    name = filename + "_" + count.ToString();
+                else
+                    bAlreadyExist = false;
+                count++;
+            }
+            return name;
+        }
+        private void ProcessUploadFileToAsset(string file, string filename, IAsset asset)
+        {
+            try
+            {
+                Microsoft.WindowsAzure.MediaServices.Client.IAssetFile UploadedAssetFile = asset.AssetFiles.Create(filename);
+                UploadedAssetFile.IsPrimary = true;
+                UploadedAssetFile.UploadProgressChanged += UploadProgress;
+                UploadedAssetFile.Upload(file);
+            }
+            catch (Exception ex)
+            {
+                TextBoxLogWriteLine("Exception while uploading the Asset " + ex.Message, true);
+            }
+        }
+        bool bUploadingAsset = false;
+        bool bProcessingAsset = false;
         private async void buttonAddAsset_Click(object sender, EventArgs e)
         {
             OpenFileDialog Dialog = new OpenFileDialog();
@@ -388,40 +662,66 @@ namespace TestAMSWF
             {
                 using (new CursorHandler())
                 {
+                    string filename = null;
+                    string assetfilename = null;
+                    bUploadingAsset = true;
+                    UpdateControls();
                     foreach (string file in Dialog.FileNames)
                     {
-                        string filename = System.IO.Path.GetFileName(file);
-                        if (!AssetFileNameIsOk(filename))
+                        filename = System.IO.Path.GetFileName(file);
+                        if(IsVideoFile(filename))
+                            assetfilename = GetInputAssetPrefix() + GetAssetVideoMidfix() +filename;
+                        else
+                            assetfilename = GetInputAssetPrefix() + GetAssetAudioMidfix() + filename;
+                        if (!AssetFileNameIsOk(assetfilename))
                         {
                             MessageBox.Show("Filename incorrect to create an asset from", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
-                        if (string.IsNullOrEmpty(storageaccount)) storageaccount = _context.DefaultStorageAccount.Name; // no storage account or null, then let's take the default one
+                        try
+                        {
+                            using (new CursorHandler())
+                            {
+                                if (string.IsNullOrEmpty(storageaccount)) storageaccount = _context.DefaultStorageAccount.Name; // no storage account or null, then let's take the default one
 
-                        System.Threading.CancellationTokenSource tokenSource = new System.Threading.CancellationTokenSource();
-                        Microsoft.WindowsAzure.MediaServices.Client.IAsset asset = await _context.Assets.CreateAsync(filename,
-                                                              storageaccount,
-                                                              Microsoft.WindowsAzure.MediaServices.Client.AssetCreationOptions.None,
-                                                              tokenSource.Token);
+                                assetfilename = GetAssetUniqueName(assetfilename);
+                                if (!string.IsNullOrEmpty(assetfilename))
+                                {
+                                    TextBoxLogWriteLine("Uploading the Asset file " + filename, false);
 
-                        Microsoft.WindowsAzure.MediaServices.Client.IAssetFile UploadedAssetFile = await asset.AssetFiles.CreateAsync(filename, tokenSource.Token);
-                        if (tokenSource.Token.IsCancellationRequested) return;
-                        UploadedAssetFile.UploadProgressChanged += UploadProgress;
-                        UploadedAssetFile.Upload(file);
-                        UploadedAssetFile.IsPrimary = true;
-                        UploadedAssetFile.Update();
+                                    System.Threading.CancellationTokenSource tokenSource = new System.Threading.CancellationTokenSource();
+                                    Microsoft.WindowsAzure.MediaServices.Client.IAsset asset = await _context.Assets.CreateAsync(assetfilename,
+                                                                          storageaccount,
+                                                                          Microsoft.WindowsAzure.MediaServices.Client.AssetCreationOptions.None,
+                                                                          tokenSource.Token);
+                                    if (asset != null)
+                                    {
+                                        await Task.Factory.StartNew(() => ProcessUploadFileToAsset(file, filename, asset));
+                                    }
+                                }
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            TextBoxLogWriteLine("Exception while uploading the Asset" + ex.Message, true);
+
+                        }
                     }
+                    bUploadingAsset = false;
                     // Refresh the asset.
-                    PopulateInputAssets();
+                    PopulateInputAssets(assetfilename);
                     PopulateInputFiles();
                     PopulateOutputAssets();
                     PopulateOutputFiles();
+                    UpdateControls();
                 }
             }
         }
         void UploadProgress(object sender, Microsoft.WindowsAzure.MediaServices.Client.UploadProgressChangedEventArgs args)
         {
-
+            TextBoxLogWriteLine("Uploading the Asset " + args.BytesUploaded.ToString() + "/" + args.TotalBytes.ToString(), false);
+            if(args.BytesUploaded == args.TotalBytes)
+                TextBoxLogWriteLine("Uploading the Asset done...");
         }
         public static async Task DeleteAssetAsync(Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext mediaContext, Microsoft.WindowsAzure.MediaServices.Client.IAsset asset)
         {
@@ -468,21 +768,29 @@ namespace TestAMSWF
                     var a = _context.Assets.Where(j => j.Id == id).FirstOrDefault();
                     if (a != null)
                     {
-                        foreach (var asset in _context.Assets)
+                        try
                         {
-                            if (asset.Name.EndsWith("Indexed") && asset.Name.StartsWith(a.Name))
+                            foreach (var asset in _context.Assets)
                             {
-                                if (MessageBox.Show("Do you want to delete the output Asset as well?", "Deleting Output Asset", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
-                                    await DeleteAssetAsync(_context, asset);
-                                break;
+                                if (asset.Name.StartsWith(GetOutputAssetPrefix()) && AreAssetsLinked(a.Name,  asset.Name))
+                                {
+                                    if (MessageBox.Show("Do you want to delete the output Asset as well?", "Deleting Output Asset", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                                        await DeleteAssetAsync(_context, asset);
+                                    break;
+                                }
                             }
-                        }
 
-                        await DeleteAssetAsync(_context, a);
+                            await DeleteAssetAsync(_context, a);
+                        }
+                        catch (Exception ex)
+                        {
+                            TextBoxLogWriteLine("Exception while Deleting Asset" + ex.Message, true);
+                        }
                         PopulateInputAssets();
                         PopulateInputFiles();
                         PopulateOutputAssets();
                         PopulateOutputFiles();
+                        UpdateControls();
                     }
                 }
             }
@@ -630,10 +938,14 @@ namespace TestAMSWF
         }
         public void LaunchJobs_OneJobPerInputAssetWithSpecificConfig(Microsoft.WindowsAzure.MediaServices.Client.IMediaProcessor processor, List<Microsoft.WindowsAzure.MediaServices.Client.IAsset> selectedassets, string jobname, int jobpriority, string taskname, string outputassetname, List<string> configuration, Microsoft.WindowsAzure.MediaServices.Client.AssetCreationOptions myAssetCreationOptions, Microsoft.WindowsAzure.MediaServices.Client.TaskOptions myTaskOptions, string storageaccountname = "", bool copySubtitlesToInput = false)
         {
+            bProcessingAsset = true;
+            UpdateControls();
             // a job per asset, one task per job, but each task has a specific config
             Task.Factory.StartNew(() =>
             {
                 int index = -1;
+
+
 
                 foreach (Microsoft.WindowsAzure.MediaServices.Client.IAsset asset in selectedassets)
                 {
@@ -686,34 +998,52 @@ namespace TestAMSWF
                         TextBoxLogWriteLine("Job '{0}' : submitted.", jobnameloc);
                         Task.Factory.StartNew(() =>
                         {
-                            bool bStop = false;
-                            while(bStop == false)
+                            try
                             {
-                                var t = System.Threading.Tasks.Task.Delay(10000);
-                                t.Wait();
-                                foreach(var j in _context.Jobs)
+                                bool bStop = false;
+                                while (bStop == false)
                                 {
-                                    if (j.Id == myJob.Id)
+                                    var t = System.Threading.Tasks.Task.Delay(10000);
+                                    t.Wait();
+                                    foreach (var j in _context.Jobs)
                                     {
-                                        TextBoxLogWriteLine(string.Format("Job '{0}' : {1}",jobnameloc,j.State.ToString()));
-                                        if ((j.State == JobState.Canceled) ||
-                                            (j.State == JobState.Error) ||
-                                            (j.State == JobState.Finished))
+                                        if (j.Id == myJob.Id)
                                         {
-                                            bStop = true;
-                                            break;
+                                            TextBoxLogWriteLine(string.Format("Job '{0}' : {1}", jobnameloc, j.State.ToString()));
+                                            if ((j.State == JobState.Canceled) ||
+                                                (j.State == JobState.Error) ||
+                                                (j.State == JobState.Finished))
+                                            {
+                                                bStop = true;
+                                                bProcessingAsset = false;
+                                                this.Invoke((MethodInvoker)delegate
+                                                {
+                                                    UpdateControls();
+                                                    PopulateOutputAssets();
+                                                    PopulateOutputFiles();
+                                                });
+                                                return;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
+                            catch(Exception ex)
+                            {
+
+                            }
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                UpdateControls();
+                                PopulateOutputAssets();
+                                PopulateOutputFiles();
+                            });
+                            return;
+                }
                         );
                     }
-                 //   TextBoxLogWriteLine();
                 }
 
-                //                DotabControlMainSwitch(Constants.TabJobs);
-                //                DoRefreshGridJobV(false);
             }
 
                 );
@@ -783,27 +1113,25 @@ namespace TestAMSWF
                 MessageBox.Show("More than one asset selected");
                 return;
             }
-
-            if (SelectedAssets.FirstOrDefault() == null) return;
-
-
-            //var l = SelectedAssets.FirstOrDefault().GetSmoothStreamingUri();
-
-            // Removed as not supported by Indexer v2 Preview
-            //var proposedfiles = CheckSingleFileIndexerSupportedExtensions(SelectedAssets);
-            if (CheckPrimaryFileExtension(SelectedAssets, new[] { ".MP4", ".WMV", ".MP3", ".M4A", ".WMA", ".AAC", ".WAV" }) == false)
+            if (SelectedAssets.FirstOrDefault() == null)
+            {
+                MessageBox.Show("No files selected");
                 return;
+            }
+
+
+            if (CheckPrimaryFileExtension(SelectedAssets, new[] { ".MP4", ".WMV", ".MP3", ".M4A", ".WMA", ".AAC", ".WAV" }) == false)
+            {
+                MessageBox.Show("The file selected seems not a video (MP4, WMV) nor audio (MP3, M4A, WMA, AAC, WAV) file ");
+                return;
+            }
 
             // Get the SDK extension method to  get a reference to the Azure Media Indexer.
             Microsoft.WindowsAzure.MediaServices.Client.IMediaProcessor processor = GetLatestMediaProcessorByName(AzureMediaIndexer2Preview);
 
-            string IndexerJobName = "Media Indexing v2 of " + SelectedAssets.FirstOrDefault().Name;
-            string IndexerOutputAssetName = SelectedAssets.FirstOrDefault().Name + " - Indexed";
-            string IndexerInputAssetName = SelectedAssets.FirstOrDefault().Name;
-            string taskname = "Media Indexing v2 of " + SelectedAssets.FirstOrDefault().Name;
-
             {
                 var ListConfig = new List<string>();
+                string language = "EnUs";
                 foreach (var asset in SelectedAssets)
                 {
                     //new Item("English", "EnUs"),
@@ -815,14 +1143,17 @@ namespace TestAMSWF
                     //new Item("Portuguese", "PtBr"),
                     //new Item("Arabic (Egyptian)", "ArEg"),
                     //new Item("Japanese", "JaJp")
-                    string language = "FrFr";
                     Item item = (comboBoxLanguages.Items.Count>0?comboBoxLanguages.SelectedItem as Item:null);
                     if (item != null)
                         language = item.Value;
                     if (string.IsNullOrEmpty(language))
-                        language = "FrFr";
-                    ListConfig.Add(JsonConfig(language, false, false, true));
+                        language = "EnUs";
+                    ListConfig.Add(JsonConfig(language, false, true, false));
                 }
+                string IndexerInputAssetName = SelectedAssets.FirstOrDefault().Name;
+                string IndexerJobName = "Media Indexing v2 of " + IndexerInputAssetName;
+                string IndexerOutputAssetName = GetOutputAssetPrefix() + GetAssetSubtitleMidfix() + GetAssetLanguageMidfix(language) + GetAssetNameSuffix(IndexerInputAssetName);
+                string taskname = "Media Indexing v2 of " + IndexerInputAssetName;
                 LaunchJobs_OneJobPerInputAssetWithSpecificConfig(
                             processor,
                             SelectedAssets,
@@ -832,18 +1163,11 @@ namespace TestAMSWF
                             taskname,
                             IndexerOutputAssetName,
                             ListConfig,
-                            // OutputAssetsCreationOptions ? AssetCreationOptions.StorageEncrypted : AssetCreationOptions.None
                             Microsoft.WindowsAzure.MediaServices.Client.AssetCreationOptions.None,
-                            //TasksOptionsSetting =
-                            //    (checkBoxUseProtectedConfig.Checked ? TaskOptions.ProtectedConfiguration : TaskOptions.None) |
-                            //    (checkBoxDoNotCancelOnJobFailure.Checked ? TaskOptions.DoNotCancelOnJobFailure : TaskOptions.None) |
-                            //    (checkBoxDoNotDeleteOutputAssetOnFailure.Checked ? TaskOptions.DoNotDeleteOutputAssetOnFailure : TaskOptions.None),
                             Microsoft.WindowsAzure.MediaServices.Client.TaskOptions.None,
-                            //form.JobOptions.StorageSelected,
                             _context.DefaultStorageAccount.Name,
-                            //CopySubtitlesFilesToInputAsset
                             false
-                                );
+                           );
             }
         }
         private List<IAssetFile> ReturnSelectedAssetFiles()
@@ -921,7 +1245,7 @@ namespace TestAMSWF
             }
             return null;
         }
-        private void buttonPlaySubtitle_Click(object sender, EventArgs e)
+        private void buttonDownloadSubtitle_Click(object sender, EventArgs e)
         {
             var SelectedAssetFiles = ReturnSelectedAssetFiles();
             if (SelectedAssetFiles.Count > 0)
@@ -977,8 +1301,6 @@ namespace TestAMSWF
                             // Start a worker thread that does downloading.
                             DoDownloadFileFromAsset(ReturnAsset(assetfile), assetfile, openFolderDialog.SelectedPath, response);
                         }
-                        MessageBox.Show("Download process has been initiated. See the Transfers tab to check the progress.");
-
                     }
                     catch
                     {
@@ -1020,7 +1342,7 @@ namespace TestAMSWF
                 bool Error = false;
                 try
                 {
-                    TextBoxLogWriteLine("Downloading from SASLocator: " + sasLocator.Path.ToString());
+                    TextBoxLogWriteLine("Downloading from SASLocator: " + File.GetSasUri(sasLocator).ToString());
                     await File.DownloadAsync(System.IO.Path.Combine(folder as string, File.Name), blobTransferClient, sasLocator, response.token);
                     sasLocator.Delete();
                 }
@@ -1029,17 +1351,16 @@ namespace TestAMSWF
                     Error = true;
                     TextBoxLogWriteLine(string.Format("Download of file '{0}' failed !", File.Name), true);
                     TextBoxLogWriteLine(e);
-                    //                    DoGridTransferDeclareError(response.Id, e);
                 }
                 if (!Error)
                 {
                     if (!response.token.IsCancellationRequested)
                     {
-                        //                      DoGridTransferDeclareCompleted(response.Id, folder.ToString());
+                        TextBoxLogWriteLine(string.Format("Download of file '{0}' sucessful", File.Name), false);
                     }
                     else
                     {
-                        //                    DoGridTransferDeclareCancelled(response.Id);
+                        TextBoxLogWriteLine(string.Format("Download of file '{0}' cancelled", File.Name), true);
                     }
                 }
             }, response.token);
@@ -1061,7 +1382,7 @@ namespace TestAMSWF
             //    return;
             //}
             string content = string.Empty;
-            string localfile = GetTempFilePathWithExtension(".ttml");
+            string localfile = GetTempFilePathWithExtension(".vtt");
 
             //Microsoft.WindowsAzure.MediaServices.Client.ILocator sasLocator = null;
             //var locatorTask = Task.Factory.StartNew(() =>
@@ -1122,12 +1443,17 @@ namespace TestAMSWF
                 }
             }
         }
-        public ILocator tempLocator = null;
-        public IAsset tempAsset = null;
-        private ILocator GetTemporaryLocator(IAsset asset)
+//        public ILocator tempLocator = null;
+//        public IAsset tempAsset = null;
+        private ILocator GetTemporaryOnDemandLocator(IAsset asset)
         {
+            ILocator tempLocator = null;
+            IAsset tempAsset = null;
+            TextBoxLogWriteLine(string.Format("Get OnDemand Locator for asset Id: '{0}' ", asset.Id), true);
             foreach (var loc in _context.Locators)
             {
+                if (loc.Type == LocatorType.OnDemandOrigin)
+                {
                     if (loc.AssetId == asset.Id)
                     {
                         if (loc.ExpirationDateTime > DateTime.Now)
@@ -1139,10 +1465,10 @@ namespace TestAMSWF
                             break;
                         }
                     }
+                }
             }
 
             if ((tempAsset!=null) && (tempLocator != null))
-//            if (tempLocator != null)
             {
                 try
                 {
@@ -1154,7 +1480,7 @@ namespace TestAMSWF
                         }
                         catch(Exception ex)
                         {
-                            MessageBox.Show("Exception when creating the temporary SAS locator." + ex.Message);
+                            TextBoxLogWriteLine(string.Format("Exception when deleting an OnDemand Locator for asset Id: '{0}'  Exception: {1} ", asset.Id,ex.Message), true);
                         }
                     });
                     locatorTask.Wait();
@@ -1172,12 +1498,78 @@ namespace TestAMSWF
                 {
                     try
                     {
-                        tempLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(1));
+                        tempLocator = _context.Locators.Create(LocatorType.OnDemandOrigin, asset, AccessPermissions.Read, TimeSpan.FromHours(24));
                         tempAsset = asset;
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error when creating the temporary SAS locator." + ex.Message);
+                        TextBoxLogWriteLine(string.Format("Exception when creating an OnDemand Locator for asset Id: '{0}' Exception: {1} ", asset.Id, ex.Message), true);
+                        tempAsset = null;
+                    }
+                });
+                locatorTask.Wait();
+            }
+            return tempLocator;
+        }
+        private ILocator GetTemporarySASLocator(IAsset asset)
+        {
+            ILocator tempLocator = null;
+            IAsset tempAsset = null;
+            TextBoxLogWriteLine(string.Format("Get SAS Locator for asset Id: '{0}' ", asset.Id), false);
+            foreach (var loc in _context.Locators)
+            {
+                if (loc.Type == LocatorType.Sas)
+                {
+                    if (loc.AssetId == asset.Id)
+                    {
+                        if (loc.ExpirationDateTime > DateTime.Now)
+                            return loc;
+                        else
+                        {
+                            tempLocator = loc;
+                            tempAsset = loc.Asset;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if ((tempAsset != null) && (tempLocator != null))
+            {
+                try
+                {
+                    var locatorTask = Task.Factory.StartNew(() =>
+                    {
+                        try
+                        {
+                            tempLocator.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            TextBoxLogWriteLine(string.Format("Exception when deleting a SAS Locator for asset Id: '{0}'  Exception: {1} ", asset.Id, ex.Message), true);
+                        }
+                    });
+                    locatorTask.Wait();
+                    locatorTask.Wait(1000);
+                    tempLocator = null;
+                }
+                catch
+                {
+
+                }
+            }
+            if (tempLocator == null) // no temp locator, let's create it
+            {
+                var locatorTask = Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        tempLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(24));
+                        tempAsset = asset;
+                    }
+                    catch (Exception ex)
+                    {
+                        TextBoxLogWriteLine(string.Format("Exception when creating a SAS Locator for asset Id: '{0}' Exception: {1} ", asset.Id, ex.Message), true);
                         tempAsset = null;
                     }
                 });
@@ -1204,7 +1596,6 @@ namespace TestAMSWF
                 }
             }
             if ((tempInputAsset != null) && (tempInputLocator != null))
-            //            if (tempLocator != null)
             {
                 try
                 {
@@ -1234,12 +1625,12 @@ namespace TestAMSWF
                 {
                     try
                     {
-                        tempInputLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(1));
+                        tempInputLocator = _context.Locators.Create(LocatorType.OnDemandOrigin, asset, AccessPermissions.Read, TimeSpan.FromHours(24));
                         tempInputAsset = asset;
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error when creating the temporary SAS locator." + ex.Message);
+                        MessageBox.Show("Error when creating the temporary OnDemandOrigin locator." + ex.Message);
                         tempInputAsset = null;
                     }
                 });
@@ -1255,7 +1646,7 @@ namespace TestAMSWF
                 if (SelectedAssetFiles.Count > 0)
                 {
                     var af = SelectedAssetFiles.FirstOrDefault();
-                    ILocator locator = GetTemporaryLocator(af.Asset);
+                    ILocator locator = GetTemporarySASLocator(af.Asset);
                     if (locator != null)
                     {
                         try
@@ -1382,16 +1773,16 @@ namespace TestAMSWF
                 List<Media> documents = new List<Media>();
                 foreach (var asset in _context.Assets)
                 {
-                    if (!asset.Name.EndsWith("Indexed"))
+                    if (asset.Name.StartsWith(GetInputAssetPrefix()))
                     {
                         foreach (var a in _context.Assets)
                         {
-                            if (a.Name.StartsWith(asset.Name) && a.Name.EndsWith("Indexed"))
+                            if (a.Name.StartsWith(asset.Name) && a.Name.StartsWith(GetOutputAssetPrefix()))
                             {
 
                                 foreach (var file in _context.Files)
                                 {
-                                    if ((a.Id == file.Asset.Id)&&(file.Name.EndsWith(".ttml",StringComparison.OrdinalIgnoreCase)))
+                                    if ((a.Id == file.Asset.Id)&&(file.Name.EndsWith(".vtt",StringComparison.OrdinalIgnoreCase)))
                                     {
                                         string content = GetAssetFileContent(a, file);
                                         if (!string.IsNullOrEmpty(content))
@@ -1541,40 +1932,49 @@ namespace TestAMSWF
             }
             return res;
         }
-
-        private void buttonPlaySubtitle_Click_1(object sender, EventArgs e)
+        private void PlaySubtitle(bool bAudio)
         {
-            //   http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?
             using (new CursorHandler())
             {
                 var SelectedAssetFiles = ReturnSelectedAssetFiles();
                 var SelectedInputAssetFiles = ReturnSelectedInputAssetFiles();
                 if ((SelectedAssetFiles.Count > 0) && (SelectedInputAssetFiles.Count > 0))
                 {
-                    var af = SelectedAssetFiles.FirstOrDefault();
-                    string destUri = GetDuplicateUri(af);
-                    var inputaf = SelectedInputAssetFiles.FirstOrDefault();
-                    ILocator locator = GetTemporaryLocator(af.Asset);
-                    ILocator Inputlocator = GetTemporaryInputLocator(inputaf.Asset);
-                    if ((locator != null) && (Inputlocator != null))
+                    var subtitleAssetFile = SelectedAssetFiles.FirstOrDefault();
+                    var mediaAssetFile = SelectedInputAssetFiles.FirstOrDefault();
+                    ILocator subtitleLocator = GetTemporarySASLocator(subtitleAssetFile.Asset);
+                    ILocator mediaLocator = GetTemporarySASLocator(mediaAssetFile.Asset);
+                    //ILocator locator = GetTemporaryOnDemandLocator(subtitleAssetFile.Asset);
+                    //ILocator Inputlocator = GetTemporaryOnDemandLocator(mediaAssetFile.Asset);
+                    if ((subtitleLocator != null) && (mediaLocator != null))
                     {
                         try
                         {
                             foreach (var assetfile in SelectedAssetFiles)
                             {
-                                TextBoxLogWriteLine("Url for TTML file: " + destUri);
-//                                string ttmlencoded = Base64Encode(destUri);
-                                string ttmlencoded = UriEncode(destUri);
-                                TextBoxLogWriteLine("Url for MP3 file: " + inputaf.GetSasUri(Inputlocator).ToString());
-//                                string mp3encoded = Base64Encode(inputaf.GetSasUri(Inputlocator).ToString());
-                                string mp3encoded = UriEncode(inputaf.GetSasUri(Inputlocator).ToString());
-                                string uri = "http://azurewebplayer.azurewebsites.net/player.html?audiourl=" + mp3encoded + "&subtitles=en,en," + ttmlencoded;
-                                //string uri = "http://testamsindex.azurewebsites.net/testamsindex/AudioIndexer.html?audiourl=" + mp3encoded + "&ttmlurl=" + ttmlencoded;
+                                //Duplicate the subtitle file in a container
+                               //string subtitleUri = GetDuplicateUri(subtitleAssetFile);
+                                //string mediaUri = GetDuplicateUri(mediaAssetFile);
+                                string subtitleUri = subtitleAssetFile.GetSasUri(subtitleLocator).ToString();
+                                string mediaUri = mediaAssetFile.GetSasUri(mediaLocator).ToString();
+
+                                TextBoxLogWriteLine("Url for Subtitle file: " + subtitleUri);
+                                string subtitleEncoded = UriEncode(subtitleUri);
+                                TextBoxLogWriteLine("Url for Media file: " + mediaUri);
+                                string mediaEncoded = UriEncode(mediaUri);
+                                string uri = string.Empty;
+                                string lang = GetAssetNameLanguage(subtitleAssetFile.Asset.Name);
+                                if (string.IsNullOrEmpty(lang))
+                                    lang = "en";
+                                if (bAudio == true)
+                                    uri = textBoxPlayerUri.Text + "?audiourl=" + mediaEncoded + "&subtitles=" + lang + "," + lang + "," + subtitleEncoded;
+                                else
+                                    uri = textBoxPlayerUri.Text + "?url=" + mediaEncoded + "&subtitles=" + lang + "," + lang + ","+ subtitleEncoded;
                                 TextBoxLogWriteLine("Url for player: " + uri);
                                 System.Diagnostics.Process.Start(uri);
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             TextBoxLogWriteLine("Error when accessing temporary SAS locator: " + ex.Message);
                         }
@@ -1582,6 +1982,15 @@ namespace TestAMSWF
                 }
             }
 
+        }
+        private void buttonPlayAudioSubtitle_Click(object sender, EventArgs e)
+        {
+            PlaySubtitle(true);
+        }
+
+        private void buttonPlayVideoSubtitle_Click(object sender, EventArgs e)
+        {
+            PlaySubtitle(false);
         }
     }
 

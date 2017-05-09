@@ -17,8 +17,11 @@
     <script src="assets/js/jquery-1.11.2.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <!--*****START OF Azure Media Player Scripts*****-->
+    <link href="//amp.azure.net/libs/amp/2.1.0/skins/amp-default/azuremediaplayer.min.css" rel="stylesheet">
+    <script src="//amp.azure.net/libs/amp/2.1.0/azuremediaplayer.min.js"></script>
+    <!--
     <link href="assets/css/azuremediaplayer.min.css" type="text/css" rel="stylesheet">
-    <script src="assets/js/azuremediaplayer.min.js"></script>
+    <script src="assets/js/azuremediaplayer.min.js"></script>-->
     <!--*****END OF Azure Media Player Scripts*****-->
 
 </head>
@@ -74,8 +77,10 @@
                             </div>
                         </div>
                         <div id="videoContainer" style="display: block;">
-                            <!--<video id="azuremediaplayer" class="azuremediaplayer amp-default-skin amp-big-play-centered" width="100%" height="auto" tabindex=0><p class="amp-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p></video>-->
-                            <script>
+                            <video id="azuremediaplayer" class="azuremediaplayer amp-default-skin amp-big-play-centered" width="100%" height="auto" tabindex=0>
+                            <p class="amp-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
+                            </video>
+               <!--             <script>
                             var videoHeight = 500;
                             if ($(window).width() < 750) {
                                 videoHeight = $(window).width() * 11 / 16;
@@ -94,6 +99,7 @@
                                 });
                             });
                             </script>
+                   -->
                         </div>
                         <div id="audioplayer" style="background-color: lightgray; display: block;">
                             <audio id="audioElm" style="width: 100%;" autoplay: true>
