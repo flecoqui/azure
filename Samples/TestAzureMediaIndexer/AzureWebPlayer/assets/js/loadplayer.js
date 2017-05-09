@@ -37,7 +37,7 @@ function ResetState() {
     DisableDemoExceptLoadVideo();
 }
 
-function LoadVideoSource(url, subarray) {
+function LoadVideoSource(url, subarray,time) {
     var subtitleUrl = undefined;
     if (subarray.length > 0)
         subtitleUrl = subarray[0].src;
@@ -69,7 +69,11 @@ function LoadVideoSource(url, subarray) {
     subarray
     );
     myPlayer.play();
-
+    if (time != 0) {
+        control = GetMediaControl()
+        if(control != undefined)
+            control.currentTime = time;
+    }
 }
 function httpGet(theUrl) {
     if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -116,7 +120,7 @@ function LoadSubtitle(url) {
     */
 }
 //  sets the video source to the URL s
-function LoadAudioSource(url, subarray) {
+function LoadAudioSource(url, subarray,time) {
 
 
     if (!errorHandlerBound) {
@@ -157,6 +161,8 @@ function LoadAudioSource(url, subarray) {
             ctrl.play();
             if (subarray.length > 0)
                 LoadSubtitle(subarray[0].src);
+            if (time != 0)
+                ctrl.currentTime = time;
         }
 
     }
@@ -187,7 +193,7 @@ function AdjustHeight() {
     $('#display').height(boxheight - 40);
 }
 // Retrieve paramters from the url
-function LaunchPlayer(video, audio, subtitleurlarray) {
+function LaunchPlayer(video, audio, subtitleurlarray, time) {
     //  delete any captions we've got
     ResetState();
 
@@ -198,7 +204,7 @@ function LaunchPlayer(video, audio, subtitleurlarray) {
         if ($("#audioplayer") != undefined)
             $("#audioplayer").show();
         StopAllMediaSources();
-        LoadAudioSource(audio, subtitleurlarray);
+        LoadAudioSource(audio, subtitleurlarray,time);
     }
     else if ((video != undefined) && (video != "")) {
         if ($("#videoContainer") != undefined)
@@ -206,7 +212,7 @@ function LaunchPlayer(video, audio, subtitleurlarray) {
         if ($("#audioplayer") != undefined)
             $("#audioplayer").hide();
         StopAllMediaSources();
-        LoadVideoSource(video, subtitleurlarray);
+        LoadVideoSource(video, subtitleurlarray,time);
     }
     
     $("#captionFormatTTML").prop("checked",true);
@@ -228,7 +234,7 @@ $("#loadButton").click(function () {
          { src: s, srclang: l, kind: "subtitles", label: d }
         ];
     }
-    LaunchPlayer(v, a, array);
+    LaunchPlayer(v, a, array,0);
 });
 
 
@@ -726,6 +732,8 @@ var subtitlesArray = [];
 var videourl = undefined;
 // Audio Url 
 var audiourl = undefined;
+// Start Time in seconds
+var startTime = 0;
 // Player Options
 var myOptions = {
    // "nativeControlsForTouch": false,
@@ -794,6 +802,13 @@ if (subtitlesencodedurl !== undefined) {
         }
     }
 }
+
+// Retrieve start time from the url
+var StartTime = getParamFromUrl(window.location.href, "time");
+if (StartTime !== undefined) {
+    startTime = parseInt(StartTime);
+}
+
 if (subtitlesArray.length > 0) {
     $("#inputSubtitleUrl").val(subtitlesArray[0].src);
     $("#inputSubtitleLanguage").val(subtitlesArray[0].srclang);
@@ -873,7 +888,7 @@ $("#saveCaptionAndPlay").click(function () {
         control.play();
     }
 });
-LaunchPlayer(videourl, audiourl, subtitlesArray);
+LaunchPlayer(videourl, audiourl, subtitlesArray,startTime);
 
 
 //  the audio element's event handlers
