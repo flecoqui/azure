@@ -214,8 +214,9 @@ function LaunchPlayer(video, audio, subtitleurlarray, time) {
         StopAllMediaSources();
         LoadVideoSource(video, subtitleurlarray,time);
     }
+    $("#captionFormatTTML").prop("checked", false);
     
-    $("#captionFormatTTML").prop("checked",true);
+    $("#captionFormatVTT").prop("checked", true);
 }
 $("#loadButton").click(function () {
     v = $("#inputVideoUrl").val();
