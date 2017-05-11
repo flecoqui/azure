@@ -194,13 +194,13 @@
         ],
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('webAppName'),variables('webAppName'),'.azurewebsites.net')]",
+            "name": "[concat(variables('webAppName'),'.azurewebsites.net')]",
             "sslState": 0,
             "thumbprint": null,
             "ipBasedSslState": 0
           },
           {
-            "name": "[concat(variables('webAppName'),variables('webAppName'),'.scm.azurewebsites.net')]",
+            "name": "[concat(variables('webAppName'),'.scm.azurewebsites.net')]",
             "sslState": 0,
             "thumbprint": null,
             "ipBasedSslState": 0
@@ -237,9 +237,25 @@
     }
   ],
   "outputs": {
+    "mediaServicesAccountName": {
+      "type": "string",
+      "value": "[variables('mediaName')]"
+    },
     "mediaServicePrimaryKey": {
       "type": "string",
       "value": "[listKeys(resourceId('Microsoft.Media/mediaservices', variables('mediaName')), providers('Microsoft.Media', 'mediaservices').apiVersions[0]).primaryKey]"
+    },
+    "searchServicesAccountName": {
+      "type": "string",
+      "value": "[variables('searchName')]"
+    },
+    "cognitiveServicesAccountName": {
+      "type": "string",
+      "value": "[variables('cognitiveName')]"
+    },
+    "playerUrl": {
+      "type": "string",
+      "value": "[concat(variables('webAppName'),'.azurewebsites.net/player.html')]"
     }
   }
 }
