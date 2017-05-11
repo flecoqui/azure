@@ -221,7 +221,7 @@
             "displayName": "webDeploy"
           },
           "properties": {
-            "packageUri": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/package.zip",
+            "packageUri": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/website.zip",
             "dbType": "None",
             "connectionString": "",
             "setParameters": {
