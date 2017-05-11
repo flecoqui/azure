@@ -213,7 +213,7 @@
           "name": "MSDeploy",
           "type": "extensions",
           "location": "[resourceGroup().location]",
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2016-03-01",
           "dependsOn": [
             "[concat('Microsoft.Web/sites/', variables('webAppName'))]"
           ],
@@ -228,8 +228,9 @@
               "IIS Web Application Name": "[variables('webAppName')]"
             }
           }
-        },
-        "dependsOn",
+        }
+      ],
+        "dependsOn":
         [
           "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
         ]
