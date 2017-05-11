@@ -21,7 +21,7 @@ For instance:
 
     azure group create testamsseacog eastus2
 
-## DEPLOY THE VM:
+## DEPLOY THE SERVICES:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
