@@ -620,7 +620,7 @@ namespace TestAzureMediaIndexer
             {
                 PopulateInputFiles();
                 PopulateOutputAssets();
-                //PopulateOutputFiles();
+                PopulateOutputFiles();
                 if (listOutputAssets.Items.Count > 0) listOutputAssets.SelectedIndex = 0;
                 if (listOutputFiles.Items.Count > 0) listOutputFiles.SelectedIndex = 0;
                 if (listInputFiles.Items.Count > 0) listInputFiles.SelectedIndex = 0;
