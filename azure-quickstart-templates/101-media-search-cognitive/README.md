@@ -14,12 +14,17 @@ West US, West Europe,Southeast Asia,West Central US
 This template is with an application which is used to generate automatically video subtitles in different languages. Once generated the subtitles are stored in Azure Search to allow the users to find all the videos associated with a specific key word.
 https://github.com/flecoqui/azure/tree/master/Samples/TestAzureMediaIndexer 
 
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/1-architecture.png)
+
+
+
 ## CREATE RESOURCE GROUP:
 azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group create testamsseacog eastus2
+    azure group create testamsseacog northeurope
 
 ## DEPLOY THE SERVICES:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
@@ -131,5 +136,5 @@ azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group delete testamsseacog eastus2
+    azure group delete testamsseacog northeurope
 
