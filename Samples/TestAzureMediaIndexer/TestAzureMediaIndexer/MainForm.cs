@@ -174,8 +174,41 @@ namespace TestAzureMediaIndexer
             }
             return false;
         }
-
-        async void UpdateControls()
+        string GetSearchSelectedUrl()
+        {
+            string url = string.Empty;
+            string s = (listSearchResult.Items.Count > 0 ? listSearchResult.SelectedItem as string : string.Empty);
+            if (!string.IsNullOrEmpty(s))
+            {
+                int pos = s.IndexOf(" URL: ");
+                if (pos > 0)
+                {
+                    url = s.Substring(pos + 6);
+                }
+            }
+            return url;
+        }
+        bool IsSearchSelectedUrlAudio()
+        {
+            string s = (listSearchResult.Items.Count > 0 ? listInputAssets.SelectedItem as string : string.Empty);
+            if (!string.IsNullOrEmpty(s))
+            {
+                int pos = s.IndexOf("AUDIO: ");
+                if (pos >= 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        bool IsSearchResultSelected()
+        {
+            string url = GetSearchSelectedUrl();
+            if (string.IsNullOrEmpty(url))
+                return false;
+            return true;
+        }
+        void UpdateControls()
         {
             if (IsConnected())
             {
@@ -205,9 +238,10 @@ namespace TestAzureMediaIndexer
 
                 buttonCreateIndex.Enabled = ((bIndexExists == true) ? false : true);
                 buttonDeleteIndex.Enabled = ((bIndexExists == true) ? true : false);
-                buttonPopulateIndex.Enabled = ((bIndexExists == true) ? true : false);
                 buttonSearch.Enabled = ((bIndexExists == true) ? true : false);
                 textBoxSearch.Enabled = ((bIndexExists == true) ? true : false);
+                listSearchResult.Enabled = ((bIndexExists == true) ? true : false);
+                buttonPlaySearch.Enabled = (((bIndexExists == true)&&(IsSearchResultSelected())) ? true : false);
 
                 //buttonSearch.Enabled = (((_indexClient != null) && (_indexClient.Documents.Count() > 0)) ? true : false);
                 //textBoxSearch.Enabled = (((_indexClient != null) && (_indexClient.Documents.Count() > 0)) ? true : false);
@@ -229,6 +263,7 @@ namespace TestAzureMediaIndexer
                             buttonOpenSubtitle.Enabled = true;
                             buttonDonwloadSubtitle.Enabled = true;
                             comboBoxTranslateLanguages.Enabled = true;
+                            buttonPopulateIndex.Enabled = ((bIndexExists == true) ? true : false);
                             if (IsAudioInputAssetSelected() == true)
                                 buttonPlayVideoSubtitle.Enabled = false;
                             else
@@ -236,6 +271,7 @@ namespace TestAzureMediaIndexer
                         }
                         else
                         {
+                            buttonPopulateIndex.Enabled = false;
                             buttonPlayAudioSubtitle.Enabled = false;
                             buttonTranslateSubtitile.Enabled = false;
                             buttonUpdateSubtitle.Enabled = false;
@@ -247,6 +283,7 @@ namespace TestAzureMediaIndexer
                     }
                     else
                     {
+                        buttonPopulateIndex.Enabled = false;
                         buttonRemoveAsset.Enabled = false;
                         buttonGenerateSubtitle.Enabled = false;
                         buttonPlayAudioSubtitle.Enabled = false;
@@ -310,6 +347,8 @@ namespace TestAzureMediaIndexer
                 buttonDeleteIndex.Enabled = false;
                 buttonPopulateIndex.Enabled = false;
                 buttonSearch.Enabled = false;
+                listSearchResult.Enabled = false;
+                buttonPlaySearch.Enabled = false;
                 textBoxSearch.Enabled = false;
                 buttonTranslateSubtitile.Enabled = false;
                 buttonUpdateSubtitle.Enabled = false;
@@ -588,6 +627,14 @@ namespace TestAzureMediaIndexer
                 UpdateControls();
             }
         }
+        private void listSearchResult_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            using (new CursorHandler())
+            {
+                UpdateControls();
+            }
+        }
+
         void PopulateInputFiles()
         {
             string id = "";
@@ -1312,7 +1359,7 @@ namespace TestAzureMediaIndexer
                            );
             }
         }
-        private List<IAssetFile> ReturnSelectedAssetFiles()
+        private List<IAssetFile> ReturnSelectedSubtitleAssetFiles()
         {
             List<IAssetFile> Selection = new List<IAssetFile>();
             string assetID = string.Empty;
@@ -1348,7 +1395,7 @@ namespace TestAzureMediaIndexer
             }
             return Selection;
         }
-        private List<IAssetFile> ReturnSelectedInputAssetFiles()
+        private List<IAssetFile> ReturnSelectedMediaAssetFiles()
         {
             List<IAssetFile> Selection = new List<IAssetFile>();
             string assetID = string.Empty;
@@ -1397,7 +1444,7 @@ namespace TestAzureMediaIndexer
         }
         private void buttonDownloadSubtitle_Click(object sender, EventArgs e)
         {
-            var SelectedAssetFiles = ReturnSelectedAssetFiles();
+            var SelectedAssetFiles = ReturnSelectedSubtitleAssetFiles();
             if (SelectedAssetFiles.Count > 0)
             {
                 FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
@@ -1661,7 +1708,7 @@ namespace TestAzureMediaIndexer
             }
             return tempLocator;
         }
-        private ILocator GetTemporarySASLocator(IAsset asset, int Duration = 24)
+        private ILocator GetTemporarySASLocator(IAsset asset, int DurationinHours = 24)
         {
             ILocator tempLocator = null;
             IAsset tempAsset = null;
@@ -1672,7 +1719,7 @@ namespace TestAzureMediaIndexer
                 {
                     if (loc.AssetId == asset.Id)
                     {
-                        if (loc.ExpirationDateTime > DateTime.Now)
+                        if (loc.ExpirationDateTime > DateTime.Now + TimeSpan.FromHours(DurationinHours))
                             return loc;
                         else
                         {
@@ -1714,7 +1761,7 @@ namespace TestAzureMediaIndexer
                 {
                     try
                     {
-                        tempLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(Duration));
+                        tempLocator = _context.Locators.Create(LocatorType.Sas, asset, AccessPermissions.Read, TimeSpan.FromHours(DurationinHours));
                         tempAsset = asset;
                     }
                     catch (Exception ex)
@@ -1792,7 +1839,7 @@ namespace TestAzureMediaIndexer
         {
             using (new CursorHandler())
             {
-                var SelectedAssetFiles = ReturnSelectedAssetFiles();
+                var SelectedAssetFiles = ReturnSelectedSubtitleAssetFiles();
                 if (SelectedAssetFiles.Count > 0)
                 {
                     var af = SelectedAssetFiles.FirstOrDefault();
@@ -1881,13 +1928,15 @@ namespace TestAzureMediaIndexer
                     Name = "media",
                     Fields = new[]
                     {
-                        new Microsoft.Azure.Search.Models.Field("mediaId", Microsoft.Azure.Search.Models.DataType.String)                       { IsKey = true },
-                        new Microsoft.Azure.Search.Models.Field("mediaName", Microsoft.Azure.Search.Models.DataType.String)                     { IsSearchable = false, IsFilterable = true },
-                        new Microsoft.Azure.Search.Models.Field("mediaUrl", Microsoft.Azure.Search.Models.DataType.String)                       { IsSearchable = false, IsFilterable = true},
-                        new Microsoft.Azure.Search.Models.Field("subtitleUrl", Microsoft.Azure.Search.Models.DataType.String)                       { IsSearchable = false, IsFilterable = true},
-                        new Microsoft.Azure.Search.Models.Field("subtitleLanguage", Microsoft.Azure.Search.Models.DataType.String)                   { IsSearchable = true},
-                        new Microsoft.Azure.Search.Models.Field("subtitleStartTime", Microsoft.Azure.Search.Models.DataType.String)                   { IsSearchable = false},
-                        new Microsoft.Azure.Search.Models.Field("subtitleEndTime", Microsoft.Azure.Search.Models.DataType.String)                   { IsSearchable = false},
+                        new Microsoft.Azure.Search.Models.Field("keyId", Microsoft.Azure.Search.Models.DataType.String)                       {   IsKey = true  },
+                        new Microsoft.Azure.Search.Models.Field("mediaId", Microsoft.Azure.Search.Models.DataType.String)                       {   IsFilterable = true,  IsSortable = true  },
+                        new Microsoft.Azure.Search.Models.Field("mediaName", Microsoft.Azure.Search.Models.DataType.String)                     { IsFilterable = true,  IsSortable = true },
+                        new Microsoft.Azure.Search.Models.Field("mediaUrl", Microsoft.Azure.Search.Models.DataType.String)                       { IsFilterable = true},
+                        new Microsoft.Azure.Search.Models.Field("isAudio", Microsoft.Azure.Search.Models.DataType.Boolean)                       {IsFilterable = true},
+                        new Microsoft.Azure.Search.Models.Field("subtitleUrl", Microsoft.Azure.Search.Models.DataType.String)                       { IsFilterable = true},
+                        new Microsoft.Azure.Search.Models.Field("subtitleLanguage", Microsoft.Azure.Search.Models.DataType.String)                   { IsFilterable = true},
+                        new Microsoft.Azure.Search.Models.Field("subtitleStartTime", Microsoft.Azure.Search.Models.DataType.String)                   { IsSortable = true},
+                        new Microsoft.Azure.Search.Models.Field("subtitleEndTime", Microsoft.Azure.Search.Models.DataType.String)                   { IsSortable = true},
                         new Microsoft.Azure.Search.Models.Field("subtitleContent", Microsoft.Azure.Search.Models.DataType.String)                   { IsSearchable = true}
                     }
                 };
@@ -1929,9 +1978,11 @@ namespace TestAzureMediaIndexer
                 {
                     new Media()
                     {
+                      keyId = "1111_fr_00_00_00",
                       mediaId = "1111",
                       mediaName = "Name1",
                       mediaUrl = "http://media",
+                      isAudio = true,
                       subtitleLanguage = "fr",
                       subtitleStartTime ="00:00:00",
                       subtitleEndTime = "00:00:00",
@@ -1940,9 +1991,11 @@ namespace TestAzureMediaIndexer
                     },
                     new Media()
                     {
+                      keyId = "1112_fr_00_00_00",
                       mediaId = "1112",
                       mediaName = "Name2",
                       mediaUrl = "http://medi2",
+                      isAudio = false,
                       subtitleLanguage = "fr",
                       subtitleStartTime ="00:00:00",
                       subtitleEndTime = "00:00:00",
@@ -1990,7 +2043,7 @@ namespace TestAzureMediaIndexer
                         {
                             if (a.Name.StartsWith(asset.Name) && a.Name.StartsWith(GetOutputAssetPrefix()))
                             {
-
+                                bool bAudio = IsAudioInputAssetSelected();
                                 foreach (var file in _context.Files)
                                 {
                                     if ((a.Id == file.Asset.Id) && (file.Name.EndsWith(".vtt", StringComparison.OrdinalIgnoreCase)))
@@ -2005,6 +2058,7 @@ namespace TestAzureMediaIndexer
                                                 mediaId = System.Convert.ToBase64String(toEncodeAsBytes),
                                                 mediaName = asset.Name,
                                                 mediaUrl = asset.Id,
+                                                isAudio = bAudio,
                                                 subtitleLanguage = "fr",
                                                 subtitleStartTime = "00:00:00",
                                                 subtitleEndTime = "00:00:00",
@@ -2072,14 +2126,74 @@ namespace TestAzureMediaIndexer
             UpdateControls();
         }
 
-        private void buttonPopulateIndex_Click(object sender, EventArgs e)
+        private async void buttonPopulateIndex_Click(object sender, EventArgs e)
         {
-            bool res = UploadIndex();
-            if (res == true)
-                TextBoxLogWriteLine("Azure Search Index populated");
-            else
-                TextBoxLogWriteLine("Azure Search Index not populated");
-            UpdateControls();
+            using (new CursorHandler())
+            {
+                try
+                { 
+                    var MediaAssetFiles = ReturnSelectedMediaAssetFiles();
+                    var SubtitleAssetFiles = ReturnSelectedSubtitleAssetFiles();
+                    if ((SubtitleAssetFiles.Count > 0) && (MediaAssetFiles.Count > 0))
+                    {
+                        var mediaAssetFile = MediaAssetFiles.FirstOrDefault();
+                        var subtitleAssetFile = SubtitleAssetFiles.FirstOrDefault();
+                        ILocator subtitleLocator = GetTemporarySASLocator(subtitleAssetFile.Asset, 10000);
+                        ILocator mediaLocator = GetTemporarySASLocator(mediaAssetFile.Asset, 10000);
+                        string mediaUri = mediaAssetFile.GetSasUri(mediaLocator).ToString();
+                        string subtitleUri = subtitleAssetFile.GetSasUri(subtitleLocator).ToString();
+                        string mediaAssetName = mediaAssetFile.Asset.Name;
+                        string mediaAssetID = mediaAssetFile.Asset.Id.Replace(':', '-');
+                        string language = GetSelectedOutputAssetLanguage();
+                        TextBoxLogWriteLine("Populating the Index for asset: " + mediaAssetName);
+
+                        if (!string.IsNullOrEmpty(mediaAssetName) &&
+                            !string.IsNullOrEmpty(language) &&
+                            !string.IsNullOrEmpty(subtitleUri) &&
+                            !string.IsNullOrEmpty(mediaUri) &&
+                            !string.IsNullOrEmpty(language))
+                        {
+                            string content = await GetContent(subtitleUri);
+                            if (!string.IsNullOrEmpty(content))
+                            {
+                                bool bAudio = IsAudioInputAssetSelected();
+                                List<SubtitileItem> SubtitleList = ParseWEBVTT(content);
+                                if (SubtitleList.Count > 0)
+                                {
+                                    List<Media> documents = new List<Media>();
+                                    foreach (SubtitileItem item in SubtitleList)
+                                    {
+                                        Media media = new Media()
+                                        {
+                                            keyId = mediaAssetID + "_" + language + "_" + item.startTime.Replace(':', '-').Replace('.','-'),
+                                            mediaId = mediaAssetID,
+                                            mediaName = mediaAssetName,
+                                            mediaUrl = mediaUri,
+                                            isAudio = bAudio,
+                                            subtitleLanguage = language,
+                                            subtitleStartTime = item.startTime,
+                                            subtitleEndTime = item.endTime,
+                                            subtitleUrl = subtitleUri,
+                                            subtitleContent = item.subtitle
+
+                                        };
+                                        documents.Add(media);
+                                    }
+                                    var batch = Microsoft.Azure.Search.Models.IndexBatch.Upload(documents);
+                                    if (_indexClient != null)
+                                        _indexClient.Documents.Index(batch);
+                                }
+                            }
+                        }
+                        TextBoxLogWriteLine("Populating the Index done for asset: " + mediaAssetName);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    TextBoxLogWriteLine("Exception while populating the Index: " + ex.Message);
+                }
+                UpdateControls();
+            }
         }
         private bool Search(string text)
         {
@@ -2087,9 +2201,17 @@ namespace TestAzureMediaIndexer
             if (_indexClient != null)
             {
                 DocumentSearchResult<Media> response = null;
+                listSearchResult.Items.Clear();
+                SearchParameters parameters = new SearchParameters
+                {
+                    Top = 3
+                };      
+
                 try
                 {
-                    response = _indexClient.Documents.Search<Media>(text);
+                    if (string.IsNullOrEmpty(text))
+                        text = "*";
+                    response = _indexClient.Documents.Search<Media>(text, parameters);
                 }
                 catch (Exception e)
                 {
@@ -2101,7 +2223,25 @@ namespace TestAzureMediaIndexer
                     foreach (SearchResult<Media> res in response.Results)
                     {
                         TextBoxLogWriteLine(res.Document.ToString());
+                        int seconds = GetWEBVTTTimeInSeconds(res.Document.subtitleStartTime);
+                        string uri = string.Empty;
+                        string subtitleEncoded = UriEncode(res.Document.subtitleUrl);
+                        string mediaEncoded = UriEncode(res.Document.mediaUrl);
+                        string lang = res.Document.subtitleLanguage.Substring(0, 2);
+
+                        if (res.Document.isAudio == true)
+                            uri = textBoxPlayerUri.Text + "?audiourl=" + mediaEncoded + "&subtitles=" + lang + "," + lang + "," + subtitleEncoded + "&time=" + seconds.ToString();
+                        else
+                            uri = textBoxPlayerUri.Text + "?url=" + mediaEncoded + "&subtitles=" + lang + "," + lang + "," + subtitleEncoded + "&time=" + seconds.ToString();
+
+                        TextBoxLogWriteLine("Player Uri: " + uri);
+                        string item = ((res.Document.isAudio == true) ? "AUDIO " : "VIDEO ") + res.Document.mediaName + "TIME: " + res.Document.subtitleStartTime + " CONTENT: '" + res.Document.subtitleContent + "' URL: " + uri;
+
+                        listSearchResult.Items.Add(item);
                     }
+                    if (listSearchResult.Items.Count > 0)
+                        listSearchResult.SelectedIndex = 0;
+                    UpdateControls();
                     result = true;
                 }
                 else
@@ -2163,8 +2303,8 @@ namespace TestAzureMediaIndexer
         {
             using (new CursorHandler())
             {
-                var SelectedAssetFiles = ReturnSelectedAssetFiles();
-                var SelectedInputAssetFiles = ReturnSelectedInputAssetFiles();
+                var SelectedAssetFiles = ReturnSelectedSubtitleAssetFiles();
+                var SelectedInputAssetFiles = ReturnSelectedMediaAssetFiles();
                 if ((SelectedAssetFiles.Count > 0) && (SelectedInputAssetFiles.Count > 0))
                 {
                     var subtitleAssetFile = SelectedAssetFiles.FirstOrDefault();
@@ -2298,14 +2438,14 @@ namespace TestAzureMediaIndexer
             }
             return result;
         }
-        string GetSelectedOutputAssetSASUri()
+        string GetSelectedOutputAssetSASUri(int duration = 24)
         {
             string result = string.Empty;
-            var SelectedAssetFiles = ReturnSelectedAssetFiles();
+            var SelectedAssetFiles = ReturnSelectedSubtitleAssetFiles();
             if (SelectedAssetFiles.Count > 0)
             {
                 var af = SelectedAssetFiles.FirstOrDefault();
-                ILocator locator = GetTemporarySASLocator(af.Asset);
+                ILocator locator = GetTemporarySASLocator(af.Asset,duration);
                 if (locator != null)
                 {
                     try
@@ -2328,7 +2468,7 @@ namespace TestAzureMediaIndexer
         string GetSelectedOutputAssetLanguage()
         {
             string result = string.Empty;
-            var SelectedAssetFiles = ReturnSelectedAssetFiles();
+            var SelectedAssetFiles = ReturnSelectedSubtitleAssetFiles();
             if (SelectedAssetFiles.Count > 0)
             {
                 var af = SelectedAssetFiles.FirstOrDefault();
@@ -2366,7 +2506,7 @@ namespace TestAzureMediaIndexer
             }
             finally
             {
-                TextBoxLogWriteLine("http GET done");
+                //TextBoxLogWriteLine("http GET done");
             }
             return result;
         }
@@ -2375,6 +2515,20 @@ namespace TestAzureMediaIndexer
             string result = string.Empty;
             result = content.Trim();
 
+            return result;
+        }
+        int GetWEBVTTTimeInSeconds(string content)
+        {
+            int result = 0;
+            content = content.Trim();
+            try
+            {
+                TimeSpan t = TimeSpan.Parse(content);
+                result = (int)t.TotalSeconds;
+            }
+            catch (Exception)
+            {
+            }
             return result;
         }
         List<SubtitileItem> ParseWEBVTT(string content)
@@ -2532,13 +2686,24 @@ namespace TestAzureMediaIndexer
                 }
             }
         }
+
+        private void buttonPlaySearch_Click(object sender, EventArgs e)
+        {
+            string url = GetSearchSelectedUrl(); 
+            if(!string.IsNullOrEmpty(url))
+            {
+                System.Diagnostics.Process.Start(url);
+            }
+        }
     }
 
     public class Media
     {
-        public string mediaId { set; get; } 
+        public string keyId { set; get; }
+        public string mediaId { set; get; }
         public string mediaName { set; get; }
         public string mediaUrl { set; get; }
+        public  bool isAudio { set; get; }
         public string subtitleLanguage { set; get; }
         public string subtitleUrl { set; get; }
         public string subtitleStartTime { set; get; }
@@ -2547,7 +2712,7 @@ namespace TestAzureMediaIndexer
         public override string ToString()
         {
             return String.Format(
-                "ID: {0}\tName: {1}\tUrl: {2}\tLanguage: {3}\tUrl: {4}\tStartTime: {5}\tEndTime: {6}\tSubtitle: {7}",
+                "ID: {0}\tName: {1}\tUrl: {2}\tLanguage: {3}\tUrl: {4}\tStartTime: {5}\tEndTime: {6}\tSubtitle: {7}\tIsAudio: {8}",
                 mediaId,
                 mediaName,
                 mediaUrl,
@@ -2555,7 +2720,8 @@ namespace TestAzureMediaIndexer
                 subtitleUrl,
                 subtitleStartTime,
                 subtitleEndTime,
-                subtitleContent);
+                subtitleContent,
+                isAudio);
         }
     }
     public class TransferEntryResponse

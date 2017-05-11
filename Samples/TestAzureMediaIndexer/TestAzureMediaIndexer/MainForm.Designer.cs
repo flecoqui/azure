@@ -80,6 +80,8 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.buttonPlaySearch = new System.Windows.Forms.Button();
+            this.listSearchResult = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxJob)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -176,7 +178,7 @@
             this.listInputFiles.HorizontalScrollbar = true;
             this.listInputFiles.Location = new System.Drawing.Point(15, 391);
             this.listInputFiles.Name = "listInputFiles";
-            this.listInputFiles.Size = new System.Drawing.Size(352, 121);
+            this.listInputFiles.Size = new System.Drawing.Size(352, 69);
             this.listInputFiles.TabIndex = 46;
             // 
             // label3
@@ -217,18 +219,18 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(12, 375);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(89, 13);
+            this.label5.Size = new System.Drawing.Size(124, 13);
             this.label5.TabIndex = 50;
-            this.label5.Text = "List of Input Files:";
+            this.label5.Text = "List of Video/Audio Files:";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(387, 375);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(97, 13);
+            this.label6.Size = new System.Drawing.Size(105, 13);
             this.label6.TabIndex = 53;
-            this.label6.Text = "List of Output Files:";
+            this.label6.Text = "List of Subtitles Files:";
             // 
             // listOutputFiles
             // 
@@ -236,7 +238,7 @@
             this.listOutputFiles.HorizontalScrollbar = true;
             this.listOutputFiles.Location = new System.Drawing.Point(390, 391);
             this.listOutputFiles.Name = "listOutputFiles";
-            this.listOutputFiles.Size = new System.Drawing.Size(352, 121);
+            this.listOutputFiles.Size = new System.Drawing.Size(352, 69);
             this.listOutputFiles.TabIndex = 52;
             // 
             // listOutputAssets
@@ -284,7 +286,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(14, 589);
+            this.label7.Location = new System.Drawing.Point(12, 589);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(33, 13);
             this.label7.TabIndex = 57;
@@ -372,7 +374,7 @@
             // 
             this.buttonCreateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCreateIndex.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonCreateIndex.Location = new System.Drawing.Point(8, 19);
+            this.buttonCreateIndex.Location = new System.Drawing.Point(4, 19);
             this.buttonCreateIndex.Name = "buttonCreateIndex";
             this.buttonCreateIndex.Size = new System.Drawing.Size(86, 27);
             this.buttonCreateIndex.TabIndex = 67;
@@ -384,7 +386,7 @@
             // 
             this.buttonDeleteIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonDeleteIndex.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonDeleteIndex.Location = new System.Drawing.Point(100, 19);
+            this.buttonDeleteIndex.Location = new System.Drawing.Point(96, 19);
             this.buttonDeleteIndex.Name = "buttonDeleteIndex";
             this.buttonDeleteIndex.Size = new System.Drawing.Size(86, 27);
             this.buttonDeleteIndex.TabIndex = 68;
@@ -396,11 +398,11 @@
             // 
             this.buttonPopulateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPopulateIndex.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonPopulateIndex.Location = new System.Drawing.Point(192, 19);
+            this.buttonPopulateIndex.Location = new System.Drawing.Point(188, 19);
             this.buttonPopulateIndex.Name = "buttonPopulateIndex";
-            this.buttonPopulateIndex.Size = new System.Drawing.Size(96, 27);
+            this.buttonPopulateIndex.Size = new System.Drawing.Size(180, 27);
             this.buttonPopulateIndex.TabIndex = 69;
-            this.buttonPopulateIndex.Text = "Populate Index";
+            this.buttonPopulateIndex.Text = "Populate Index with subtitles";
             this.buttonPopulateIndex.UseVisualStyleBackColor = true;
             this.buttonPopulateIndex.Click += new System.EventHandler(this.buttonPopulateIndex_Click);
             // 
@@ -408,9 +410,9 @@
             // 
             this.buttonSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonSearch.Location = new System.Drawing.Point(633, 19);
+            this.buttonSearch.Location = new System.Drawing.Point(269, 54);
             this.buttonSearch.Name = "buttonSearch";
-            this.buttonSearch.Size = new System.Drawing.Size(86, 27);
+            this.buttonSearch.Size = new System.Drawing.Size(99, 27);
             this.buttonSearch.TabIndex = 70;
             this.buttonSearch.Text = "Search";
             this.buttonSearch.UseVisualStyleBackColor = true;
@@ -420,9 +422,9 @@
             // 
             this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSearch.Location = new System.Drawing.Point(309, 19);
+            this.textBoxSearch.Location = new System.Drawing.Point(8, 58);
             this.textBoxSearch.Name = "textBoxSearch";
-            this.textBoxSearch.Size = new System.Drawing.Size(320, 20);
+            this.textBoxSearch.Size = new System.Drawing.Size(255, 20);
             this.textBoxSearch.TabIndex = 71;
             // 
             // buttonPlayAudioSubtitle
@@ -612,17 +614,42 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.buttonPlaySearch);
+            this.groupBox6.Controls.Add(this.listSearchResult);
             this.groupBox6.Controls.Add(this.buttonSearch);
             this.groupBox6.Controls.Add(this.buttonCreateIndex);
             this.groupBox6.Controls.Add(this.buttonDeleteIndex);
             this.groupBox6.Controls.Add(this.textBoxSearch);
             this.groupBox6.Controls.Add(this.buttonPopulateIndex);
-            this.groupBox6.Location = new System.Drawing.Point(12, 518);
+            this.groupBox6.Location = new System.Drawing.Point(12, 466);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(734, 68);
+            this.groupBox6.Size = new System.Drawing.Size(730, 120);
             this.groupBox6.TabIndex = 95;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "6. Search";
+            // 
+            // buttonPlaySearch
+            // 
+            this.buttonPlaySearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPlaySearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.buttonPlaySearch.Location = new System.Drawing.Point(269, 87);
+            this.buttonPlaySearch.Name = "buttonPlaySearch";
+            this.buttonPlaySearch.Size = new System.Drawing.Size(98, 27);
+            this.buttonPlaySearch.TabIndex = 97;
+            this.buttonPlaySearch.Text = "Play Search";
+            this.buttonPlaySearch.UseVisualStyleBackColor = true;
+            this.buttonPlaySearch.Click += new System.EventHandler(this.buttonPlaySearch_Click);
+            // 
+            // listSearchResult
+            // 
+            this.listSearchResult.FormattingEnabled = true;
+            this.listSearchResult.HorizontalScrollbar = true;
+            this.listSearchResult.Location = new System.Drawing.Point(379, 20);
+            this.listSearchResult.Name = "listSearchResult";
+            this.listSearchResult.Size = new System.Drawing.Size(342, 95);
+            this.listSearchResult.TabIndex = 96;
+            this.listSearchResult.SelectedIndexChanged += new System.EventHandler(this.listSearchResult_SelectedIndexChanged);
+
             // 
             // MainForm
             // 
@@ -726,6 +753,8 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Button buttonPlaySearch;
+        private System.Windows.Forms.ListBox listSearchResult;
     }
 }
 
