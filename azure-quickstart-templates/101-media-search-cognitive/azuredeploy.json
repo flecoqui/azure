@@ -1,0 +1,222 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Service name prefix must only contain lowercase letters, digits or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and is limited between 2 and 50 characters in length."
+      }
+    },
+    "mediaStorageSku": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "This is  Storage Account SKU associated with Azure Media Services"
+      }
+    },
+    "searchSku": {
+      "type": "string",
+      "defaultValue": "free",
+      "allowedValues": [
+        "free",
+        "basic",
+        "standard",
+        "standard2",
+        "standard3"
+      ],
+      "metadata": {
+        "description": "The SKU of the search service you want to create. E.g. free or standard"
+      }
+    },
+    "cognitiveSku": {
+      "type": "string",
+      "defaultValue": "S1",
+      "allowedValues": [
+        "F0",
+        "P0",
+        "P1",
+        "P2",
+        "S0",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "metadata": {
+        "description": "The SKU of the search service you want to create. E.g. free or standard"
+      }
+    },
+    "webSku": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "The SKU of the Web service you want to create. E.g. free or standard"
+      }
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "mediaName": "[concat(parameters('namePrefix'), 'media')]",
+    "storageName": "[concat(parameters('namePrefix'), 'storage')]",
+    "searchName": "[concat(parameters('namePrefix'), 'search')]",
+    "cognitiveName": "[concat(parameters('namePrefix'), 'cognitive')]",
+    "appServicePlanName": "[concat(parameters('namePrefix'), 'plan')]",
+    "webAppName": "[concat(parameters('namePrefix'), 'web')]",
+    "replicaCount": "1",
+    "partitionCount": "1",
+    "hostingMode": "default"
+  },
+  "resources": [
+    {
+      "comments": "Storage used by Media Service",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "[parameters('mediaStorageSku')]"
+      },
+      "kind": "Storage",
+      "name": "[variables('storageName')]",
+      "apiVersion": "2016-01-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {
+        "cors": {
+          "allowedHeaders": [ "*" ],
+          "allowedMethods": [ "get", "post", "put" ],
+          "allowedOrigins": [ "*" ],
+          "exposedHeaders": [ "*" ],
+          "maximumAge": 5
+        }
+
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "type": "Microsoft.Media/mediaservices",
+      "name": "[concat(parameters('namePrefix'),'media')]",
+      "apiVersion": "2015-10-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "storageAccounts": [
+          {
+            "id": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
+            "isPrimary": true
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+      ]
+    },
+    {
+
+      "type": "Microsoft.Search/searchServices",
+      "name": "[concat(parameters('namePrefix'),'search')]",
+      "apiVersion": "2015-08-19",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "replicaCount": "[variables('replicaCount')]",
+        "partitionCount": "[variables('partitionCount')]",
+        "hostingMode": "[variables('hostingMode')]"
+      },
+      "sku": {
+        "name": "[toLower(parameters('searchSku'))]"
+      }
+    },
+    {
+      "apiVersion": "2016-02-01-preview",
+      "name": "[concat(parameters('namePrefix'),'cognitive')]",
+      "type": "Microsoft.CognitiveServices/accounts",
+      "sku": {
+        "name": "[parameters('cognitiveSku')]"
+      },
+      "kind": "TextTranslation",
+      "location": "global",
+      "tags": {},
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "[toLower(parameters('webSku'))]",
+        "capacity": 1
+      },
+      "kind": "app",
+      "name": "[variables('appServicePlanName')]",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('appServicePlanName')]",
+        "numberOfWorkers": 0
+      },
+      "dependsOn": []
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "kind": "WebApp",
+      "name": "[variables('webAppName')]",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('webAppName')]",
+        "hostNames": [
+          "[concat(variables('webAppName'),'.azurewebsites.net')]"
+        ],
+        "enabledHostNames": [
+          "[concat(variables('webAppName'),'.azurewebsites.net')]",
+          "[concat(variables('webAppName'),'.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('webAppName'),variables('webAppName'),'.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          },
+          {
+            "name": "[concat(variables('webAppName'),variables('webAppName'),'.scm.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "mediaServicePrimaryKey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.Media/mediaservices', variables('mediaName')), providers('Microsoft.Media', 'mediaservices').apiVersions[0]).primaryKey]"
+    }
+  }
+}
