@@ -1,4 +1,4 @@
-# Create a Web App, Azure Media Services Account, Azure Search Account and Azure Text Translator service in the same region
+# Deploy a Web App, an Azure Media Services Account, an Azure Search Account and an Azure Text Translator service in the same region
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-media-search-cognitive%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
@@ -11,12 +11,45 @@
 This template allows you to deploy  a Web App, an Azure Media Services Account, an Azure Search Account and an Azure Text Translator service in the same region as the resource group.
 As Azure Media Services, Search Service and Cognitive Services are not deployed in all regions, it's recommanded to use the following regions:
 West US, West Europe,Southeast Asia,West Central US 
-This template is with an application which is used to generate automatically video subtitles in different languages. Once generated the subtitles are stored in Azure Search to allow the users to find all the videos associated with a specific key word.
+This template is associated with Windows Application which is used to generate automatically video subtitles in different languages fron an orginal video or audio file. Once generated the subtitles are stored in Azure Search to allow the users to find all the videos associated with a specific key word.
+This Application called TestAzureMediaIndexer is available there:
 https://github.com/flecoqui/azure/tree/master/Samples/TestAzureMediaIndexer 
 
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/1-architecture.png)
 
+
+As this configuration will be used to stream video and audio files, subtitles files using the application hosted on the Azure Web Site, the Azure Sotrage account used to store the media files needs to be configured to support CORS (Cross-Origin Resource Sharing).
+See below the CORS property in the ARM template:
+
+
+    {
+      "comments": "Storage used by Media Service",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "[parameters('mediaStorageSku')]"
+      },
+      "kind": "Storage",
+      "name": "[variables('storageName')]",
+      "apiVersion": "2016-01-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {
+        "cors": {
+          "allowedHeaders": [ "*" ],
+          "allowedMethods": [ "get", "post", "put" ],
+          "allowedOrigins": [ "*" ],
+          "exposedHeaders": [ "*" ],
+          "maximumAge": 5
+        }
+
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+
+
+Moreover, the media files will be streamed from SAS locators which returns "Accept-Ranges: bytes" in the http headers. This http header is mandatory to play MP4 video files or MP3 audio files over http with Chrome browser.
 
 
 ## CREATE RESOURCE GROUP:
@@ -62,7 +95,7 @@ Azure Storage SKU associated with Azure Media Services, used to store video and 
       }
     },
 
-Azure SEarch SKU:
+Azure Search SKU:
 
     "searchSku": {
       "type": "string",

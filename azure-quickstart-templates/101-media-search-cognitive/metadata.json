@@ -1,7 +1,7 @@
 {
-  "itemDisplayName": "Create a Web App, Azure Media Services Account, Azure Search Account and Azure Text Translator service in the same region",
+  "itemDisplayName": "Deploy a Web App, an Azure Media Services Account, an Azure Search Account and an Azure Text Translator service in the same region",
   "description": "This template allows you to create a a Web App, Azure Media Services Account, Azure Search Account and Azure Text Translator service in the same region: West US, West Europe,Southeast Asia,West Central US ",
-  "summary": "This template allows you to create a a Web App, Azure Media Services Account, Azure Search Account and Azure Text Translator service in the same region: West US, West Europe,Southeast Asia,West Central US",
+  "summary": "This template allows you to create a a Web App, an Azure Media Services Account, Azure Search Account and Azure Text Translator service in the same region: West US, West Europe,Southeast Asia,West Central US",
   "githubUsername": "flecoqui",
   "dateUpdated": "2017-05-11"
 }
