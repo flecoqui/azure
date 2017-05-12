@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="C:\git\flecoqui\azure\Samples\TestAzureMediaIndexer\AzureWebPlayer\packagetmp" />
+  <setAcl path="C:\git\flecoqui\azure\Samples\TestAzureMediaIndexer\AzureWebPlayer\packagetmp" setAclResourceType="Directory" />
+  <setAcl path="C:\git\flecoqui\azure\Samples\TestAzureMediaIndexer\AzureWebPlayer\packagetmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+</sitemanifest>

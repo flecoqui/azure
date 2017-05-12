@@ -210,6 +210,7 @@ namespace TestAzureMediaIndexer
         }
         void UpdateControls()
         {
+            richTextBoxLog.Enabled = true;
             if (IsConnected())
             {
                 textBoxMediaAccountKey.Enabled = false;
@@ -230,7 +231,7 @@ namespace TestAzureMediaIndexer
                 listInputFiles.Enabled = true;
                 listOutputFiles.Enabled = true;
                 listOutputAssets.Enabled = true;
-                richTextBoxLog.Enabled = true;
+
 
                 buttonDisplayJobs.Enabled = true;
 
@@ -336,7 +337,6 @@ namespace TestAzureMediaIndexer
                 listOutputAssets.Enabled = false;
                 buttonGenerateSubtitle.Enabled = false;
                 buttonDonwloadSubtitle.Enabled = false;
-                richTextBoxLog.Enabled = false;
                 comboBoxLanguages.Enabled = false;
                 comboBoxTranslateLanguages.Enabled = false;
                 buttonOpenSubtitle.Enabled = false;
@@ -463,11 +463,28 @@ namespace TestAzureMediaIndexer
         }
         private async void buttonLogin_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textBoxMediaAccountName.Text))
+            if (string.IsNullOrEmpty(textBoxMediaAccountName.Text)|| string.IsNullOrEmpty(textBoxMediaAccountKey.Text))
             {
-                MessageBox.Show("The account name cannot be empty.");
+                MessageBox.Show("The Azure Media Services Account name and key cannot be empty.");
                 return;
             }
+            if (string.IsNullOrEmpty(textBoxSearchAccountName.Text) || string.IsNullOrEmpty(textBoxSearchAccountKey.Text))
+            {
+                MessageBox.Show("The Azure Search Account name and key cannot be empty.");
+                return;
+            }
+            if (string.IsNullOrEmpty(textBoxTranslatorAPIKey.Text))
+            {
+                MessageBox.Show("The Azure Cognitive Services Text Translator API key cannot be empty.");
+                return;
+            }
+            if (string.IsNullOrEmpty(textBoxAssetPrefix.Text))
+            {
+                MessageBox.Show("The application prefix cannot be empty.");
+                return;
+            }
+
+            bool bResult = false;
             using (new CursorHandler())
             {
                 try
@@ -519,6 +536,7 @@ namespace TestAzureMediaIndexer
                                             //PopulateOutputAssets();
                                             //PopulateOutputFiles();
                                             UpdateControls();
+                                            bResult = true;
                                         }
                                     }
                                 }
@@ -527,11 +545,13 @@ namespace TestAzureMediaIndexer
                     }
                 }
                 catch (Exception ex)
-
                 {
                     MessageBox.Show("Exception: " + ex.Message);
                 }
             }
+            if(bResult==false)
+                MessageBox.Show("The connection to Azure Media Services, Azure Search Services and Cognitive Services Text Translator failed check if your accont name and account key are still valid.");
+
         }
         void PopulateInputAssets(string AssetName = null, bool bSelect = true)
         {
@@ -955,9 +975,9 @@ namespace TestAzureMediaIndexer
                             TextBoxLogWriteLine("Exception while Deleting Asset" + ex.Message, true);
                         }
                         PopulateInputAssets();
-                        //PopulateInputFiles();
-                        //PopulateOutputAssets();
-                        //PopulateOutputFiles();
+                        PopulateInputFiles();
+                        PopulateOutputAssets();
+                        PopulateOutputFiles();
                         UpdateControls();
                     }
                 }
@@ -1207,9 +1227,10 @@ namespace TestAzureMediaIndexer
                                                 bProcessingAsset = false;
                                                 this.Invoke((MethodInvoker)delegate
                                                 {
-                                                    UpdateControls();
+
                                                     PopulateOutputAssets();
                                                     PopulateOutputFiles();
+                                                    UpdateControls();
                                                 });
                                                 return;
                                             }

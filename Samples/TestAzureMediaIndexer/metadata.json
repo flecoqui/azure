@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Windows Application used to generate automatically subtitles files in several languages from an original video or audio file",
+  "description": "Windows Application used to generate automatically subtitles files in several languages from an original video or audio file. This Windows Application is using the following Azure services: Web App, Azure Media Services, Azure Search and Azure Text Translator service in the same region: West US, West Europe,Southeast Asia,West Central US ",
+  "summary": "Windows Application used to generate automatically subtitles files in several languages from an original video or audio file. This Windows Application is using the following Azure services: Web App, Azure Media Services, Azure Search and Azure Text Translator service in the same region: West US, West Europe,Southeast Asia,West Central US ",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2017-05-11"
+}
