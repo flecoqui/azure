@@ -33,6 +33,19 @@ Using the two Azure CLI command lines below,you can deploy automatically all the
     azure group create testamsseacog northeurope
 	azure group deployment create testamsseacog depiperftest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
+Once the backend services are installed, the storage account needs to be manually configured to support CORS (Cross-Origin Resource Sharing) using the Azure portal:
+
+1. Select the Storage Account of your new resource group:</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/cors-0.png)
+2. Select CORS on the page of your Storage Account</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/cors-1.png)
+3. Click on the button Add to Add a CORS rule. Enter  * for **Allowed origins**, GET,POST and PUT for **Allowed verbs**, * for **Allowed headers**, * for **Exposed headers** and 5 for **Maximum age**.
+Click on the Add button to Create the new rule.</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/cors-2.png)
+4. Click on the Add button to Create the new rule. Once the rule is created the Web Player will be able to play audio/video files and subtitles files stored on the Storage Account.</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/cors-3.png)
+
+
 ## BUILD THE APPLICATION TESTAZUREMEDIAINDEXER:
 
 **Prerequisite: Visual Studio 2015 or 2017**
@@ -77,6 +90,17 @@ You can retrieve all the parameters below from the [Azure Portal:](https://porta
 4. The Azure Search Serivces Account name</p>
 5. The Azure Search Serivces Account key</p>
 6. The url of the Web Player application hosted on the Web site </p>
+
+
+
+1. On the portal, select the new Resource Group associated with the backend services. Select the service (Media, Search, Cognitive) you want to read the keys.</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/mediasearchcognitive.png)
+2. For Azure Media Services, select the **Account Keys** menu to display the Account name and the keys.</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/media-key.png)
+3. For Azure Search Services, select the **Keys** menu to display the Account name and the keys.</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/search-key.png)
+4. For Cognitive Services, select the **Keys** menu to display the keys.</p>
+![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/cognitive-key.png)
 
 Once all the parameters are ready click on the button "Connect" to establish the connection with your backend:
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/ui-1.png)
