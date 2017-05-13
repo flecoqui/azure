@@ -19,34 +19,17 @@ https://github.com/flecoqui/azure/tree/master/Samples/TestAzureMediaIndexer
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/1-architecture.png)
 
 
-As this configuration will be used to stream video and audio files, subtitles files using the application hosted on the Azure Web Site, the Azure Sotrage account used to store the media files needs to be configured to support CORS (Cross-Origin Resource Sharing).
-See below the CORS property in the ARM template:
+Once the backend services are installed, the storage account needs to be manually configured to support CORS (Cross-Origin Resource Sharing) using the Azure portal:
 
-
-    {
-      "comments": "Storage used by Media Service",
-      "type": "Microsoft.Storage/storageAccounts",
-      "sku": {
-        "name": "[parameters('mediaStorageSku')]"
-      },
-      "kind": "Storage",
-      "name": "[variables('storageName')]",
-      "apiVersion": "2016-01-01",
-      "location": "[resourceGroup().location]",
-      "tags": {},
-      "properties": {
-        "cors": {
-          "allowedHeaders": [ "*" ],
-          "allowedMethods": [ "get", "post", "put" ],
-          "allowedOrigins": [ "*" ],
-          "exposedHeaders": [ "*" ],
-          "maximumAge": 5
-        }
-
-      },
-      "resources": [],
-      "dependsOn": []
-    },
+1. Select the Storage Account of your new resource group:
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-0.png)
+2. Select CORS on the page of your Storage Account
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-1.png)
+3. Click on the button Add to Add a CORS rule. Enter  * for **Allowed origins**, GET,POST and PUT for **Allowed verbs**, * for **Allowed headers**, * for **Exposed headers** and 5 for **Maximum age**.
+Click on the Add button to Create the new rule.
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-2.png)
+4. Click on the Add button to Create the new rule. Once the rule is created the Web Player will be able to play audio/video files and subtitles files stored on the Storage Account.
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-3.png)
 
 
 Moreover, the media files will be streamed from SAS locators which returns "Accept-Ranges: bytes" in the http headers. This http header is mandatory to play MP4 video files or MP3 audio files over http with Chrome browser.
