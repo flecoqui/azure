@@ -93,7 +93,9 @@ You can retrieve all the parameters below from the [Azure Portal:](https://porta
 
 
 
-1. On the portal, select the new Resource Group associated with the backend services. Select the service (Media, Search, Cognitive) you want to read the keys.</p>
+Follow the steps below to read the account names and the keys: </p>
+
+1. On the Azure portal, select the new Resource Group associated with the backend services. Select the service (Media, Search, Cognitive) you want to read the keys.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/mediasearchcognitive.png)
 2. For Azure Media Services, select the **Account Keys** menu to display the Account name and the keys.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/Samples/TestAzureMediaIndexer/Docs/media-key.png)
