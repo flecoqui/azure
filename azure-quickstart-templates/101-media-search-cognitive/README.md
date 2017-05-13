@@ -21,14 +21,14 @@ https://github.com/flecoqui/azure/tree/master/Samples/TestAzureMediaIndexer
 
 Once the backend services are installed, the storage account needs to be manually configured to support CORS (Cross-Origin Resource Sharing) using the Azure portal:
 
-1. Select the Storage Account of your new resource group:
+1. Select the Storage Account of your new resource group:</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-0.png)
-2. Select CORS on the page of your Storage Account
+2. Select CORS on the page of your Storage Account</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-1.png)
 3. Click on the button Add to Add a CORS rule. Enter  * for **Allowed origins**, GET,POST and PUT for **Allowed verbs**, * for **Allowed headers**, * for **Exposed headers** and 5 for **Maximum age**.
-Click on the Add button to Create the new rule.
+Click on the Add button to Create the new rule.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-2.png)
-4. Click on the Add button to Create the new rule. Once the rule is created the Web Player will be able to play audio/video files and subtitles files stored on the Storage Account.
+4. Click on the Add button to Create the new rule. Once the rule is created the Web Player will be able to play audio/video files and subtitles files stored on the Storage Account.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-media-search-cognitive/Docs/cors-3.png)
 
 
