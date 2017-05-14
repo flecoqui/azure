@@ -218,7 +218,7 @@ Once all the subtitles associated with your video or audio files are generated, 
 
 
 
-## NEXT STEP:
+## NEXT STEPS:
 This sampple application could be improved to support the following features:</p>
 1.  A full Web (HTML5) frontend to replace the current Windows Application.</p>
 2.  Use other Azure Media Services Indexer services to enhanced the current content.</p>
