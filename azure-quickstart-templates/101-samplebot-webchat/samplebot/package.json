@@ -1,0 +1,22 @@
+{
+  "name": "samplebot",
+  "version": "1.0.0",
+  "description": "Bot builder sample used for connector tests",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "flecoqui",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flecoqui/azure/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flecoqui/azure.git"
+  },
+  "dependencies": {
+    "botbuilder": "^3.8.3",
+    "restify": "^4.3.0"
+  }
+}

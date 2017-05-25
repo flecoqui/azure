@@ -1,0 +1,39 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "namePrefix": {
+      "value": "mysamplebot"
+    },
+    "sku": {
+      "value": "Free"
+    },
+    "workerSize": {
+      "value": "0"
+    },
+    "MICROSOFT_APP_ID": {
+      "value": "7b7da671-4bfe-438a-a37e-84c133d5a8c0"
+    },
+    "MICROSOFT_APP_PASSWORD": {
+      "value": "SkuDBv6A4O6j4jb6i7nKgaH"
+    },
+    "WEBCHAT_SECRET": {
+      "value": "3tBmZIXfP5g.cwA.AQk.e-nbHLFJlfiqUwbG8PjRwJqLViWinqo5U6nFlEX0TYQ"
+    },
+    "adminUsername": {
+      "value": "VMAdmin"
+    },
+    "adminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "dnsLabelPrefix": {
+      "value": "vmbot001"
+    },
+    "configurationOS": {
+      "value": "ubuntu"
+    },
+    "configurationSize": {
+      "value": "Small"
+    }
+  }
+}
