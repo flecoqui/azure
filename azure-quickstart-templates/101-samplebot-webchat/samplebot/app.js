@@ -34,5 +34,5 @@ var bot = new builder.UniversalBot(connector, function (session) {
     console.log(JSON.stringify(session.message));
     var name = session.message.user.name;
     var message = session.message.text;
-    session.send("Hi " + name + " you said " + message);
+    session.send("Hi " + name + " said " + message);
 });
