@@ -7,7 +7,7 @@ var builder = require('botbuilder');
 var server = restify.createServer();
 
 // Create console connector and listen to the command prompt/terminal/console for messages 
-var connector = new builder.ConsoleConnector().listen();
+//var connector = new builder.ConsoleConnector().listen();
 
 
 
