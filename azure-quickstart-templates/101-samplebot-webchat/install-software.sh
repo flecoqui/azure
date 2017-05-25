@@ -2,8 +2,12 @@
 # This bash file install apache
 # Parameter 1 hostname 
 azure_hostname=$1
+# Parameter 2 Bot WebChat Secret 
 webchat_secret=$2
 webchat_url=https://webchat.botframework.com/embed/mynewsamplebot?s=$webchat_secret
+# Parameter 3 Bot Application ID 
+skype_appid=$3
+skype_url=https://join.skype.com/bot/$skype_appid
 
 #############################################################################
 log()
@@ -101,19 +105,19 @@ echo "$azure_publicip";
         </td>
       </tr>
     </table>
-
+    <p></p>
+    <p></p>
+    <p></p>
     <p>This is the home page of a VM running on Azure</p>
     <p>Below the WebChat page for the Bot: </p>
 	<iframe src="$webchat_url"></iframe>
-    <p>Below the Skype page for the Bot: </p>
-	<a href="https://join.skype.com/bot/7b7da671-4bfe-438a-a37e-84c133d5a8c0">
+    <p></p>
+    <p></p>
+    <p></p>
+    <p>Below the link to add the Bot to your Skype contacts: </p>
+	<a href="$skype_url">
 	<img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/>
 	</a>
-
-    <ul>
-      <li>To <a href="http://www.microsoft.com">Microsoft</a>
-      <li>To <a href="https://portal.azure.com">Azure</a>
-    </ul>
   </body>
 </html>
 EOF
@@ -198,18 +202,19 @@ echo "$azure_publicip";
         </td>
       </tr>
     </table>
-
+    <p></p>
+    <p></p>
+    <p></p>
     <p>This is the home page of a VM running on Azure</p>
     <p>Below the WebChat page for the Bot: </p>
 	<iframe src="$webchat_url"></iframe>
-    <p>Below the Skype page for the Bot: </p>
-	<a href="https://join.skype.com/bot/7b7da671-4bfe-438a-a37e-84c133d5a8c0">
+    <p></p>
+    <p></p>
+    <p></p>
+    <p>Below the link to add the Bot to your Skype contacts: </p>
+	<a href="$skype_url">
 	<img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/>
 	</a>
-    <ul>
-      <li>To <a href="http://www.microsoft.com">Microsoft</a>
-      <li>To <a href="https://portal.azure.com">Azure</a>
-    </ul>
   </body>
 </html>
 EOF
