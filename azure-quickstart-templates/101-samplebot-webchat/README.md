@@ -38,19 +38,19 @@ Before deploying this Azure Resource Manager template you need to register your 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/6-install.png)
 9. Copy your App ID as well, you'll need this ID to deploy your Azure template.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/7-install.png)
-10. Check the term of use box and click on the "Register" button to register your bot.</p>
+10. Check the "Terms of use" box and click on the "Register" button to register your bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/8-install.png)
-11. During this registration phase, we leave the field "Messaging endpoint" empty, we will fill this field when the bot will be deployed..</p>
+11. During this registration phase, we leave the field "Messaging endpoint" empty, we will fill this field when the bot will be deployed.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/9-install.png)
 12. Once the box is created the message below is displayed.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/10-install.png)
 13. By default 2 channels are created, the Skype channel and the Web Chat channel. Click on  the "Edit" link associated with the Web Chat channel</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/11-install.png)
-14. The page Configure "Web Chat" is displayed, click on the "Add new site" link.</p>
+14. The page "Configure Web Chat" is displayed, click on the "Add new site" link.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/13-install.png)
 15. Fill the field "Site name" and click on the "Done" button .</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/14-install.png)
-16. On the subsequent page, copy the "Secret keys" clicking on the "Show" link. You'll need this "Secret key" to deploy your Azure template..</p>
+16. On the subsequent page, copy the "Secret keys" clicking on the "Show" link. You'll need this "Secret key" to deploy your Azure template.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/15-install.png)
 17. The registration of your bot is now done, you know the "App ID" and the "Password" of your bot, and the "Secret Key" of the Web Chat channel. You are now ready to deploy the Azure template.
 
@@ -58,7 +58,7 @@ Before deploying this Azure Resource Manager template you need to register your 
 
 Using Azure CLI you can run the following command to create the resource group associated with your deployment:
 
-azure group create "ResourceGroupName" "DataCenterName"
+azure group create "ResourceGroupName" "RegionName"
 
 For instance:
 
@@ -82,7 +82,9 @@ You can also launch the deployment with the Azure portal clicking on the button 
 
 Through the portal or Azure CLI you'll need to define the following parameters before launching the deployment. If you use Azure CLI you'll need to fill the file azuredeploy.parameters.json, if you use the Azure Portal, you'll fill directly the fields on the portal:
 
-The Bot Name prefix which will be used to deploy your bot in a Web App. The url of the Web App will be : https://[Bot Name Prefix]bot.azurewebsites.net, the messaging endpoint url will be : https://[Bot Name Prefix]bot.azurewebsites.net/api/messages :
+The Bot Name prefix which will be used to deploy your bot in a Web App. </p>
+The url of the Web App will be : https://[Bot Name Prefix]bot.azurewebsites.net,</p>
+the messaging endpoint url will be : https://[Bot Name Prefix]bot.azurewebsites.net/api/messages :
 
     "namePrefix": {
       "defaultValue": "Bot Name prefix",
@@ -296,7 +298,7 @@ The third parameter the App ID is used to embed the link to the Skype page to ad
 When you don't need to test your bot anymore, you can remove all those resources from Azure using Azure CLI.
 You can run the command below:
 
-azure group delete "ResourceGroupName" "DataCenterName"
+azure group delete "ResourceGroupName" "RegionName"
 
 For instance:
 
