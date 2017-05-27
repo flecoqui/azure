@@ -247,11 +247,11 @@ Now the Web App running your Bot has been deployed, you need to associate this W
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-test.png)
 2. In the Test page, enter a message in the "Type your message" field. Check that you get a response from the bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/2-test.png)
-3. Now, let's test the Apache Server running in the Virtual Machine. </p>With your Browser open the url  http://[dnsLabelPrefix].[Region].cloudapp.azure.com/index.php. If you did the deployment with Azure CLI, , this url has been displayed at the end of the Azure CLI. The page will display the public IP address of the virtual machine, the Web Chat control and the link to Skype to add the bot to your contacts.</p>
+3. Now, let's test the Apache Server running in the Virtual Machine. </p>With your Browser open the url  http://[dnsLabelPrefix].[Region].cloudapp.azure.com/index.php. If you did the deployment with Azure CLI, this url has been displayed at the end of the Azure CLI. The page will display the public IP address of the virtual machine, the Web Chat control and the link to Skype to add the bot to your contacts.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/3-test.png)
 4. In the Web Chat control enter a message, check that you get a response from the bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/4-test.png)
-5. Click on the "Add to Skype" button to add your Bot to your Skype's contacts</p>
+5. Click on the "Add to Skype" button to add your Bot to your Skype contacts</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/5-test.png)
 6. Launch Skype on your machine, you can see your bot in the list of your contacts.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/6-test.png)
