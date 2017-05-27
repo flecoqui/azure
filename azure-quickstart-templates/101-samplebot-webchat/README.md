@@ -259,8 +259,9 @@ Now the Web App running your Bot has been deployed, you now need to associate th
 
 ## UNDER THE HOOD:
 The (script)[https://github.com/flecoqui/azure/blob/master/azure-quickstart-templates/101-samplebot-webchat/install-software.sh] used to install and configure the Virtual Machine running Apache/PHP server is called from the Azure Resource Manager Template.
+This script is called with 3 parameters:
 - the first parameter is the machine hostname
-- the second paramter is the Web Chat secret key associated with the bot.
+- the second parameter is the Web Chat secret key associated with the bot.
 - the third parameter is the App ID associated with the bot.
 
 
@@ -270,6 +271,9 @@ The (script)[https://github.com/flecoqui/azure/blob/master/azure-quickstart-temp
     # Parameter 3 Bot Application ID 
     skype_appid=$3
     skype_url=https://join.skype.com/bot/$skype_appid
+
+The second parameter the Web Chat secret key is used to embed the Web Chat control in the PHP page.
+The third parameter the App ID is used to embed the link to the Skype page to add the bot to your Skype contats.
 
 
 
@@ -283,7 +287,6 @@ The (script)[https://github.com/flecoqui/azure/blob/master/azure-quickstart-temp
 	<a href="$skype_url">
 	<img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/>
 	</a>
-
 
 
 
