@@ -258,7 +258,7 @@ Now the Web App running your Bot has been deployed, you now need to associate th
 
 
 ## UNDER THE HOOD:
-The (script)[https://github.com/flecoqui/azure/blob/master/azure-quickstart-templates/101-samplebot-webchat/install-software.sh] used to install and configure the Virtual Machine running Apache/PHP server is called from the Azure Resource Manager Template.
+The [script](https://github.com/flecoqui/azure/blob/master/azure-quickstart-templates/101-samplebot-webchat/install-software.sh) used to install and configure the Virtual Machine running Apache/PHP server is called from the Azure Resource Manager Template.
 This script is called with 3 parameters:
 - the first parameter is the machine hostname
 - the second parameter is the Web Chat secret key associated with the bot.
