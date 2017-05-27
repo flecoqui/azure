@@ -30,13 +30,13 @@ Before deploying this Azure Resource Manager template you need to register your 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/2-install.png)
 5. Click on the button "Register", the page is displayed and fill the different fields like Display Name, Bot handle, Long description.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/3-install.png)
-6. In the "Configuration" section, click on "Create Microsoft App ID and password" to register your App ID and password.</p>
+6. In the "Configuration" section, click on "Create Microsoft App ID and password" button to register your App ID and password.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/4-install.png)
 7. On the page below, enter your "App name" and click on the "Generate an App  password to continue" button.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/5-install.png)
 8. On the subsequent page, copy the new password, you'll need this password to deploy your Azure template.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/6-install.png)
-9. Copy your App ID as well, you'll need this ID to deploy your Azure template..</p>
+9. Copy your App ID as well, you'll need this ID to deploy your Azure template.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/7-install.png)
 10. Check the term of use box and click on the "Register" button to register your bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/8-install.png)
