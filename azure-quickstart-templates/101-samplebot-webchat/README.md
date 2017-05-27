@@ -241,26 +241,57 @@ Now the Web App running your Bot has been deployed, you now need to associate th
 
 ## TESTING THE BOT
 
-1. Click on the Add button .</p>
+1. With your Browser open the url https://dev.botframework.com/ , on the new page select your bot registered during the first step of this deployment. Click on the "Test" button on the menu bar.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-test.png)
-2. Click on the Add button .</p>
+2. In the Test page, enter a message in the "Type your message" field. Check that you get a response from the bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/2-test.png)
-3. Click on the Add button .</p>
+3. Now, let's test the Apache Server running in the Virtual Machine. With your Browser of the url  http://[dnsLabelPrefix].[Region].cloudapp.azure.com/index.php. If you did the deployment with Azure CLI, , this url has been displayed at the end of the Azure CLI. The page will display the public IP address of the virtual machine, the Web Chat control and the link to Skype to add the bot to your contacts.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/3-test.png)
-1. Click on the Add button .</p>
+4. In the Web Chat control enter a message, check that you get a response from the bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/4-test.png)
-2. Click on the Add button .</p>
+5. Click on the "Add to Skype" button to add your Bot to your Skype's contacts</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/5-test.png)
-3. Click on the Add button .</p>
+6. Launch Skype on your machine, you can see your bot in the list of your contacts.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/6-test.png)
-3. Click on the Add button .</p>
+7. Enter a message, check that you get a response from the bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/7-test.png)
 
 
+## UNDER THE HOOD:
+
+
+
+    # Parameter 2 Bot WebChat Secret 
+    webchat_secret=$2
+    webchat_url=https://webchat.botframework.com/embed/mynewsamplebot?s=$webchat_secret
+    # Parameter 3 Bot Application ID 
+    skype_appid=$3
+    skype_url=https://join.skype.com/bot/$skype_appid
+
+
+
+    <p>This is the home page of a VM running on Azure</p>
+    <p>Below the WebChat page for the Bot: </p>
+	<iframe src="$webchat_url"></iframe>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p>Below the link to add the Bot to your Skype contacts: </p>
+	<a href="$skype_url">
+	<img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/>
+	</a>
+
+
+
+
+
 ## DELETE THE RESOURCE GROUP:
+When you don't need to test your bot anymore, you can remove all those resources from Azure using Azure CLI.
+You can run the command below:
+
 azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group delete testamsseacog northeurope
+    azure group delete testbotgrp northeurope
 
