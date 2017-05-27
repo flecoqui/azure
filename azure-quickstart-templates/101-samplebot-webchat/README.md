@@ -13,65 +13,75 @@ This template allows you to deploy  Deploy a Web App hosting a sample Bot with W
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-architecture.png)
 
 This template allows you to deploy a simple VM running: </p>
-#### Debian: Apache and php with Web chat control and link to Skype,
-#### Ubuntu: Apache and php with Web chat control and link to Skype, 
-#### Centos: Apache and php with Web chat control and link to Skype,
-#### Red Hat: Apache and php with Web chat control and link to Skype.
+#### Debian (version 8): Apache and php with Web chat control and link to Skype,
+#### Ubuntu (version 16.04): Apache and php with Web chat control and link to Skype, 
+#### Centos (version 7.2): Apache and php with Web chat control and link to Skype,
+#### Red Hat (version 7.2): Apache and php with Web chat control and link to Skype.
+
+## REGISTERING YOUR BOT:
 
 Before deploying this Azure Resource Manager template you need to register your bot:
  
-1. Select the Storage Account of your new resource group:</p>
+1. With your Browser open the url: https://dev.botframework.com/  </p>
+2. Click on the link "Sign In" and use your Microsoft Account. If you don't have a Microsoft Account you can sign up there: https://signup.live.com/ </p>
+3. Once connected to the botframework web site you can see the menu bar below::</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-install.png)
-2. Select CORS on the page of your Storage Account</p>
+4. Click on the menu "My bots", you can see the page below. </p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/2-install.png)
-3. Click on the button Add to Add a CORS rule. Enter  * for **Allowed origins**, GET,POST and PUT for **Allowed verbs**, * for **Allowed headers**, * for **Exposed headers** and 5 for **Maximum age**.
-Click on the Add button to Create the new rule.</p>
+5. Click on the button "Register", the page is displayed and fill the different fields like Display Name, Bot handle, Long description.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/3-install.png)
-4. Click on the Add button to Create the new rule. Once the rule is created the Web Player will be able to play audio/video files and subtitles files stored on the Storage Account.</p>
+6. In the "Configuration" section, click on "Create Microsoft App ID and password" to register your App ID and password.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/4-install.png)
-4. Click on the Add button .</p>
+7. On the page below, enter your "App name" and click on the "Generate an App  password to continue" button.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/5-install.png)
-4. Click on the Add button .</p>
+8. On the subsequent page, copy the new password, you'll need this password to deploy your Azure template.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/6-install.png)
-4. Click on the Add button .</p>
+9. Copy your App ID as well, you'll need this ID to deploy your Azure template..</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/7-install.png)
-4. Click on the Add button .</p>
+10. Check the term of use box and click on the "Register" button to register your bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/8-install.png)
-4. Click on the Add button .</p>
+11. During this registration phase, we leave the field "Messaging endpoint" empty, we will fill this field when the bot will be deployed..</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/9-install.png)
-4. Click on the Add button .</p>
+12. Once the box is created the message below is displayed.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/10-install.png)
-4. Click on the Add button .</p>
+13. By default 2 channels are created, the Skype channel and the Web Chat channel. Click on  the "Edit" link associated with the Web Chat connector</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/11-install.png)
-4. Click on the Add button .</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/12-install.png)
-4. Click on the Add button .</p>
+14. The page Configure "Web Chat" is displayed, click on the "Add new site" link.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/13-install.png)
-4. Click on the Add button .</p>
+15. Fill the filed "Site name" and click on the "Done" button .</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/14-install.png)
-4. Click on the Add button .</p>
+16. On the subsequent page, copy the "Secret keys" clicking on the "Show" link. You'll need this "Secret key" to deploy your Azure template..</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/15-install.png)
-
-
-Moreover, the media files will be streamed from SAS locators which returns "Accept-Ranges: bytes" in the http headers. This http header is mandatory to play MP4 video files or MP3 audio files over http with Chrome browser.
-
+17. The registration of your bot is now done, you know the "App ID" and the "Password" of your bot, and the "Secret Key" of the Web Chat channel. You are now ready to deploy the Azure template.
 
 ## CREATE RESOURCE GROUP:
+
+Using Azure CLI you can run the following command to create the resource group associated with your deployment.
+
 azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group create testamsseacog northeurope
+    azure group create testbotgrp northeurope
 
 ## DEPLOY THE SERVICES:
+
+Once the resource group is created, you can launch the deployment using Azure CLI.
+
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
 
-    azure group deployment create testamsseacog depiperftest -f azuredeploy.json -e azuredeploy.parameters.json -vv
+    azure group deployment create testbotgrp depiperftest -f azuredeploy.json -e azuredeploy.parameters.json -vv
  
+You can also launch the deployment with the Azure portal clicking on the button below: 
 
-Using the following parameters:
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-samplebot-webchat%2Fazuredeploy.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
+
+Through the portal or Azure CLI you'll need to define the following parameter before launching the deployment:
 
 Name prefix which will be used to create Azure Media Serivces Account, Azure Storage Account,  Azure Search Account, Azure Cognitive Services Text Translation Account:
 
