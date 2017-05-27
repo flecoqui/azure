@@ -264,20 +264,20 @@ This script is called with 3 parameters:
 - the second parameter is the Web Chat secret key associated with the bot.
 - the third parameter is the App ID associated with the bot.
 
-```bash
-    \# Parameter 2 Bot WebChat Secret 
+```
+    # Parameter 2 Bot WebChat Secret 
     webchat_secret=$2
     webchat_url=https://webchat.botframework.com/embed/mynewsamplebot?s=$webchat_secret
-    \# Parameter 3 Bot Application ID 
+    # Parameter 3 Bot Application ID 
     skype_appid=$3
     skype_url=https://join.skype.com/bot/$skype_appid
-```bash
+```
 
 The second parameter the Web Chat secret key is used to embed the Web Chat control in the PHP page.
 The third parameter the App ID is used to embed the link to the Skype page to add the bot to your Skype contats.
 
 
-```html
+```
     <p>This is the home page of a VM running on Azure</p>
     <p>Below the WebChat page for the Bot: </p>
 	<iframe src="$webchat_url"></iframe>
@@ -288,7 +288,7 @@ The third parameter the App ID is used to embed the link to the Skype page to ad
 	<a href="$skype_url">
 	<img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/>
 	</a>
-```html
+```
 
 
 
