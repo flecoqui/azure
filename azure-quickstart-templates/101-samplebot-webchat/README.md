@@ -265,10 +265,10 @@ This script is called with 3 parameters:
 - the third parameter is the App ID associated with the bot.
 
 
-    # Parameter 2 Bot WebChat Secret 
+    \# Parameter 2 Bot WebChat Secret 
     webchat_secret=$2
     webchat_url=https://webchat.botframework.com/embed/mynewsamplebot?s=$webchat_secret
-    # Parameter 3 Bot Application ID 
+    \# Parameter 3 Bot Application ID 
     skype_appid=$3
     skype_url=https://join.skype.com/bot/$skype_appid
 
