@@ -1,4 +1,4 @@
-# Deploy a Web App hosting a sample Bot with Web Chat and Skype connector and a Virtual Machine running Linux (debian, ubuntu, centos, redhat) and an Apache/PHP server with Web Chat control and a link to Skype
+# Deploy a Web App hosting a sample Bot with Web Chat and Skype connectors and a Virtual Machine running Linux (debian, ubuntu, centos, redhat) and an Apache/PHP server with Web Chat control and a link to Skype
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-samplebot-webchat%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
@@ -8,15 +8,15 @@
 </a>
 
 
-This template allows you to deploy  Deploy a Web App hosting a sample Bot with Web Chat and Skype connector and a Virtual Machine running Linux (debian, ubuntu, centos, redhat) and an Apache/PHP server with Web Chat control and a link to Skype in the same region as the resource group.
+This template allows you to deploy  Deploy a Web App hosting a sample Bot with Web Chat and Skype connectors and a Virtual Machine running Linux (debian, ubuntu, centos, redhat) and an Apache/PHP server with Web Chat control and a link to Skype. All those resources will be deployed in the same region as the resource group.
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-architecture.png)
 
 This template allows you to deploy a simple VM running: </p>
-#### Debian (version 8): Apache and php with Web chat control and link to Skype,
-#### Ubuntu (version 16.04): Apache and php with Web chat control and link to Skype, 
-#### Centos (version 7.2): Apache and php with Web chat control and link to Skype,
-#### Red Hat (version 7.2): Apache and php with Web chat control and link to Skype.
+- Debian (version 8): Apache and php with Web chat control and link to Skype,
+- Ubuntu (version 16.04): Apache and php with Web chat control and link to Skype, 
+- Centos (version 7.2): Apache and php with Web chat control and link to Skype,
+- Red Hat (version 7.2): Apache and php with Web chat control and link to Skype.
 
 ## REGISTERING YOUR BOT:
 
