@@ -83,8 +83,8 @@ You can also launch the deployment with the Azure portal clicking on the button 
 Through the portal or Azure CLI you'll need to define the following parameters before launching the deployment. If you use Azure CLI you'll need to fill the file azuredeploy.parameters.json, if you use the Azure Portal, you'll fill directly the fields on the portal:
 
 The Bot Name prefix which will be used to deploy your bot in a Web App. </p>
-The url of the Web App will be : https://[Bot Name Prefix]bot.azurewebsites.net,</p>
-the messaging endpoint url will be : https://[Bot Name Prefix]bot.azurewebsites.net/api/messages :
+The url of the Web App will be : https://[Bot Name Prefix]bot.azurewebsites.net/ .</p>
+The messaging endpoint url will be : https://[Bot Name Prefix]bot.azurewebsites.net/api/messages :
 
     "namePrefix": {
       "defaultValue": "Bot Name prefix",
@@ -181,7 +181,7 @@ The administrator password of the Virtual Machine running Linux and Apache/PHP:
     }
 
 
-The DNS name prefix of your Virtual Machine running Linux and Apache/PHP, the public DNS entry of your Virtual Machine will be [dnsLabelPrefix].[Region].cloudapp.azure.com:
+The DNS name prefix of your Virtual Machine running Linux and Apache/PHP, the public DNS name of your Virtual Machine will be [dnsLabelPrefix].[Region].cloudapp.azure.com:
 
 
     "dnsLabelPrefix": {
@@ -229,7 +229,7 @@ The configuration size of your virtual machine (Small: F1 and 128 GB data disk, 
 
 ## COMPLETING THE BOT REGISTRATION
 
-Now the Web App running your Bot has been deployed, you now need to associate this Web App with your Bot registration on the Bot Framework Web Site https://dev.botframework.com/ :
+Now the Web App running your Bot has been deployed, you need to associate this Web App with your Bot registration on the Bot Framework Web Site https://dev.botframework.com/ :
 
 1. To complete the configuration of your Bot, you need to define the "Messaging Endpoint" of your bot, if you did the deployment with Azure CLI, this information has been displayed at the end of the Azure CLI. Otherwise, the syntax of this url is  https://[Bot Name Prefix]bot.azurewebsites.net/api/messages .</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/0-configure.png)
@@ -247,7 +247,7 @@ Now the Web App running your Bot has been deployed, you now need to associate th
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-test.png)
 2. In the Test page, enter a message in the "Type your message" field. Check that you get a response from the bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/2-test.png)
-3. Now, let's test the Apache Server running in the Virtual Machine. With your Browser of the url  http://[dnsLabelPrefix].[Region].cloudapp.azure.com/index.php. If you did the deployment with Azure CLI, , this url has been displayed at the end of the Azure CLI. The page will display the public IP address of the virtual machine, the Web Chat control and the link to Skype to add the bot to your contacts.</p>
+3. Now, let's test the Apache Server running in the Virtual Machine. </p>With your Browser open the url  http://[dnsLabelPrefix].[Region].cloudapp.azure.com/index.php. If you did the deployment with Azure CLI, , this url has been displayed at the end of the Azure CLI. The page will display the public IP address of the virtual machine, the Web Chat control and the link to Skype to add the bot to your contacts.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/3-test.png)
 4. In the Web Chat control enter a message, check that you get a response from the bot.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/4-test.png)
