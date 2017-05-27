@@ -46,10 +46,9 @@ Before deploying this Azure Resource Manager template you need to register your 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/10-install.png)
 13. By default 2 channels are created, the Skype channel and the Web Chat channel. Click on  the "Edit" link associated with the Web Chat connector</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/11-install.png)
-![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/12-install.png)
 14. The page Configure "Web Chat" is displayed, click on the "Add new site" link.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/13-install.png)
-15. Fill the filed "Site name" and click on the "Done" button .</p>
+15. Fill the field "Site name" and click on the "Done" button .</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/14-install.png)
 16. On the subsequent page, copy the "Secret keys" clicking on the "Show" link. You'll need this "Secret key" to deploy your Azure template..</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/15-install.png)
@@ -57,7 +56,7 @@ Before deploying this Azure Resource Manager template you need to register your 
 
 ## CREATE RESOURCE GROUP:
 
-Using Azure CLI you can run the following command to create the resource group associated with your deployment.
+Using Azure CLI you can run the following command to create the resource group associated with your deployment:
 
 azure group create "ResourceGroupName" "DataCenterName"
 
@@ -67,7 +66,7 @@ For instance:
 
 ## DEPLOY THE SERVICES:
 
-Once the resource group is created, you can launch the deployment using Azure CLI.
+Once the resource group is created, you can launch the deployment using Azure CLI:
 
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
@@ -81,69 +80,116 @@ You can also launch the deployment with the Azure portal clicking on the button 
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-Through the portal or Azure CLI you'll need to define the following parameter before launching the deployment:
+Through the portal or Azure CLI you'll need to define the following parameters before launching the deployment. If you use Azure CLI you'll need to fill the file azuredeploy.parameters.json, if you use the Azure Portal, you'll fill directly the fields on the portal:
 
-Name prefix which will be used to create Azure Media Serivces Account, Azure Storage Account,  Azure Search Account, Azure Cognitive Services Text Translation Account:
+The Bot Name prefix which will be used to deploy your bot in a Web App. The url of the Web App will be : https://[Bot Name Prefix]bot.azurewebsites.net, the messaging endpoint url will be : https://[Bot Name Prefix]bot.azurewebsites.net/api/messages :
 
     "namePrefix": {
+      "defaultValue": "Bot Name prefix",
       "type": "string",
-      "minLength": 2,
-      "maxLength": 50,
       "metadata": {
-        "description": "Service name prefix must only contain lowercase letters, digits or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and is limited between 2 and 50 characters in length."
-      }
-
-Azure Storage SKU associated with Azure Media Services, used to store video and audio files:
-
-    "mediaStorageSku": {
-      "type": "string",
-      "defaultValue": "Standard_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_GRS",
-        "Standard_RAGRS",
-        "Premium_LRS"
-      ],
-      "metadata": {
-        "description": "This is  Storage Account SKU associated with Azure Media Services"
-      }
-    },
-
-Azure Search SKU:
-
-    "searchSku": {
-      "type": "string",
-      "defaultValue": "free",
-      "allowedValues": [
-        "free",
-        "basic",
-        "standard",
-        "standard2",
-        "standard3"
-      ],
-      "metadata": {
-        "description": "The SKU of the search service you want to create. E.g. free or standard"
-      }
-    },
-
-Beyond login/password, the input parameters are :</p>
-configurationSize (Small: F1 and 128 GB data disk, Medium: F2 and 256 GB data disk, Large: F4 and 512 GB data disk, XLarge: F4 and 1024 GB data disk) : 
-
-    "configurationSize": {
-      "type": "string",
-      "defaultValue": "Small",
-      "allowedValues": [
-        "Small",
-        "Medium",
-        "Large",
-        "XLarge"
-      ],
-      "metadata": {
-        "description": "Configuration Size: VM Size + Disk Size"
+        "description": "Bot Name prefix"
       }
     }
 
-configurationOS (debian, ubuntu, centos, redhat, nano server 2016, windows server 2016): 
+The Bot sku :
+
+    "sku": {
+      "type": "string",
+      "allowedValues": [
+        "Free",
+        "Shared",
+        "Basic",
+        "Standard"
+      ],
+      "defaultValue": "Free",
+      "metadata": {
+        "description": "Bot Sku: Free, Shared, Basic, Standard"
+      }
+    }
+
+The Bot worker size:
+
+    "workerSize": {
+      "type": "string",
+      "allowedValues": [
+        "0",
+        "1",
+        "2"
+      ],
+      "defaultValue": "0",
+      "metadata": {
+        "description": "Bot Worker Size: 0, 1, 2"
+      }
+    }
+
+
+The Microsoft App ID associated with your Bot, you got this parameter after the registration phase:
+
+
+    "MICROSOFT_APP_ID": {
+      "type": "string",
+      "metadata": {
+        "description": "Bot Application ID"
+      }
+    }
+
+
+The Microsoft App Password associated with your Bot, you got this parameter after the registration phase:
+
+
+    "MICROSOFT_APP_PASSWORD": {
+      "type": "string",
+      "metadata": {
+        "description": "Bot Application Password"
+      }
+    }
+
+
+The Web Chat channel secret key associated with your Bot, you got this parameter after the registration phase:
+
+
+    "WEBCHAT_SECRET": {
+      "type": "string",
+      "metadata": {
+        "description": "Bot WebChat Secret"
+      }
+    }
+
+
+The administrator user name of the Virtual Machine running Linux and Apache/PHP:
+
+
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Administrator User name for the Virtual Machine."
+      }
+    }
+
+
+The administrator password of the Virtual Machine running Linux and Apache/PHP:
+
+
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    }
+
+
+The DNS name prefix of your Virtual Machine running Linux and Apache/PHP, the public DNS entry of your Virtual Machine will be [dnsLabelPrefix].[Region].cloudapp.azure.com:
+
+
+    "dnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine. DNS name: <dnsLabelPrefix>.<Region>.cloudapp.azure.com"
+      }
+    }
+
+The Linux distribution of your Virtual Machine  (debian, ubuntu, centos, redhat): 
 
     "configurationOS": {
       "type": "string",
@@ -161,18 +207,39 @@ configurationOS (debian, ubuntu, centos, redhat, nano server 2016, windows serve
 
 
 
-With Azure CLI you can create this VM with 2 command lines:
 
-1. Click on the Add button .</p>
+The configuration size of your virtual machine (Small: F1 and 128 GB data disk, Medium: F2 and 256 GB data disk, Large: F4 and 512 GB data disk, XLarge: F4 and 1024 GB data disk) : 
+
+    "configurationSize": {
+      "type": "string",
+      "defaultValue": "Small",
+      "allowedValues": [
+        "Small",
+        "Medium",
+        "Large",
+        "XLarge"
+      ],
+      "metadata": {
+        "description": "Configuration Size: VM Size + Disk Size"
+      }
+    }
+
+
+## COMPLETING THE BOT REGISTRATION
+
+Now the Web App running your Bot has been deployed, you now need to associate this Web App with your Bot registration on the Bot Framework Web Site https://dev.botframework.com/ :
+
+1. To complete the configuration of your Bot, you need to define the "Messaging Endpoint" of your bot, if you did the deployment with Azure CLI, this information has been displayed at the end of the Azure CLI. Otherwise, the syntax of this url is  https://[Bot Name Prefix]bot.azurewebsites.net/api/messages .</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/0-configure.png)
-2. Click on the Add button .</p>
+2. With your Browser open the url https://dev.botframework.com/ , on the new page select your bot registered during the first step of this deployment. Click on the "Settings" menu.</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-configure.png)
-3. Click on the Add button .</p>
+3. In the "Configuration" section, enter the "messaging endpoint" of your Web App:</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/2-configure.png)
-4. Click on the Add button .</p>
+4. Click on the "Save changes" button. Your Bot is now fully configured</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/3-configure.png)
 
 
+## TESTING THE BOT
 
 1. Click on the Add button .</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-samplebot-webchat/Docs/1-test.png)

@@ -21,7 +21,6 @@
       "metadata": {
         "description": "Bot Sku: Free, Shared, Basic, Standard"
       }
-
     },
     "workerSize": {
       "type": "string",
