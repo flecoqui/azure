@@ -597,10 +597,12 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('bridgeNicName1'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('bridgeNicName1'))]",
+              "properties": { "primary": true }
             },
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('bridgeNicName2'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('bridgeNicName2'))]",
+              "properties": { "primary": false }
             }
           ]
         },
