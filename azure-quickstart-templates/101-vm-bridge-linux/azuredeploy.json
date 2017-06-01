@@ -208,7 +208,7 @@
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
 
     "bridgeStorageAccountNamePrefix": "[toLower(substring(concat(parameters('dnsLabelPrefix'), uniqueString(resourceGroup().id)), 0, 2))]",
-    "bridgeStorageAccountName": "[concat(variables('storageAccountNamePrefix'), uniqueString(concat(resourceGroup().id, variables('bridgeStorageAccountNamePrefix'))),'bridgesa')]",
+    "bridgeStorageAccountName": "[concat(variables('bridgeStorageAccountNamePrefix'), uniqueString(concat(resourceGroup().id, variables('bridgeStorageAccountNamePrefix'))),'bridgesa')]",
     "bridgeOSDiskName": "osdiskbridgevm",
     "bridgeNicName1": "[concat(parameters('dnsLabelPrefix'), 'bridgenic1')]",
     "bridgeNicName2": "[concat(parameters('dnsLabelPrefix'), 'bridgenic2')]",
