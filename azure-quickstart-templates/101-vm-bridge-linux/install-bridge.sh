@@ -30,12 +30,12 @@ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 iptables-save > /etc/iptables_rules.save
 cat /etc/network/interfaces
 
-iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.1 -p tcp --dport 80 --to 10.0.0.4
-iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.1 -p tcp --dport 443 --to 10.0.0.4
-iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.1 -p tcp --dport 5985 --to 10.0.0.4
-iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.1 -p tcp --dport 5986 --to 10.0.0.4
-iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.1 -p tcp --dport 5201 --to 10.0.0.4
-iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.1 -p udp --dport 5201 --to 10.0.0.4
+iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.5 -p tcp --dport 80 --to 10.0.0.4
+iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.5 -p tcp --dport 443 --to 10.0.0.4
+iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.5 -p tcp --dport 5985 --to 10.0.0.4
+iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.5 -p tcp --dport 5986 --to 10.0.0.4
+iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.5 -p tcp --dport 5201 --to 10.0.0.4
+iptables -t nat -A PREROUTING -j DNAT -d 10.0.1.5 -p udp --dport 5201 --to 10.0.0.4
 
 
 exit 0 
