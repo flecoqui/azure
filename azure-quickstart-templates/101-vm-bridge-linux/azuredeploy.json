@@ -460,7 +460,8 @@
               }
             }
           }
-        ]
+        ],
+        "enableIPForwarding": true
       }
     },
     {
@@ -483,7 +484,8 @@
               }
             }
           }
-        ]
+        ],
+        "enableIPForwarding": true
       }
     },
     {
