@@ -169,7 +169,7 @@
         "logInformation": "type c:\\source\\install.log",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
       },
-      "brideubuntu": {
+      "bridgeubuntu": {
         "publisher": "Canonical",
         "offer": "UbuntuServer",
         "sku": "16.04.0-LTS",
