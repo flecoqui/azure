@@ -9,7 +9,7 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmiperf001"
+      "value": "vmbrg001"
     },
     "configurationOS": {
       "value": "ubuntu"
