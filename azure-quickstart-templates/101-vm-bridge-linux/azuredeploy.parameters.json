@@ -9,10 +9,10 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmbri001"
+      "value": "vmbru001"
     },
     "configurationOS": {
-      "value": "ubuntu"
+      "value": "debian"
     },
     "configurationSize": {
       "value": "Small"

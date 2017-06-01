@@ -494,6 +494,7 @@
       "name": "[variables('vmName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/',variables('bridgeVmName'),'/extensions/','initbridge')]",
         "[concat('Microsoft.Compute/virtualMachines/', variables('bridgeVmName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
@@ -547,34 +548,33 @@
             "storageUri": "[concat('http://',variables('bridgeStorageAccountName'),'.blob.core.windows.net')]"
           }
         }
-      },
-      "resources": [
-        {
-          "name": "init",
-          "type": "extensions",
-          "location": "[resourceGroup().location]",
-          "apiVersion": "2015-06-15",
-          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-          ],
-          "tags": {
-            "displayName": "init"
-          },
-          "properties": {
-            "publisher": "[variables('configurationOS')[parameters('configurationOS')].extensionPublisher]",
-            "type": "[variables('configurationOS')[parameters('configurationOS')].extensionType]",
-            "typeHandlerVersion": "[variables('configurationOS')[parameters('configurationOS')].extensionTypeHandlerVersion]",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "fileUris": [
-                "[variables('configurationOS')[parameters('configurationOS')].installScriptUrl]"
-              ],
-              "commandToExecute": "[variables('configurationOS')[parameters('configurationOS')].commandToExecute]"
-            }
-          }
-        }
-      ]
+      }
     },
+    {
+      "name": "[concat(variables('vmName'),'/init')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "tags": {
+        "displayName": "init"
+      },
+      "properties": {
+        "publisher": "[variables('configurationOS')[parameters('configurationOS')].extensionPublisher]",
+        "type": "[variables('configurationOS')[parameters('configurationOS')].extensionType]",
+        "typeHandlerVersion": "[variables('configurationOS')[parameters('configurationOS')].extensionTypeHandlerVersion]",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[variables('configurationOS')[parameters('configurationOS')].installScriptUrl]"
+          ],
+          "commandToExecute": "[variables('configurationOS')[parameters('configurationOS')].commandToExecute]"
+        }
+      }
+    },
+
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
@@ -629,34 +629,33 @@
             "storageUri": "[concat('http://',variables('bridgeStorageAccountName'),'.blob.core.windows.net')]"
           }
         }
+      }
+    },
+    {
+      "name": "[concat(variables('bridgeVmName'),'/initbridge')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('bridgeVmName'))]"
+      ],
+      "tags": {
+        "displayName": "init"
       },
-      "resources": [
-        {
-          "name": "init",
-          "type": "extensions",
-          "location": "[resourceGroup().location]",
-          "apiVersion": "2015-06-15",
-          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('bridgeVmName'))]"
+      "properties": {
+        "publisher": "[variables('configurationOS')['bridgedebian'].extensionPublisher]",
+        "type": "[variables('configurationOS')['bridgedebian'].extensionType]",
+        "typeHandlerVersion": "[variables('configurationOS')['bridgedebian'].extensionTypeHandlerVersion]",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[variables('configurationOS')['bridgedebian'].installScriptUrl]"
           ],
-          "tags": {
-            "displayName": "init"
-          },
-          "properties": {
-            "publisher": "[variables('configurationOS')['bridgedebian'].extensionPublisher]",
-            "type": "[variables('configurationOS')['bridgedebian'].extensionType]",
-            "typeHandlerVersion": "[variables('configurationOS')['bridgedebian'].extensionTypeHandlerVersion]",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "fileUris": [
-                "[variables('configurationOS')['bridgedebian'].installScriptUrl]"
-              ],
-              "commandToExecute": "[variables('configurationOS')['bridgedebian'].commandToExecute]"
-            }
-          }
+          "commandToExecute": "[variables('configurationOS')['bridgedebian'].commandToExecute]"
         }
-      ]
+      }
     }
+
   ],
   "outputs": {
     "hostname": {
