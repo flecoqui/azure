@@ -183,6 +183,21 @@
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
         "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
+      },
+      "bridgedebian": {
+        "publisher": "credativ",
+        "offer": "Debian",
+        "sku": "8",
+        "version": "latest",
+        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-bridge-linux/install-bridge.sh",
+        "installScriptFileName": "install-bridge.sh",
+        "commandToExecute": "[concat('sh install-bridge.sh \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"')]",
+        "extensionPublisher": "Microsoft.Azure.Extensions",
+        "extensionType": "CustomScript",
+        "extensionTypeHandlerVersion": "2.0",
+        "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
+        "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
+        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]"
       }
     },
     "configurationSize": "[variables(concat('configurationSize', parameters('configurationSize')))]",
@@ -579,10 +594,10 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "[variables('configurationOS')['bridgeubuntu'].publisher]",
-            "offer": "[variables('configurationOS')['bridgeubuntu'].offer]",
-            "sku": "[variables('configurationOS')['bridgeubuntu'].sku]",
-            "version": "[variables('configurationOS')['bridgeubuntu'].version]"
+            "publisher": "[variables('configurationOS')['bridgedebian'].publisher]",
+            "offer": "[variables('configurationOS')['bridgedebian'].offer]",
+            "sku": "[variables('configurationOS')['bridgedebian'].sku]",
+            "version": "[variables('configurationOS')['bridgedebian'].version]"
           },
           "osDisk": {
             "name": "osdisk",
@@ -626,15 +641,15 @@
             "displayName": "init"
           },
           "properties": {
-            "publisher": "[variables('configurationOS')['bridgeubuntu'].extensionPublisher]",
-            "type": "[variables('configurationOS')['bridgeubuntu'].extensionType]",
-            "typeHandlerVersion": "[variables('configurationOS')['bridgeubuntu'].extensionTypeHandlerVersion]",
+            "publisher": "[variables('configurationOS')['bridgedebian'].extensionPublisher]",
+            "type": "[variables('configurationOS')['bridgedebian'].extensionType]",
+            "typeHandlerVersion": "[variables('configurationOS')['bridgedebian'].extensionTypeHandlerVersion]",
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "[variables('configurationOS')['bridgeubuntu'].installScriptUrl]"
+                "[variables('configurationOS')['bridgedebian'].installScriptUrl]"
               ],
-              "commandToExecute": "[variables('configurationOS')['bridgeubuntu'].commandToExecute]"
+              "commandToExecute": "[variables('configurationOS')['bridgedebian'].commandToExecute]"
             }
           }
         }
