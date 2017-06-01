@@ -477,6 +477,7 @@
       "name": "[variables('vmName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('bridgeVmName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
@@ -606,7 +607,7 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": "true",
-            "storageUri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net')]"
+            "storageUri": "[concat('http://',variables('bridgeStorageAccountName'),'.blob.core.windows.net')]"
           }
         }
       },

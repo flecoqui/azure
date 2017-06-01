@@ -370,6 +370,7 @@ then
     log "unsupported operating system"
     exit 1 
 else
+    exit 0
 	if [ $iscentos -eq 0 ] ; then
 	    log "configure network centos"
 		configure_network_centos
