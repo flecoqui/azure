@@ -361,20 +361,20 @@
               "access": "Allow",
               "priority": 111,
               "direction": "Inbound"
-            },
-            {
-              "name": "sshredirect",
-              "properties": {
-                "description": "SSH port",
-                "protocol": "Tcp",
-                "sourcePortRange": "*",
-                "destinationPortRange": "2222",
-                "sourceAddressPrefix": "Internet",
-                "destinationAddressPrefix": "*",
-                "access": "Allow",
-                "priority": 112,
-                "direction": "Inbound"
-              }
+            }
+          },
+          {
+            "name": "sshredirect",
+            "properties": {
+              "description": "SSH port",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "2222",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 112,
+              "direction": "Inbound"
             }
           }
         ]
