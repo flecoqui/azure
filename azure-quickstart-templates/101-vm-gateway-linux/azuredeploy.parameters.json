@@ -9,10 +9,10 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "brga001"
+      "value": "nanobr001"
     },
     "configurationOS": {
-      "value": "windowsserver2016"
+      "value": "nanoserver2016"
     },
     "configurationSize": {
       "value": "Small"

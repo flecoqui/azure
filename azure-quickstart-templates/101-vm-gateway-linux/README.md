@@ -91,22 +91,23 @@ The Virtual Machine running the NAT Gateway has been configured to forward the f
 
 Below the bash commands to confgure the NAT gateway to forward the ports:
 
-iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 80 -j DNAT --to-destination 10.0.0.4:80
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 80 -j MASQUERADE
-iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 443 -j DNAT --to-destination 10.0.0.4:443
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 443 -j MASQUERADE# Forwarding port 5201
-iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5201 -j DNAT --to-destination 10.0.0.4:5201
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5201 -j MASQUERADE
-iptables -t nat -A PREROUTING -p udp  -d 10.0.1.5/32 --dport 5201 -j DNAT --to-destination 10.0.0.4:5201
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p udp --dport 5201 -j MASQUERADE# Forwarding port 3389
-iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 3389 -j DNAT --to-destination 10.0.0.4:3389
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 3389 -j MASQUERADE
-iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5985 -j DNAT --to-destination 10.0.0.4:5985
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5985 -j MASQUERADE
-iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5986 -j DNAT --to-destination 10.0.0.4:5986
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5986 -j MASQUERADE
-iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 2222 -j DNAT --to-destination 10.0.0.4:22
-iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 22 -j MASQUERADE
+
+   iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 80 -j DNAT --to-destination 10.0.0.4:80
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 80 -j MASQUERADE
+   iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 443 -j DNAT --to-destination 10.0.0.4:443
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 443 -j MASQUERADE# Forwarding port 5201
+   iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5201 -j DNAT --to-destination 10.0.0.4:5201
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5201 -j MASQUERADE
+   iptables -t nat -A PREROUTING -p udp  -d 10.0.1.5/32 --dport 5201 -j DNAT --to-destination 10.0.0.4:5201
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p udp --dport 5201 -j MASQUERADE# Forwarding port 3389
+   iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 3389 -j DNAT --to-destination 10.0.0.4:3389
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 3389 -j MASQUERADE
+   iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5985 -j DNAT --to-destination 10.0.0.4:5985
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5985 -j MASQUERADE
+   iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5986 -j DNAT --to-destination 10.0.0.4:5986
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5986 -j MASQUERADE
+   iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 2222 -j DNAT --to-destination 10.0.0.4:22
+   iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 22 -j MASQUERADE
 
 
 
