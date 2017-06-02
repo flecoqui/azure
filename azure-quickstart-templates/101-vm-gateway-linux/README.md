@@ -1,9 +1,9 @@
 # Deployment of a simple VM (Linux or Windows) with Web Server (Apache or IIS) and iperf3 components behind a Virtual Machine acting as NAT gateaway and with port forwarding
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-bridge-linux%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-gateway-linux%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-bridge-linux%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-gateway-linux%2Fazuredeploy.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
@@ -20,11 +20,11 @@ THe objecitve of this template is to show how to capture the traffic between the
 
 Actually, it's like a migration from this architecture:
 
-![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-bridge-linux/Docs/1-architecture.png)
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-gateway-linux/Docs/1-architecture.png)
 
 to this architecture:
 
-![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-bridge-linux/Docs/2-architecture.png)
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-gateway-linux/Docs/2-architecture.png)
 
 
 With Azure CLI you can deploy those VMs with 2 command lines:
