@@ -34,14 +34,14 @@ azure group create "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group create iperfgrpeu2 eastus2
+    azure group create gateawaygrp eastus2
 
 ## DEPLOY THE VM:
 azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
 
 For instance:
 
-    azure group deployment create iperfgrpeu2 depiperftest -f azuredeploy.json -e azuredeploy.parameters.json -vv
+    azure group deployment create gateawaygrp -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
 Beyond login/password for the 2 virtual machine, the input parameters are :</p>
 configurationSize (Small: F1 and 128 GB data disk, Medium: F2 and 256 GB data disk, Large: F4 and 512 GB data disk, XLarge: F4 and 1024 GB data disk) : 
@@ -78,9 +78,39 @@ configurationOS (debian, ubuntu, centos, redhat, nano server 2016, windows serve
       }
     },
 
+## FORWARDING PORTS:
+The Virtual Machine running the NAT Gateway has been configured to forward the following ports to the Virtual Machine in the backend:
+- port 80:		http for the Web Server 
+- port 443:		https for the Web Server 
+- port 5201:	iperf3 server
+- port 2222:	ssh for the Linux Virtual Machine in the backend
+- port 3389:	rdp for the Windows Server Virtual Machine in the backend
+- port 5985:	rdp for the Nano Server Virtual Machine in the backend
+- port 5986:	rdp for the Nano Server Virtual Machine in the backend
 
 
-## TEST THE VM:
+Below the bash commands to confgure the NAT gateway to forward the ports:
+
+iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 80 -j DNAT --to-destination 10.0.0.4:80
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 80 -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 443 -j DNAT --to-destination 10.0.0.4:443
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 443 -j MASQUERADE# Forwarding port 5201
+iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5201 -j DNAT --to-destination 10.0.0.4:5201
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5201 -j MASQUERADE
+iptables -t nat -A PREROUTING -p udp  -d 10.0.1.5/32 --dport 5201 -j DNAT --to-destination 10.0.0.4:5201
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p udp --dport 5201 -j MASQUERADE# Forwarding port 3389
+iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 3389 -j DNAT --to-destination 10.0.0.4:3389
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 3389 -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5985 -j DNAT --to-destination 10.0.0.4:5985
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5985 -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 5986 -j DNAT --to-destination 10.0.0.4:5986
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 5986 -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp  -d 10.0.1.5/32 --dport 2222 -j DNAT --to-destination 10.0.0.4:22
+iptables -t nat -A POSTROUTING  -d 10.0.0.4 -p tcp --dport 22 -j MASQUERADE
+
+
+
+## TESTING THE DEPLOYMENT:
 Once the VM has been deployed, you can open the Web page hosted on the VM.
 For instance for Linux VM:
 
@@ -97,11 +127,15 @@ For instance for Linux VM:
      iperf3 -c vmubus001.eastus2.cloudapp.azure.com -p 5201
 
 </p>
-Finally, you can open a remote session with the VM.
+Finally, you can open a remote session with the Virtual Machines.
+
+For instance for Linux VM running the NAT Gateway:
+
+     ssh VMAdmin@vmubus001.eastus2.cloudapp.azure.com
 
 For instance for Linux VM:
 
-     ssh VMAdmin@vmubus001.eastus2.cloudapp.azure.com
+     ssh -p 2222 VMAdmin@vmubus001.eastus2.cloudapp.azure.com
 
 For Windows Server VM:
 
@@ -118,4 +152,4 @@ azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group delete iperfgrpeu2 eastus2
+    azure group delete gateawaygrp eastus2

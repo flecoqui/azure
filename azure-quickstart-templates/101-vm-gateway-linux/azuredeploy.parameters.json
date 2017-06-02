@@ -9,10 +9,10 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmbrg001"
+      "value": "brga001"
     },
     "configurationOS": {
-      "value": "ubuntu"
+      "value": "windowsserver2016"
     },
     "configurationSize": {
       "value": "Small"
