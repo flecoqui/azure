@@ -111,6 +111,7 @@ Below the bash commands to confgure the NAT gateway to forward the ports:
 
 
 
+
 ## TESTING THE DEPLOYMENT:
 Once the VM has been deployed, you can open the Web page hosted on the VM.
 For instance for Linux VM:
