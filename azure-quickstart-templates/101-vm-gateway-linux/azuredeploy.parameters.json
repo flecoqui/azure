@@ -9,10 +9,10 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "nanobr001"
+      "value": "uubr001"
     },
     "configurationOS": {
-      "value": "nanoserver2016"
+      "value": "ubuntu"
     },
     "configurationSize": {
       "value": "Small"

@@ -97,7 +97,7 @@
       "ubuntu": {
         "publisher": "Canonical",
         "offer": "UbuntuServer",
-        "sku": "16.04.0-LTS",
+        "sku": "16.10",
         "version": "latest",
         "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-gateway-linux/install-software.sh",
         "installScriptFileName": "install-software.sh",
