@@ -1,4 +1,4 @@
-# Deployment of a VM (Linux or Windows) running Apache or IIS (port 80) and iperf3 (port 5201)
+# Deployment of a simple VM (Linux or Windows) with Web Server (Apache or IIS) and iperf3 components behind a Virtual Machine acting as NAT gateaway and with port forwarding
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-bridge-linux%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
@@ -20,6 +20,11 @@ With Azure CLI you can deploy this VM with 2 command lines:
 
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-bridge-linux/Docs/1-architecture.png)
+
+
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-bridge-linux/Docs/1-architecture.png)
+
 
 
 
