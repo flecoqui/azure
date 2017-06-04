@@ -236,6 +236,9 @@
     "gatewayVmSize": "[variables('configurationSizeSmall').vmSize]",
     "gatewayVmDataDiskSize": "[variables('configurationSizeSmall').diskSize]",
 
+    "routeTableName": "backendRouteTable",
+    "routeTableInternetSubnetPrefix": "0.0.0.0/0",
+
     "apiVersion": "2015-06-15"
   },
   "resources": [
@@ -413,6 +416,9 @@
               "addressPrefix": "[variables('subnetPrefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              },
+              "routeTable": {
+                "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
               }
             }
           },
@@ -501,6 +507,28 @@
           }
         ],
         "enableIPForwarding": true
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/routeTables",
+      "name": "[variables('routeTableName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "UDR for Backend"
+      },
+      "properties": {
+        "routes": [
+          {
+            "name": "RouteToInternet",
+            "properties": {
+              "addressPrefix": "[variables('routeTableInternetSubnetPrefix')]",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "[variables('gatewayIPAddress2')]"
+            }
+          }
+
+        ]
       }
     },
     {
