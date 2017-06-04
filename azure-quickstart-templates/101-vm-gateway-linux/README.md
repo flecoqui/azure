@@ -17,6 +17,7 @@ This template allows you to deploy a simple VM running: </p>
 #### Nano Server 2016: IIS and Iperf3
 This template will deploy in the region associated with Resource Group a simple VM (Linux or Windows) with Web Server (Apache or IIS) and iperf3 components behind a Virtual Machine acting as NAT gateaway and with port forwarding.
 THe objecitve of this template is to show how to capture the traffic between the simple VM (Linux or Windows) running a Web Server (Apache or IIS) and iperf3 with this Virtual Machine acting as NAT gateaway and with port forwarding.
+Moreover, the Azure route table (UDR) route the outbound traffic to Internet through the ip address 10.0.0.5 
 
 Actually, it's like a migration from this architecture:
 
