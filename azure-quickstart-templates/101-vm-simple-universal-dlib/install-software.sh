@@ -244,20 +244,14 @@ configure_network(){
 # firewall configuration 
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-iptables -A INPUT -p tcp --dport 5201 -j ACCEPT
-iptables -A INPUT -p udp --dport 5201 -j ACCEPT
 }
 #############################################################################
 configure_network_centos(){
 # firewall configuration 
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-iptables -A INPUT -p tcp --dport 5201 -j ACCEPT
-iptables -A INPUT -p udp --dport 5201 -j ACCEPT
 
 service firewalld start
-firewall-cmd --permanent --add-port=5201/tcp
-firewall-cmd --permanent --add-port=5201/udp
 firewall-cmd --permanent --add-port=80/tcp
 firewall-cmd --permanent --add-port=443/tcp
 firewall-cmd --reload
@@ -272,6 +266,67 @@ systemctl restart httpd
 systemctl enable httpd
 systemctl status httpd
 }
+#############################################################################
+install_dlib_prerequisites(){
+#check update
+apt-get -y update
+apt-get -y upgrade
+# create folder
+mkdir /git
+mkdir /git/bash
+# gcc
+apt-get -y install gcc
+# g++
+apt-get -y install g++
+# cmake
+apt-get -y install cmake
+# wget
+apt-get -y install wget
+# anaconda3
+wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
+bash Anaconda3-4.0.0-Linux-x86_64.sh
+conda install -c conda-forge dlib=19.4
+}
+#############################################################################
+download_dlib_source_code(){
+cd /git
+git clone https://github.com/davisking/dlib.git
+git clone https://github.com/davisking/dlib-models.git 
+
+}
+#############################################################################
+create_bash_files(){
+cat <<EOF > /git/bash/buildDLIB.sh
+cd /git/dlib/dlib/test
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release
+./dtest --runall
+
+EOF
+cat <<EOF > /git/bash/buildDLIBCPPSamples.sh
+cd /git/dlib/examples
+mkdir build
+cd build
+cmake ..
+cmake --build . 
+EOF
+cat <<EOF > /git/bash/buildDLIBPythonSamples.sh
+cd /git/dlib
+python setup.py install
+EOF
+cat <<EOF > /git/bash/runDLIBTests.sh
+cd /git/dlib/dlib/test
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release
+./dtest --runall
+EOF
+
+}
+
 
 #############################################################################
 
@@ -313,6 +368,12 @@ else
       else
 	    start_apache
 	  fi
+    log "install DLIB pre-requisites"
+	install_dlib_prerequisites
+    log "download DLIB source code"
+	download_dlib_source_code
+    log "create bash files "
+	create_bash_files
 fi
 exit 0 
 
