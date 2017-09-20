@@ -89,10 +89,10 @@ for Windows VM:
 </p>
 You can also use the following bash files to: </p>
 
-#### buildDLIB.sh: to build DLIB library(C++),
-#### buildDLIBCPPSamples.sh: to build DLIB C++ samples (C++),
-#### buildDLIBPythonSamples.sh: to build DLIB Python samples (Python),
-#### runTests.sh: to run unit tests (C++,Python)
+#### buildDLIB.sh: build DLIB library(C++),
+#### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
+#### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
+#### runTests.sh: run unit tests (C++,Python)
 By default the bash files are available under /DLIB folder.</p>
 
 </p>
