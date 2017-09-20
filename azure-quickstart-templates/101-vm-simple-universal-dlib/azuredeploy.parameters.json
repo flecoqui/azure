@@ -9,10 +9,10 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmiperf001"
+      "value": "vmdlib001"
     },
     "configurationOS": {
-      "value": "debian"
+      "value": "ubuntu"
     },
     "configurationSize": {
       "value": "Small"

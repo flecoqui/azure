@@ -283,9 +283,10 @@ apt-get -y install cmake
 # wget
 apt-get -y install wget
 # anaconda3
+cd /git/bash
 wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
-bash Anaconda3-4.0.0-Linux-x86_64.sh
-conda install -c conda-forge dlib=19.4
+bash Anaconda3-4.0.0-Linux-x86_64.sh -b
+bash conda install -c conda-forge dlib=19.4
 }
 #############################################################################
 download_dlib_source_code(){
