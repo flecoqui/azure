@@ -88,10 +88,12 @@ for Windows VM:
 
 </p>
 You can also use the following bash files to: </p>
+
 #### buildDLIB.sh: to build DLIB library(C++),
 #### buildDLIBCPPSamples.sh: to build DLIB C++ samples (C++),
 #### buildDLIBPythonSamples.sh: to build DLIB Python samples (Python),
-#### runTests.sh: to run unit tests (C++,Python),
+#### runTests.sh: to run unit tests (C++,Python)
+By default the bash files are available under /DLIB folder.</p>
 
 </p>
 Finally, you can open a remote session with the VM.
