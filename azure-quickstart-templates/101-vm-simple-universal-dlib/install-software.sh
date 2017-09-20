@@ -270,7 +270,6 @@ systemctl status httpd
 install_dlib_prerequisites(){
 #check update
 apt-get -y update
-apt-get -y upgrade
 # create folder
 mkdir /git
 mkdir /git/bash
