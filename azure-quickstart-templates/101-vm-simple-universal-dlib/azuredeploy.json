@@ -81,10 +81,10 @@
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
         "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]",
-        "buildDLIB": "bash buildDLIB.sh",
-        "buildDLIBCPPSamples": "bash buildDLIBCPPSamples.sh",
-        "buildDLIBPythonSamples": "bash buildDLIBPythonSamples.sh",
-        "runDLIBTests": "bash runDLIBTests.sh"
+        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
+        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
+        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
+        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
       },
       "ubuntu": {
         "publisher": "Canonical",
@@ -100,10 +100,10 @@
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
         "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]",
-        "buildDLIB": "bash buildDLIB.sh",
-        "buildDLIBCPPSamples": "bash buildDLIBCPPSamples.sh",
-        "buildDLIBPythonSamples": "bash buildDLIBPythonSamples.sh",
-        "runDLIBTests": "bash runDLIBTests.sh"
+        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
+        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
+        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
+        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
       },
       "centos": {
         "publisher": "openlogic",
@@ -119,10 +119,10 @@
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
         "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]",
-        "buildDLIB": "bash buildDLIB.sh",
-        "buildDLIBCPPSamples": "bash buildDLIBCPPSamples.sh",
-        "buildDLIBPythonSamples": "bash buildDLIBPythonSamples.sh",
-        "runDLIBTests": "bash runDLIBTests.sh"
+        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
+        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
+        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
+        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
       },
       "redhat": {
         "publisher": "RedHat",
@@ -138,10 +138,10 @@
         "remoteCommand": "[concat('ssh ', parameters('adminUsername'), '@', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
         "logInformation": "sudo cat /var/lib/waagent/custom-script/download/0/stdout",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com/index.php')]",
-        "buildDLIB": "bash buildDLIB.sh",
-        "buildDLIBCPPSamples": "bash buildDLIBCPPSamples.sh",
-        "buildDLIBPythonSamples": "bash buildDLIBPythonSamples.sh",
-        "runDLIBTests": "bash runDLIBTests.sh"
+        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
+        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
+        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
+        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
       },
       "windowsserver2016": {
         "publisher": "MicrosoftWindowsServer",
@@ -157,10 +157,10 @@
         "remoteCommand": "[concat('mstsc /admin /v:', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
         "logInformation": "type c:\\source\\install.log",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "buildDLIB": "bash buildDLIB.sh",
-        "buildDLIBCPPSamples": "bash buildDLIBCPPSamples.sh",
-        "buildDLIBPythonSamples": "bash buildDLIBPythonSamples.sh",
-        "runDLIBTests": "bash runDLIBTests.sh"
+        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
+        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
+        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
+        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
       },
       "nanoserver2016": {
         "publisher": "MicrosoftWindowsServer",
@@ -176,10 +176,10 @@
         "remoteCommand": "[concat('Set-Item WSMan:\\localhost\\Client\\TrustedHosts ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com',' Enter-PSSession -ComputerName  \"', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com', '\"  -Credential ', parameters('adminUsername') )]",
         "logInformation": "type c:\\source\\install.log",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "buildDLIB": "bash buildDLIB.sh",
-        "buildDLIBCPPSamples": "bash buildDLIBCPPSamples.sh",
-        "buildDLIBPythonSamples": "bash buildDLIBPythonSamples.sh",
-        "runDLIBTests": "bash runDLIBTests.sh"
+        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
+        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
+        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
+        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
       }
     },
     "configurationSize": "[variables(concat('configurationSize', parameters('configurationSize')))]",

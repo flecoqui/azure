@@ -285,7 +285,9 @@ apt-get -y install wget
 cd /git/bash
 wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
 bash Anaconda3-4.0.0-Linux-x86_64.sh -b
-bash conda install -c conda-forge dlib=19.4
+apt-get -y install python-setuptools
+apt-get -y install libboost-all-dev
+/root/anaconda3/bin/conda install -c conda-forge dlib=19.4
 }
 #############################################################################
 download_dlib_source_code(){
