@@ -7,14 +7,18 @@
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-
-This template allows you to deploy a simple VM running: </p>
+The objective of this template is to automate the creation of a VM (Linux or Windows) to generate DLIB components. </p>
+Once the VM is deployed the DLIB source code is avaialble under:</p>
+/git/dlib  (Linux)</p>
+c:\git\dlib (Windows)</p>
+So far this template allows you to deploy a simple VM running: </p>
 #### Debian: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
 #### Ubuntu: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+The objective is to support soon : </p>
 #### Centos: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
 #### Red Hat: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-#### Windows Server 2016: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-#### Nano Server 2016: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python)
+#### Windows Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+#### Nano Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python)
 This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.</p>
 So far only the Debian and Ubuntu version have been tested.
 
