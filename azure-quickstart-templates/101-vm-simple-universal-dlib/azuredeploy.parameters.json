@@ -9,13 +9,13 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmdlib01"
+      "value": "vmdlib0001"
     },
     "configurationOS": {
       "value": "ubuntu"
     },
     "configurationSize": {
-      "value": "Small"
+      "value": "Medium"
     }
   }
 }

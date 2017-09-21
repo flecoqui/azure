@@ -37,7 +37,7 @@ azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredepl
 
 For instance:
 
-    azure group deployment create dlibgrpeu2 depiperftest -f azuredeploy.json -e azuredeploy.parameters.json -vv
+    azure group deployment create dlibgrpeu2 depdlibtest -f azuredeploy.json -e azuredeploy.parameters.json -vv
 
 Beyond login/password, the input parameters are :</p>
 configurationSize (Small: F2 and 128 GB data disk, Medium: F4 and 256 GB data disk, Large: F8 and 512 GB data disk, XLarge: F16 and 1024 GB data disk) : 
