@@ -21,7 +21,12 @@ The objective is to support soon : </p>
 #### Nano Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python)
 This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.</p>
 So far only the Debian and Ubuntu version have been tested.
-
+Once the VM is deployed you can use the following bash files under /git/bash: </p>
+#### buildDLIB.sh: build DLIB library(C++),
+#### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
+#### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
+#### runTests.sh: run unit tests (C++,Python)
+</p>
 With Azure CLI you can deploy this VM with 2 command lines:
 
 
@@ -97,7 +102,7 @@ You can also use the following bash files to: </p>
 #### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
 #### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
 #### runTests.sh: run unit tests (C++,Python)
-By default the bash files are available under /DLIB folder.</p>
+By default the bash files are available under /git/bash folder.</p>
 
 </p>
 Finally, you can open a remote session with the VM.
