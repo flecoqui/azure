@@ -281,12 +281,32 @@ apt-get -y install g++
 apt-get -y install cmake
 # wget
 apt-get -y install wget
+# X11
+apt-get -y install xorg
+apt-get -y install libx11-dev	
+apt-get -y install libopenblas-dev liblapack-dev 
+apt-get -y install gnome-session-bin
+# update ssh config to support X11
+sed -i '/^#.*ForwardAgent /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardAgent \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+sed -i '/^#.*ForwardX11 /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardX11 \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+sed -i '/^#.*ForwardX11Trusted /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardX11Trusted \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+
+sed -i '/^#.*X11Forwarding /s/^#//' /etc/ssh/sshd_config
+sed -i 's/#\?\(X11Forwarding \s*\).*$/\1 yes/' /etc/ssh/sshd_config
+service ssh restart
+
 # anaconda3
 cd /git/bash
 wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
 bash Anaconda3-4.0.0-Linux-x86_64.sh -b
 apt-get -y install python-setuptools
-apt-get -y install libboost-all-dev
+apt-get -y install libboost-python-dev
+apt-get -y install python-pip
+#install scikit image
+pip install scikit-image
 /anaconda3/bin/conda -y install -y  -c conda-forge dlib=19.4
 }
 #############################################################################
@@ -294,6 +314,15 @@ download_dlib_source_code(){
 cd /git
 git clone https://github.com/davisking/dlib.git
 git clone https://github.com/davisking/dlib-models.git 
+#uncompress models
+bzip2 -d /git/dlib-models/dlib_face_recognition_resnet_model_v1.dat.bz2
+bzip2 -d /git/dlib-models/mmod_dog_hipsterizer.dat.bz2
+bzip2 -d /git/dlib-models/mmod_front_and_rear_end_vehicle_detector.dat.bz2
+bzip2 -d /git/dlib-models/mmod_human_face_detector.dat.bz2
+bzip2 -d /git/dlib-models/mmod_rear_end_vehicle_detector.dat.bz2
+bzip2 -d /git/dlib-models/resnet34_1000_imagenet_classifier.dnn.bz2
+bzip2 -d /git/dlib-models/shape_predictor_5_face_landmarks.dat.bz2
+bzip2 -d /git/dlib-models/shape_predictor_68_face_landmarks.dat.bz2
 
 }
 #############################################################################
