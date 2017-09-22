@@ -123,19 +123,20 @@ Once you are connected with ssh, you can use the following bash files under /git
 #### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
 #### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
 #### runTests.sh: run unit tests (C++,Python)
+</p>
 By default the bash files are available under /git/bash folder.</p>
 
 </p>
 If you want to test DLIB with the python samples, you'll find under /git/dish/python_examples several python files.
 You can for instance run the following sample ./svm_rank.py to check the python configuration:
+Keep in mind before running this test, you need to build the DLIB library and the python samples.
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/test1.png)
 
-Before running this test, you need to build the DLIB library and the python samples.
 
-If you want to test python samples which require GUI, you need to install an X11 terminal on your client. If you are using a Windows PC, you could install Putty and XMing to support X11 on your PC:
-PuTTy from http://www.chiark.greenend.org.uk/~sgtatham/putty/
-Xming from http://sourceforge.net/project/downloading.php?group_id=156984&filename=Xming-6-9-0-31-setup.exe 
+If you want to test python samples which require GUI, you need to install an X11 terminal on your client. If you are using a Windows PC, you could install Putty and XMing to support X11 on your PC:</p>
+PuTTy from http://www.chiark.greenend.org.uk/~sgtatham/putty/ </p>
+Xming from http://sourceforge.net/project/downloading.php?group_id=156984&filename=Xming-6-9-0-31-setup.exe </p>
 
 
 Install Xming following the installation screenshots below:
@@ -151,9 +152,9 @@ Install Xming following the installation screenshots below:
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/xming4.jpg)
 
-Configure Putty following the installation screenshots below:
+Configure Putty following the installation screenshots below:</p>
 
-Enter the dns name of your server :
+Enter the dns name of your server :</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty1.png)
 
 
@@ -167,13 +168,13 @@ Enter the dns name of your server :
 
 
 The server is already configured to support X11 over SSH:
-The file /etc/ssh/ssh_config has been updated:
-ForwardAgent yes
-ForwardX11 yes
-ForwardX11Trusted yes
+The file /etc/ssh/ssh_config has been updated:</p>
+ForwardAgent yes</p>
+ForwardX11 yes</p>
+ForwardX11Trusted yes </p>
 
-The file /etc/ssh/sshd_config has been updated:
-X11Forwarding yes
+The file /etc/ssh/sshd_config has been updated:</p>
+X11Forwarding yes</p>
 
 
 Before launching Putty to open an SSH session with your VM check that XMing is running on your local Windows Machine:
@@ -184,19 +185,19 @@ Once you are connected with Putty,
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty5.png)
 
-Enter the following commands: 
-gnome-session 
-xclock
+Enter the following commands: </p>
+gnome-session </p>
+xclock </p>
 
 The Clock should be displayed on your Windows machine:
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty6.png)
 
-Now you can test the python samples requiring GUI:
-For instance under /git/dish/python_examples run the following command:
- ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces
+Now you can test the python samples requiring GUI:</p>
+For instance under /git/dish/python_examples run the following command:</p>
+ ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
 
- and check that the picture is displayed on your local machine:
+ and check that the picture is displayed on your local machine:</p>
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty7.png)
 
