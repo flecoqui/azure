@@ -119,10 +119,10 @@ For Nano Server VM:
 
 </p>
 Once you are connected with ssh, you can use the following bash files under /git/bash to: </p>
-#### buildDLIB.sh: build DLIB library(C++),
-#### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
-#### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
-#### runTests.sh: run unit tests (C++,Python)
+- buildDLIB.sh: build DLIB library(C++),</p>
+- buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),</p>
+- buildDLIBPythonSamples.sh: build DLIB Python samples (Python),</p>
+- runTests.sh: run unit tests (C++,Python)</p>
 </p>
 By default the bash files are available under /git/bash folder.</p>
 
