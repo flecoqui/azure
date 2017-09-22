@@ -86,7 +86,13 @@ configurationOS (debian, ubuntu, centos, redhat, nano server 2016, windows serve
 
 
 ## TEST THE VM:
-Once the VM has been deployed, you can open the Web page hosted on the VM.
+Once the VM has been deployed, you can check the Web page hosted on the VM.</p>
+For the Linux VM:</p>
+http://<VM DNS Name>/index.php
+For the Windows VM:</p>
+http://<VM DNS Name>/index.html
+
+</p>
 For instance for Linux VM:
 
      http://vmubus001.eastus2.cloudapp.azure.com/index.php 
@@ -94,15 +100,6 @@ For instance for Linux VM:
 for Windows VM:
 
      http://vmnanos001.eastus2.cloudapp.azure.com/index.html 
-
-</p>
-You can also use the following bash files to: </p>
-
-#### buildDLIB.sh: build DLIB library(C++),
-#### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
-#### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
-#### runTests.sh: run unit tests (C++,Python)
-By default the bash files are available under /git/bash folder.</p>
 
 </p>
 Finally, you can open a remote session with the VM.
@@ -119,6 +116,92 @@ For Nano Server VM:
 
      Set-Item WSMan:\\localhost\\Client\\TrustedHosts vmnanos001.eastus2.cloudapp.azure.com </p>
      Enter-PSSession -ComputerName vmnanos001.eastus2.cloudapp.azure.com </p>
+
+</p>
+Once you are connected with ssh, you can use the following bash files under /git/bash to: </p>
+#### buildDLIB.sh: build DLIB library(C++),
+#### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
+#### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
+#### runTests.sh: run unit tests (C++,Python)
+By default the bash files are available under /git/bash folder.</p>
+
+</p>
+If you want to test DLIB with the python samples, you'll find under /git/dish/python_examples several python files.
+You can for instance run the following sample ./svm_rank.py to check the python configuration:
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/test1.png)
+
+Before running this test, you need to build the DLIB library and the python samples.
+
+If you want to test python samples which require GUI, you need to install an X11 terminal on your client. If you are using a Windows PC, you could install Putty and XMing to support X11 on your PC:
+PuTTy from http://www.chiark.greenend.org.uk/~sgtatham/putty/
+Xming from http://sourceforge.net/project/downloading.php?group_id=156984&filename=Xming-6-9-0-31-setup.exe 
+
+
+Install Xming following the installation screenshots below:
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/xming1.jpg)
+
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/xming2.jpg)
+
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/xming3.jpg)
+
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/xming4.jpg)
+
+Configure Putty following the installation screenshots below:
+
+Enter the dns name of your server :
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty1.png)
+
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty2.jpg)
+
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty3.jpg)
+
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty4.jpg)
+
+
+The server is already configured to support X11 over SSH:
+The file /etc/ssh/ssh_config has been updated:
+ForwardAgent yes
+ForwardX11 yes
+ForwardX11Trusted yes
+
+The file /etc/ssh/sshd_config has been updated:
+X11Forwarding yes
+
+
+Before launching Putty to open an SSH session with your VM check that XMing is running on your local Windows Machine:
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/xming5.png)
+
+
+Once you are connected with Putty,
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty5.png)
+
+Enter the following commands: 
+gnome-session 
+xclock
+
+The Clock should be displayed on your Windows machine:
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty6.png)
+
+Now you can test the python samples requiring GUI:
+For instance under /git/dish/python_examples run the following command:
+ ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces
+
+ and check that the picture is displayed on your local machine:
+
+![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty7.png)
+
+
+
 
 
 ## DELETE THE RESOURCE GROUP:
