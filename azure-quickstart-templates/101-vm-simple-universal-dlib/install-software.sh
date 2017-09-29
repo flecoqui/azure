@@ -363,19 +363,23 @@ install_dlib_prerequisites_centos(){
 # create folder
 mkdir /git
 mkdir /git/bash
+yum -y update
+# git
+yum -y install git
 # gcc
 yum -y install gcc
 # g++
-yum  -y install g++
+yum  -y install gcc-c++
 # cmake
 yum  -y install cmake
 # wget
 yum  -y install wget
 # X11
-yum  -y install xorg
-yum  -y install libx11-dev	
-yum  -y install libopenblas-dev liblapack-dev 
-yum  -y install gnome-session-bin
+yum  -y install xorg-x11-server-Xorg
+yum  -y install libX11-devel.x86_64	
+yum  -y install blas64-devel.x86_64 
+yum  -y install lapack64-devel.x86_64 
+yum  -y install gnome-session.x86_64
 # update ssh config to support X11
 sed -i '/^#.*ForwardAgent /s/^#//' /etc/ssh/ssh_config
 sed -i 's/#\?\(ForwardAgent \s*\).*$/\1 yes/' /etc/ssh/ssh_config
@@ -386,15 +390,16 @@ sed -i 's/#\?\(ForwardX11Trusted \s*\).*$/\1 yes/' /etc/ssh/ssh_config
 
 sed -i '/^#.*X11Forwarding /s/^#//' /etc/ssh/sshd_config
 sed -i 's/#\?\(X11Forwarding \s*\).*$/\1 yes/' /etc/ssh/sshd_config
-service ssh restart
-
+systemctl restart sshd
 # anaconda3
 cd /git/bash
 wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
 bash Anaconda3-4.0.0-Linux-x86_64.sh -b
 yum  -y install python-setuptools
-yum  -y install libboost-python-dev
-yum  -y install python-pip
+yum  -y install boost-python.x86_64 
+yum -y install boost-devel
+curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+python get-pip.py
 #install scikit image
 pip install scikit-image
 /anaconda3/bin/conda -y install -y  -c conda-forge dlib=19.4
