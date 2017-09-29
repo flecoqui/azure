@@ -266,6 +266,7 @@ systemctl restart httpd
 systemctl enable httpd
 systemctl status httpd
 }
+
 #############################################################################
 install_dlib_prerequisites(){
 #check update
@@ -357,6 +358,96 @@ cmake --build . --config Release
 EOF
 
 }
+#############################################################################
+install_dlib_prerequisites_centos(){
+# create folder
+mkdir /git
+mkdir /git/bash
+# gcc
+yum -y install gcc
+# g++
+yum  -y install g++
+# cmake
+yum  -y install cmake
+# wget
+yum  -y install wget
+# X11
+yum  -y install xorg
+yum  -y install libx11-dev	
+yum  -y install libopenblas-dev liblapack-dev 
+yum  -y install gnome-session-bin
+# update ssh config to support X11
+sed -i '/^#.*ForwardAgent /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardAgent \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+sed -i '/^#.*ForwardX11 /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardX11 \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+sed -i '/^#.*ForwardX11Trusted /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardX11Trusted \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+
+sed -i '/^#.*X11Forwarding /s/^#//' /etc/ssh/sshd_config
+sed -i 's/#\?\(X11Forwarding \s*\).*$/\1 yes/' /etc/ssh/sshd_config
+service ssh restart
+
+# anaconda3
+cd /git/bash
+wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
+bash Anaconda3-4.0.0-Linux-x86_64.sh -b
+yum  -y install python-setuptools
+yum  -y install libboost-python-dev
+yum  -y install python-pip
+#install scikit image
+pip install scikit-image
+/anaconda3/bin/conda -y install -y  -c conda-forge dlib=19.4
+}
+#############################################################################
+download_dlib_source_code_centos(){
+cd /git
+git clone https://github.com/davisking/dlib.git
+git clone https://github.com/davisking/dlib-models.git 
+#uncompress models
+bzip2 -d /git/dlib-models/dlib_face_recognition_resnet_model_v1.dat.bz2
+bzip2 -d /git/dlib-models/mmod_dog_hipsterizer.dat.bz2
+bzip2 -d /git/dlib-models/mmod_front_and_rear_end_vehicle_detector.dat.bz2
+bzip2 -d /git/dlib-models/mmod_human_face_detector.dat.bz2
+bzip2 -d /git/dlib-models/mmod_rear_end_vehicle_detector.dat.bz2
+bzip2 -d /git/dlib-models/resnet34_1000_imagenet_classifier.dnn.bz2
+bzip2 -d /git/dlib-models/shape_predictor_5_face_landmarks.dat.bz2
+bzip2 -d /git/dlib-models/shape_predictor_68_face_landmarks.dat.bz2
+
+}
+#############################################################################
+create_bash_files_centos(){
+cat <<EOF > /git/bash/buildDLIB.sh
+cd /git/dlib/dlib/test
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release
+./dtest --runall
+
+EOF
+cat <<EOF > /git/bash/buildDLIBCPPSamples.sh
+cd /git/dlib/examples
+mkdir build
+cd build
+cmake ..
+cmake --build . 
+EOF
+cat <<EOF > /git/bash/buildDLIBPythonSamples.sh
+cd /git/dlib
+python setup.py install
+EOF
+cat <<EOF > /git/bash/runDLIBTests.sh
+cd /git/dlib/dlib/test
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release
+./dtest --runall
+EOF
+
+}
+
 
 
 #############################################################################
@@ -391,20 +482,32 @@ else
 	    log "configure apache"
 		configure_apache
 	fi
-    log "start apache"
-      if [ $iscentos -eq 0 ] ; then
+  log "start apache"
+  if [ $iscentos -eq 0 ] ; then
 	    start_apache_centos
-	  elif [ $isredhat -eq 0 ] ; then
+      log "install DLIB pre-requisites"
+      install_dlib_prerequisites_centos
+      log "download DLIB source code"
+      download_dlib_source_code_centos
+      log "create bash files "
+      create_bash_files_centos
+	elif [ $isredhat -eq 0 ] ; then
 	    start_apache_centos
-      else
+      log "install DLIB pre-requisites"
+      install_dlib_prerequisites_centos
+      log "download DLIB source code"
+      download_dlib_source_code_centos
+      log "create bash files "
+      create_bash_files_centos
+  else
 	    start_apache
-	  fi
-    log "install DLIB pre-requisites"
-	install_dlib_prerequisites
-    log "download DLIB source code"
-	download_dlib_source_code
-    log "create bash files "
-	create_bash_files
+      log "install DLIB pre-requisites"
+      install_dlib_prerequisites
+      log "download DLIB source code"
+      download_dlib_source_code
+      log "create bash files "
+      create_bash_files
+  fi
 fi
 exit 0 
 
