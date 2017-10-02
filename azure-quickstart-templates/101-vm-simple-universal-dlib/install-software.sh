@@ -421,7 +421,7 @@ yum  -y install boost-python.x86_64
 log "Installing Python boost dev"
 yum -y install boost-devel
 log "Installing Python dev"
-yum -y install python-devel.x86_84
+yum -y install python-devel.x86_64
 yum -y install python27-python-devel.x86_64
 #yum -y install atlas atlas-devel lapack-devel blas-devel
 #yum install -y which epel-release
