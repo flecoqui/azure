@@ -391,6 +391,11 @@ yum  -y install blas64-devel.x86_64
 yum  -y install lapack-devel.x86_64 
 yum  -y install lapack64-devel.x86_64 
 yum  -y install gnome-session.x86_64
+yum  -y install xorg-x11-apps.x86_64
+yum  -y install xorg-x11-utils.x86_64
+yum  -y install xorg-x11-server-devel
+yum  -y groupinstall "X Window System"
+
 # update ssh config to support X11
 log "Updating ssh config"
 sed -i '/^#.*ForwardAgent /s/^#//' /etc/ssh/ssh_config
