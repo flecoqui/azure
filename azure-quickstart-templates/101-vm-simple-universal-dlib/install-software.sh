@@ -148,7 +148,6 @@ EOF
 #############################################################################
 configure_apache_centos(){
 # Apache installation 
-yum clean all
 yum -y install httpd
 yum -y install php
 
@@ -366,7 +365,8 @@ install_dlib_prerequisites_centos(){
 # create folder
 mkdir /git
 mkdir /git/bash
-yum -y update
+log "check update"
+# yum -y update
 # git
 log "installing git"
 yum -y install git
