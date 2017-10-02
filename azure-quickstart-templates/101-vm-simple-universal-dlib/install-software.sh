@@ -308,7 +308,7 @@ apt-get -y install libboost-python-dev
 apt-get -y install python-pip
 #install scikit image
 pip install scikit-image
-/anaconda3/bin/conda -y install -y  -c conda-forge dlib=19.4
+/anaconda3/bin/conda install -y  -c conda-forge dlib=19.4
 }
 #############################################################################
 download_dlib_source_code(){
@@ -398,11 +398,14 @@ bash Anaconda3-4.0.0-Linux-x86_64.sh -b
 yum  -y install python-setuptools
 yum  -y install boost-python.x86_64 
 yum -y install boost-devel
+yum -y install atlas atlas-devel lapack-devel blas-devel
+yum install -y which epel-release
+sed -i "s/mirrorlist=https/mirrorlist=http/" /etc/yum.repos.d/epel.repo
+yum install -y python34-devel
 curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
-python get-pip.py
+python3.4 get-pip.py
 #install scikit image
 pip install scikit-image
-/anaconda3/bin/conda -y install -y  -c conda-forge dlib=19.4
 }
 #############################################################################
 download_dlib_source_code_centos(){
