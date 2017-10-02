@@ -9,13 +9,13 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmubus001"
+      "value": "vmubum001"
     },
     "configurationOS": {
       "value": "ubuntu"
     },
     "configurationSize": {
-      "value": "Small"
+      "value": "Medium"
     }
   }
 }

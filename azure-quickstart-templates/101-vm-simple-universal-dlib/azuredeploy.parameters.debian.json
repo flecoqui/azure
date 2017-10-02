@@ -9,13 +9,13 @@
       "value": "VMP@ssw0rd"
     },
     "dnsLabelPrefix": {
-      "value": "vmdebs001"
+      "value": "vmdebm001"
     },
     "configurationOS": {
       "value": "debian"
     },
     "configurationSize": {
-      "value": "Small"
+      "value": "Medium"
     }
   }
 }
