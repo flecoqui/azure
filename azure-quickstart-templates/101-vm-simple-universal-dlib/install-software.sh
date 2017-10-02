@@ -9,6 +9,7 @@ log()
 	# If you want to enable this logging, uncomment the line below and specify your logging key 
 	#curl -X POST -H "content-type:text/plain" --data-binary "$(date) | ${HOSTNAME} | $1" https://logs-01.loggly.com/inputs/${LOGGING_KEY}/tag/redis-extension,${HOSTNAME}
 	echo "$1"
+	echo "$1" >> /var/llog/install.log
 }
 #############################################################################
 check_os() {
@@ -312,6 +313,8 @@ pip install scikit-image
 }
 #############################################################################
 download_dlib_source_code(){
+log "Cloning dlib repos"
+
 cd /git
 git clone https://github.com/davisking/dlib.git
 git clone https://github.com/davisking/dlib-models.git 
@@ -328,6 +331,8 @@ bzip2 -d /git/dlib-models/shape_predictor_68_face_landmarks.dat.bz2
 }
 #############################################################################
 create_bash_files(){
+log "Creating Bash files"
+
 cat <<EOF > /git/bash/buildDLIB.sh
 cd /git/dlib
 mkdir build
@@ -363,16 +368,22 @@ mkdir /git
 mkdir /git/bash
 yum -y update
 # git
+log "installing git"
 yum -y install git
 # gcc
+log "installing gcc"
 yum -y install gcc
 # g++
+log "installing g++"
 yum  -y install gcc-c++
 # cmake
+log "installing cmake"
 yum  -y install cmake
 # wget
+log "installing wget"
 yum  -y install wget
 # X11
+log "installing X11"
 yum  -y install xorg-x11-server-Xorg
 yum  -y install libX11-devel.x86_64	
 yum  -y install blas-devel.x86_64 
@@ -381,34 +392,43 @@ yum  -y install lapack-devel.x86_64
 yum  -y install lapack64-devel.x86_64 
 yum  -y install gnome-session.x86_64
 # update ssh config to support X11
+log "Updating ssh config"
 sed -i '/^#.*ForwardAgent /s/^#//' /etc/ssh/ssh_config
 sed -i 's/#\?\(ForwardAgent \s*\).*$/\1 yes/' /etc/ssh/ssh_config
 sed -i '/^#.*ForwardX11 /s/^#//' /etc/ssh/ssh_config
 sed -i 's/#\?\(ForwardX11 \s*\).*$/\1 yes/' /etc/ssh/ssh_config
 sed -i '/^#.*ForwardX11Trusted /s/^#//' /etc/ssh/ssh_config
 sed -i 's/#\?\(ForwardX11Trusted \s*\).*$/\1 yes/' /etc/ssh/ssh_config
-
 sed -i '/^#.*X11Forwarding /s/^#//' /etc/ssh/sshd_config
 sed -i 's/#\?\(X11Forwarding \s*\).*$/\1 yes/' /etc/ssh/sshd_config
+log "Restarting ssh"
 systemctl restart sshd
 # anaconda3
+log "Installing Anaconda"
 cd /git/bash
 wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
 bash Anaconda3-4.0.0-Linux-x86_64.sh -b
+
+log "Installing Python Setup tools"
 yum  -y install python-setuptools
+log "Installing Python boost"
 yum  -y install boost-python.x86_64 
+log "Installing Python boost dev"
 yum -y install boost-devel
+log "Installing Python dev"
 yum -y install python-devel.x86_84
 #yum -y install atlas atlas-devel lapack-devel blas-devel
 #yum install -y which epel-release
 #sed -i "s/mirrorlist=https/mirrorlist=http/" /etc/yum.repos.d/epel.repo
 #yum install -y python34-devel
+log "Installing pip"
 curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
 python get-pip.py
 #install scikit image
+log "Installing scikit"
 pip install scikit-image
+log "Installing Conda"
 /anaconda3/bin/conda install -y  -c conda-forge dlib=19.4
-
 }
 
 
