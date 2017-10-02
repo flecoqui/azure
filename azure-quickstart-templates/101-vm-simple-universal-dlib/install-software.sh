@@ -417,6 +417,7 @@ log "Installing Python boost dev"
 yum -y install boost-devel
 log "Installing Python dev"
 yum -y install python-devel.x86_84
+yum -y install python27-python-devel.x86_64
 #yum -y install atlas atlas-devel lapack-devel blas-devel
 #yum install -y which epel-release
 #sed -i "s/mirrorlist=https/mirrorlist=http/" /etc/yum.repos.d/epel.repo
@@ -479,7 +480,7 @@ else
       log "install DLIB pre-requisites"
       install_dlib_prerequisites_centos
       log "download DLIB source code"
-      download_dlib_source
+      download_dlib_source_code
       log "create bash files "
       create_bash_files
   else
