@@ -8,17 +8,26 @@ param
 )
 
 
-#Create Source folder
-$source = 'C:\source' 
-If (!(Test-Path -Path $source -PathType Container)) {New-Item -Path $source -ItemType Directory | Out-Null} 
+#Create C:\var\log folder
+$sourcevar = 'C:\var' 
+If (!(Test-Path -Path $sourcevar -PathType Container)) {New-Item -Path $sourcevar -ItemType Directory | Out-Null} 
+$sourcelog = 'C:\var\log' 
+If (!(Test-Path -Path $sourcelog -PathType Container)) {New-Item -Path $sourcelog -ItemType Directory | Out-Null} 
+#Create C:\git folder
+$sourcegit = 'C:\git' 
+If (!(Test-Path -Path $sourcegit -PathType Container)) {New-Item -Path $sourcegit -ItemType Directory | Out-Null} 
+$sourcebash = 'C:\git\bash' 
+If (!(Test-Path -Path $sourcebash -PathType Container)) {New-Item -Path $sourcebash -ItemType Directory | Out-Null} 
+
+
 function WriteLog($msg)
 {
 Write-Host $msg
-$msg >> c:\source\install.log
+$msg >> c:\var\log\install.log
 }
 function WriteDateLog
 {
-date >> c:\source\install.log
+date >> c:\var\log\install.log
 }
 if(!$dnsName) {
  WriteLog "DNSName not specified" 
@@ -58,6 +67,37 @@ function DownloadAndUnzip($sourceUrl,$DestinationDir )
     [System.IO.Compression.ZipFile]::ExtractToDirectory($TempPath, $DestinationDir)
     Remove-Item $TempPath
 }
+function Download($sourceUrl,$DestinationDir ) 
+{
+    if (($sourceUrl -as [System.URI]).AbsoluteURI -ne $null)
+    {
+        $handler = New-Object System.Net.Http.HttpClientHandler
+        $client = New-Object System.Net.Http.HttpClient($handler)
+        $client.Timeout = New-Object System.TimeSpan(0, 30, 0)
+        $cancelTokenSource = [System.Threading.CancellationTokenSource]::new()
+        $responseMsg = $client.GetAsync([System.Uri]::new($sourceUrl), $cancelTokenSource.Token)
+        $responseMsg.Wait()
+        if (!$responseMsg.IsCanceled)
+        {
+            $response = $responseMsg.Result
+            if ($response.IsSuccessStatusCode)
+            {
+                $downloadedFileStream = [System.IO.FileStream]::new($DestinationDir, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write)
+                $copyStreamOp = $response.Content.CopyToAsync($downloadedFileStream)
+                $copyStreamOp.Wait()
+                $downloadedFileStream.Close()
+                if ($copyStreamOp.Exception -ne $null)
+                {
+                    throw $copyStreamOp.Exception
+                }
+            }
+        }
+    }
+    else
+    {
+        throw "Cannot copy from $sourceUrl"
+    }
+}
 
 function Expand-ZIPFile($file, $destination) 
 { 
@@ -70,25 +110,56 @@ function Expand-ZIPFile($file, $destination)
     } 
 } 
 WriteDateLog
-WriteLog "Downloading iperf3" 
-$url = 'https://iperf.fr/download/windows/iperf-3.1.3-win64.zip' 
+
+WriteLog "Downloading git" 
+$url = 'https://github.com/git-for-windows/git/releases/download/v2.14.2.windows.1/Git-2.14.2-64-bit.exe' 
 $EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
 if (($EditionId -eq "ServerStandardNano") -or
     ($EditionId -eq "ServerDataCenterNano") -or
     ($EditionId -eq "NanoServer") -or
     ($EditionId -eq "ServerTuva")) {
-	DownloadAndUnzip $url $source 
-	WriteLog "iperf3 Installed" 
+	Download $url $sourcebash 
+	WriteLog "git downloaded" 
 }
 else
 {
 	$webClient = New-Object System.Net.WebClient  
-	$webClient.DownloadFile($url,$source + "\iperf3.zip" )  
-	WriteLog "Installing iperf3"  
-	# Function to unzip file contents 
-	Expand-ZIPFile -file "$source\iperf3.zip" -destination $source 
-	WriteLog "iperf3 Installed" 
+	$webClient.DownloadFile($url,$sourcebash + "\Git-2.14.2-64-bit.exe" )  
+	WriteLog "git downloaded"  
 }
+
+$url = 'https://aka.ms/vs/15/release/vs_community.exe' 
+if (($EditionId -eq "ServerStandardNano") -or
+    ($EditionId -eq "ServerDataCenterNano") -or
+    ($EditionId -eq "NanoServer") -or
+    ($EditionId -eq "ServerTuva")) {
+	Download $url $sourcebash 
+	WriteLog "git downloaded" 
+}
+else
+{
+	$webClient = New-Object System.Net.WebClient  
+	$webClient.DownloadFile($url,$sourcebash + "\vs_community.exe" )  
+	WriteLog "git downloaded"  
+}
+$url = 'https://github.com/philr/bzip2-windows/releases/download/v1.0.6/bzip2-1.0.6-win-x64.zip'
+if (($EditionId -eq "ServerStandardNano") -or
+    ($EditionId -eq "ServerDataCenterNano") -or
+    ($EditionId -eq "NanoServer") -or
+    ($EditionId -eq "ServerTuva")) {
+	DownloadAndUnzip $url $sourcebash 
+	WriteLog "bzip2 downloaded" 
+}
+else
+{
+	$webClient = New-Object System.Net.WebClient  
+	$webClient.DownloadFile($url,$sourcebash + "\bzip2-1.0.6-win-x64.zip" )  
+	# Function to unzip file contents 
+	Expand-ZIPFile -file "$source\bzip2-1.0.6-win-x64.zip" -destination $source 
+	WriteLog "bzip2 downloaded"  
+}
+
+
 function Install-IIS
 {
 WriteLog "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force"
@@ -119,8 +190,6 @@ WriteLog "Installing IIS: done"
 WriteLog "Configuring firewall" 
 function Add-FirewallRulesNano
 {
-New-NetFirewallRule -Name "IPERFUDP" -DisplayName "IPERF on UDP/5201" -Protocol UDP -LocalPort 5201 -Action Allow -Enabled True
-New-NetFirewallRule -Name "IPERFTCP" -DisplayName "IPERF on TCP/5201" -Protocol TCP -LocalPort 5201 -Action Allow -Enabled True
 New-NetFirewallRule -Name "HTTP" -DisplayName "HTTP" -Protocol TCP -LocalPort 80 -Action Allow -Enabled True
 New-NetFirewallRule -Name "HTTPS" -DisplayName "HTTPS" -Protocol TCP -LocalPort 443 -Action Allow -Enabled True
 New-NetFirewallRule -Name "WINRM1" -DisplayName "WINRM TCP/5985" -Protocol TCP -LocalPort 5985 -Action Allow -Enabled True
@@ -128,8 +197,6 @@ New-NetFirewallRule -Name "WINRM2" -DisplayName "WINRM TCP/5986" -Protocol TCP -
 }
 function Add-FirewallRules
 {
-New-NetFirewallRule -Name "IPERFUDP" -DisplayName "IPERF on UDP/5201" -Protocol UDP -LocalPort 5201 -Action Allow -Enabled True
-New-NetFirewallRule -Name "IPERFTCP" -DisplayName "IPERF on TCP/5201" -Protocol TCP -LocalPort 5201 -Action Allow -Enabled True
 New-NetFirewallRule -Name "HTTP" -DisplayName "HTTP" -Protocol TCP -LocalPort 80 -Action Allow -Enabled True
 New-NetFirewallRule -Name "HTTPS" -DisplayName "HTTPS" -Protocol TCP -LocalPort 443 -Action Allow -Enabled True
 New-NetFirewallRule -Name "RDP" -DisplayName "RDP TCP/3389" -Protocol TCP -LocalPort 3389 -Action Allow -Enabled True
@@ -212,9 +279,52 @@ WriteLog "Creating Home Page done"
 WriteLog "Starting IIS" 
 net start w3svc
 
-WriteLog "Installing IPERF3 as a service" 
-sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe -s -D" type= own start= auto DisplayName= "IPERF3"
-WriteLog "IPERF3 Installed" 
+WriteLog "Installing git" 
+c:\git\bash\Git-2.14.2-64-bit.exe
+WriteLog "git Installed" 
+WriteLog "Installing VS" 
+c:\git\bash\vs_community.exe --add Microsoft.VisualStudio.Workload.NativeCrossPlat --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.Python --quiet --norestart
+WriteLog "VS Installed" 
+
+WriteLog "Downloading DLIB source code"
+cd c:\git
+git clone https://github.com/davisking/dlib.git
+git clone https://github.com/davisking/dlib-models.git 
+#uncompress models
+c:\git\bash\bzip2.exe -d /git/dlib-models/dlib_face_recognition_resnet_model_v1.dat.bz2
+c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_dog_hipsterizer.dat.bz2
+c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_front_and_rear_end_vehicle_detector.dat.bz2
+c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_human_face_detector.dat.bz2
+c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_rear_end_vehicle_detector.dat.bz2
+c:\git\bash\bzip2.exe -d /git/dlib-models/resnet34_1000_imagenet_classifier.dnn.bz2
+c:\git\bash\bzip2.exe -d /git/dlib-models/shape_predictor_5_face_landmarks.dat.bz2
+c:\git\bash\bzip2.exe -d /git/dlib-models/shape_predictor_68_face_landmarks.dat.bz2
+WriteLog "DLIB source code downloaded" 
+
+WriteLog "Creating batch files"
+echo cd c:\git\dlib > c:\git\bash\buildDLIB.bat
+echo mkdir build >> c:\git\bash\buildDLIB.bat
+echo cd build >> c:\git\bash\buildDLIB.bat
+echo cmake .. >> c:\git\bash\buildDLIB.bat
+echo cmake --build . --config Release >> c:\git\bash\buildDLIB.bat
+
+echo cd c:\git\dlib\examples > c:\git\bash\buildDLIBCPPSamples.bat
+echo mkdir build >> c:\git\bash\buildDLIBCPPSamples.bat
+echo cd build >> c:\git\bash\buildDLIBCPPSamples.bat
+echo cmake .. >> c:\git\bash\buildDLIBCPPSamples.bat
+echo cmake --build .  >> c:\git\bash\buildDLIBCPPSamples.bat
+
+echo cd c:\git\dlib > c:\git\bash\buildDLIBPythonSamples.bat
+echo python setup.py install >> c:\git\bash\buildDLIBPythonSamples.bat
+
+echo cd c:\git\dlib\dlib\test > c:\git\bash\runDLIBTests.bat
+echo mkdir build >> c:\git\bash\runDLIBTests.bat
+echo cd build >> c:\git\bash\runDLIBTests.bat
+echo cmake .. >> c:\git\bash\runDLIBTests.bat
+echo cmake --build . --config Release >> c:\git\bash\runDLIBTests.bat
+echo dtest.exe --runall >> c:\git\bash\runDLIBTests.bat
+WriteLog "Batch files created"
+
 
 WriteLog "Initialization completed !" 
 WriteLog "Rebooting !" 
