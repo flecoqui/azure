@@ -326,32 +326,33 @@ apt-get -y install cmake
 # wget
 apt-get -y install wget
 # X11
-#apt-get -y install xorg
-#apt-get -y install libx11-dev	
-#apt-get -y install libopenblas-dev liblapack-dev 
-#apt-get -y install gnome-session-bin
+# Fix to avoid interective keyboard installation
+DEBIAN_FRONTEND=noninteractive apt-get -y install xorg
+apt-get -y install libx11-dev	
+apt-get -y install libopenblas-dev liblapack-dev 
+apt-get -y install gnome-session-bin
 # update ssh config to support X11
-#sed -i '/^#.*ForwardAgent /s/^#//' /etc/ssh/ssh_config
-#sed -i 's/#\?\(ForwardAgent \s*\).*$/\1 yes/' /etc/ssh/ssh_config
-#sed -i '/^#.*ForwardX11 /s/^#//' /etc/ssh/ssh_config
-#sed -i 's/#\?\(ForwardX11 \s*\).*$/\1 yes/' /etc/ssh/ssh_config
-#sed -i '/^#.*ForwardX11Trusted /s/^#//' /etc/ssh/ssh_config
-#sed -i 's/#\?\(ForwardX11Trusted \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+sed -i '/^#.*ForwardAgent /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardAgent \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+sed -i '/^#.*ForwardX11 /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardX11 \s*\).*$/\1 yes/' /etc/ssh/ssh_config
+sed -i '/^#.*ForwardX11Trusted /s/^#//' /etc/ssh/ssh_config
+sed -i 's/#\?\(ForwardX11Trusted \s*\).*$/\1 yes/' /etc/ssh/ssh_config
 
-#sed -i '/^#.*X11Forwarding /s/^#//' /etc/ssh/sshd_config
-#sed -i 's/#\?\(X11Forwarding \s*\).*$/\1 yes/' /etc/ssh/sshd_config
-#service ssh restart
+sed -i '/^#.*X11Forwarding /s/^#//' /etc/ssh/sshd_config
+sed -i 's/#\?\(X11Forwarding \s*\).*$/\1 yes/' /etc/ssh/sshd_config
+service ssh restart
 
 # anaconda3
-#cd /git/bash
-#wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
-#bash Anaconda3-4.0.0-Linux-x86_64.sh -b
-#apt-get -y install python-setuptools
-#apt-get -y install libboost-python-dev
-#apt-get -y install python-pip
+cd /git/bash
+wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
+bash Anaconda3-4.0.0-Linux-x86_64.sh -b
+apt-get -y install python-setuptools
+apt-get -y install libboost-python-dev
+apt-get -y install python-pip
 #install scikit image
-#pip install scikit-image
-#/anaconda3/bin/conda install -y  -c conda-forge dlib=19.4
+pip install scikit-image
+/anaconda3/bin/conda install -y  -c conda-forge dlib=19.4
 }
 #############################################################################
 download_dlib_source_code(){
@@ -466,10 +467,6 @@ yum -y install boost-devel
 log "Installing Python dev"
 yum -y install python-devel.x86_64
 yum -y install python27-python-devel.x86_64
-#yum -y install atlas atlas-devel lapack-devel blas-devel
-#yum install -y which epel-release
-#sed -i "s/mirrorlist=https/mirrorlist=http/" /etc/yum.repos.d/epel.repo
-#yum install -y python34-devel
 log "Installing pip"
 curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
 python get-pip.py
