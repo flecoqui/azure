@@ -14,9 +14,9 @@ c:\git\dlib (Windows)</p>
 So far this template allows you to deploy a simple VM running: </p>
 #### Debian: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
 #### Ubuntu: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-The objective is to support soon : </p>
 #### Centos: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
 #### Red Hat: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+The objective is to support soon : </p>
 #### Windows Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
 #### Nano Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python)
 This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.</p>
@@ -128,7 +128,7 @@ By default the bash files are available under /git/bash folder.</p>
 </p>
 If you want to test DLIB with the python samples, you'll find under /git/dish/python_examples several python files.
 You can for instance run the following sample ./svm_rank.py to check the python configuration:
-Keep in mind before running this test, you need to build the DLIB library and the python samples.
+Keep in mind before running this test, you need to build the DLIB library (bash buildDLIB.sh) and the python samples (bash buildDLIBPythonSamples.sh).
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/test1.png)
 
@@ -193,16 +193,12 @@ The Clock should be displayed on your Windows machine:
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty6.png)
 
 Now you can test the python samples requiring GUI:</p>
-For instance under /git/dish/python_examples run the following command:</p>
+For instance under /git/dlib/python_examples run the following command:</p>
  ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
 
  and check that the picture is displayed on your local machine:</p>
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty7.png)
-
-
-
-
 
 ## DELETE THE RESOURCE GROUP:
 azure group delete "ResourceGroupName" "DataCenterName"
