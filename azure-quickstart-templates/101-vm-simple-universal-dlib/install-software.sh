@@ -354,6 +354,9 @@ apt-get -y install libboost-python-dev
 apt-get -y install python-pip
 apt-get -y install libfreetype6-dev
 apt-get -y install gfortran
+apt-get -y install pkg-config
+apt-get -y install python-numpy
+apt-get -y install python-pil
 #install scikit image
 pip install scikit-image
 /anaconda3/bin/conda install -y  -c conda-forge dlib=19.4
