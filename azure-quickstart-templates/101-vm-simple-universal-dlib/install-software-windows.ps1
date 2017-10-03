@@ -158,7 +158,22 @@ else
 	Expand-ZIPFile -file "$source\bzip2-1.0.6-win-x64.zip" -destination $source 
 	WriteLog "bzip2 downloaded"  
 }
-
+$url = 'https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.zip'
+if (($EditionId -eq "ServerStandardNano") -or
+    ($EditionId -eq "ServerDataCenterNano") -or
+    ($EditionId -eq "NanoServer") -or
+    ($EditionId -eq "ServerTuva")) {
+	DownloadAndUnzip $url $sourcebash 
+	WriteLog "cmake downloaded" 
+}
+else
+{
+	$webClient = New-Object System.Net.WebClient  
+	$webClient.DownloadFile($url,$sourcebash + "\cmake-3.9.3-win64-x64.zip" )  
+	# Function to unzip file contents 
+	Expand-ZIPFile -file "$source\cmake-3.9.3-win64-x64.zip" -destination $source 
+	WriteLog "cmake downloaded"  
+}
 
 function Install-IIS
 {
@@ -305,14 +320,14 @@ WriteLog "Creating batch files"
 echo cd c:\git\dlib > c:\git\bash\buildDLIB.bat
 echo mkdir build >> c:\git\bash\buildDLIB.bat
 echo cd build >> c:\git\bash\buildDLIB.bat
-echo cmake .. >> c:\git\bash\buildDLIB.bat
-echo cmake --build . --config Release >> c:\git\bash\buildDLIB.bat
+echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. >> c:\git\bash\buildDLIB.bat
+echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release >> c:\git\bash\buildDLIB.bat
 
 echo cd c:\git\dlib\examples > c:\git\bash\buildDLIBCPPSamples.bat
 echo mkdir build >> c:\git\bash\buildDLIBCPPSamples.bat
 echo cd build >> c:\git\bash\buildDLIBCPPSamples.bat
-echo cmake .. >> c:\git\bash\buildDLIBCPPSamples.bat
-echo cmake --build .  >> c:\git\bash\buildDLIBCPPSamples.bat
+echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. >> c:\git\bash\buildDLIBCPPSamples.bat
+echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build .  >> c:\git\bash\buildDLIBCPPSamples.bat
 
 echo cd c:\git\dlib > c:\git\bash\buildDLIBPythonSamples.bat
 echo python setup.py install >> c:\git\bash\buildDLIBPythonSamples.bat
@@ -320,8 +335,8 @@ echo python setup.py install >> c:\git\bash\buildDLIBPythonSamples.bat
 echo cd c:\git\dlib\dlib\test > c:\git\bash\runDLIBTests.bat
 echo mkdir build >> c:\git\bash\runDLIBTests.bat
 echo cd build >> c:\git\bash\runDLIBTests.bat
-echo cmake .. >> c:\git\bash\runDLIBTests.bat
-echo cmake --build . --config Release >> c:\git\bash\runDLIBTests.bat
+echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. >> c:\git\bash\runDLIBTests.bat
+echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release >> c:\git\bash\runDLIBTests.bat
 echo dtest.exe --runall >> c:\git\bash\runDLIBTests.bat
 WriteLog "Batch files created"
 
