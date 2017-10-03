@@ -317,6 +317,8 @@ apt-get -y update
 # create folder
 mkdir /git
 mkdir /git/bash
+# git
+apt-get -y install git
 # gcc
 apt-get -y install gcc
 # g++
