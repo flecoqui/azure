@@ -274,9 +274,14 @@ $content = @'
       </tr>
     </table>
 
-    <p>This is the home page for the iperf3 test on Azure VM</p>
-    <p>Launch the command line from your client: </p>
-    <p>     iperf3 -c {0} -p 5201 --parallel 32  </p>
+    <p>This is the home page for the DLIB test on Azure VM</p>
+    <p>Launch the following command line from your client to open an RDP session: </p>
+    <p>     mstsc /admin /v:{0}  </p>
+	<p>Launch the following commands in the RDP session from C:\GIT\BASH : </p>
+    <p>     bash buildDLIB.sh: to build DLIB library </p> 
+    <p>     bash buildDLIBCPPSamples.sh: to build DLIB C++ samples </p> 
+    <p>     bash buildDLIBPythonSamples.sh: to build DLIB Python samples </p> 
+    <p>     bash runDLIBTests.sh: to run DLIB tests </p> 
     <ul>
       <li>To <a href="http://www.microsoft.com">Microsoft</a>
       <li>To <a href="https://portal.azure.com">Azure</a>
