@@ -19,6 +19,7 @@ If (!(Test-Path -Path $sourcegit -PathType Container)) {New-Item -Path $sourcegi
 $sourcebash = 'C:\git\bash' 
 If (!(Test-Path -Path $sourcebash -PathType Container)) {New-Item -Path $sourcebash -ItemType Directory | Out-Null} 
 
+Break Script 
 
 function WriteLog($msg)
 {
