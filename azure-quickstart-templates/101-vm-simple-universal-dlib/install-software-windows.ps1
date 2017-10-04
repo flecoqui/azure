@@ -18,8 +18,7 @@ $sourcegit = 'C:\git'
 If (!(Test-Path -Path $sourcegit -PathType Container)) {New-Item -Path $sourcegit -ItemType Directory | Out-Null} 
 $sourcebash = 'C:\git\bash' 
 If (!(Test-Path -Path $sourcebash -PathType Container)) {New-Item -Path $sourcebash -ItemType Directory | Out-Null} 
-
-Break Script 
+ 
 
 function WriteLog($msg)
 {
@@ -156,9 +155,24 @@ else
 	$webClient = New-Object System.Net.WebClient  
 	$webClient.DownloadFile($url,$sourcebash + "\bzip2-1.0.6-win-x64.zip" )  
 	# Function to unzip file contents 
-	Expand-ZIPFile -file "$source\bzip2-1.0.6-win-x64.zip" -destination $source 
+	Expand-ZIPFile -file "$sourcebash\bzip2-1.0.6-win-x64.zip" -destination $sourcebash 
 	WriteLog "bzip2 downloaded"  
 }
+$url = 'https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/msvcr120.dll' 
+if (($EditionId -eq "ServerStandardNano") -or
+    ($EditionId -eq "ServerDataCenterNano") -or
+    ($EditionId -eq "NanoServer") -or
+    ($EditionId -eq "ServerTuva")) {
+	Download $url $sourcebash 
+	WriteLog "git downloaded" 
+}
+else
+{
+	$webClient = New-Object System.Net.WebClient  
+	$webClient.DownloadFile($url,$sourcebash + "\msvcr120.dll" )  
+	WriteLog "git downloaded"  
+}
+
 $url = 'https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.zip'
 if (($EditionId -eq "ServerStandardNano") -or
     ($EditionId -eq "ServerDataCenterNano") -or
@@ -172,7 +186,7 @@ else
 	$webClient = New-Object System.Net.WebClient  
 	$webClient.DownloadFile($url,$sourcebash + "\cmake-3.9.3-win64-x64.zip" )  
 	# Function to unzip file contents 
-	Expand-ZIPFile -file "$source\cmake-3.9.3-win64-x64.zip" -destination $source 
+	Expand-ZIPFile -file "$sourcebash\cmake-3.9.3-win64-x64.zip" -destination $sourcebash 
 	WriteLog "cmake downloaded"  
 }
 
@@ -247,7 +261,7 @@ $osstring = $osstring -replace "\{2\}",$BuildNumber
 }
 else
 {
-$LocalIP = Get-NetIPAddress -InterfaceAlias 'Ethernet 2' -AddressFamily IPv4
+$LocalIP = Get-NetIPAddress -InterfaceAlias 'Ethernet 3' -AddressFamily IPv4
 $OSInfo = Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version, ServicePackMajorVersion, OSArchitecture, CSName, WindowsDirectory, NumberOfUsers, BootDevice
 $osstring = @'
 OS {1} Version {2} Architecture {3}
@@ -301,16 +315,16 @@ WriteLog "Starting IIS"
 net start w3svc
 
 WriteLog "Installing git" 
-c:\git\bash\Git-2.14.2-64-bit.exe
+c:\git\bash\Git-2.14.2-64-bit.exe /SILENT
 WriteLog "git Installed" 
 WriteLog "Installing VS" 
-c:\git\bash\vs_community.exe --add Microsoft.VisualStudio.Workload.NativeCrossPlat --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.Python --quiet --norestart
+c:\git\bash\vs_community.exe --quiet --norestart --add Microsoft.VisualStudio.Workload.NativeCrossPlat --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.Python 
 WriteLog "VS Installed" 
 
 WriteLog "Downloading DLIB source code"
 cd c:\git
-git clone https://github.com/davisking/dlib.git
-git clone https://github.com/davisking/dlib-models.git 
+"C:\Program Files\Git\bin\git.exe" clone https://github.com/davisking/dlib.git
+"C:\Program Files\Git\bin\git.exe"  clone https://github.com/davisking/dlib-models.git 
 #uncompress models
 c:\git\bash\bzip2.exe -d /git/dlib-models/dlib_face_recognition_resnet_model_v1.dat.bz2
 c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_dog_hipsterizer.dat.bz2
