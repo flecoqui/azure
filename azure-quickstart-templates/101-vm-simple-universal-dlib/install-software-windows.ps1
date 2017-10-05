@@ -318,7 +318,7 @@ WriteLog "Installing git"
 c:\git\bash\Git-2.14.2-64-bit.exe /SILENT
 WriteLog "git Installed" 
 WriteLog "Installing VS" 
-c:\git\bash\vs_community.exe --quiet --norestart --add Microsoft.VisualStudio.Workload.NativeCrossPlat --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.Python 
+c:\git\bash\vs_community.exe --quiet --norestart --wait --add Microsoft.VisualStudio.Workload.NativeCrossPlat --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.Python 
 WriteLog "VS Installed" 
 
 WriteLog "Downloading DLIB source code"
