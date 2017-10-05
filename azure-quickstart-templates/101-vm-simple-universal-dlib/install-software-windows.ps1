@@ -323,53 +323,66 @@ WriteLog "Starting IIS"
 net start w3svc
 
 WriteLog "Installing git" 
-c:\git\bash\Git-2.14.2-64-bit.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /NOCANCEL /SP- /LOG
+Start-Process -FilePath "c:\git\bash\Git-2.14.2-64-bit.exe" -Wait -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/NOCANCEL","/SP-","/LOG"
+
 $count=0
 while ((!(Test-Path "C:\Program Files\Git\bin\git.exe"))-and($count -lt 20)) { Start-Sleep 10; $count++}
 WriteLog "git Installed" 
 
 WriteLog "Installing VS" 
-c:\git\bash\vs_community.exe --quiet --norestart --wait --add Microsoft.VisualStudio.Workload.NativeCrossPlat --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.Python 
+Start-Process -FilePath "c:\git\bash\vs_community.exe" -Wait -ArgumentList "--quiet","--norestart","--wait","--add","Microsoft.VisualStudio.Workload.NativeCrossPlat","--add","Microsoft.VisualStudio.Workload.NativeDesktop","--add","Microsoft.VisualStudio.Workload.Python"
+
 WriteLog "VS Installed" 
 
 WriteLog "Downloading DLIB source code"
 cd c:\git
-& 'C:\Program Files\Git\bin\git.exe' clone https://github.com/davisking/dlib.git
-& 'C:\Program Files\Git\bin\git.exe'  clone https://github.com/davisking/dlib-models.git 
+Start-Process -FilePath "C:\Program Files\Git\bin\git.exe" -Wait -ArgumentList "clone","https://github.com/davisking/dlib.git"
+Start-Process -FilePath "C:\Program Files\Git\bin\git.exe" -Wait -ArgumentList "clone","https://github.com/davisking/dlib-models.git"
 #uncompress models
-c:\git\bash\bzip2.exe -d /git/dlib-models/dlib_face_recognition_resnet_model_v1.dat.bz2
-c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_dog_hipsterizer.dat.bz2
-c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_front_and_rear_end_vehicle_detector.dat.bz2
-c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_human_face_detector.dat.bz2
-c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_rear_end_vehicle_detector.dat.bz2
-c:\git\bash\bzip2.exe -d /git/dlib-models/resnet34_1000_imagenet_classifier.dnn.bz2
-c:\git\bash\bzip2.exe -d /git/dlib-models/shape_predictor_5_face_landmarks.dat.bz2
-c:\git\bash\bzip2.exe -d /git/dlib-models/shape_predictor_68_face_landmarks.dat.bz2
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/dlib_face_recognition_resnet_model_v1.dat.bz2"
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/mmod_dog_hipsterizer.dat.bz2"
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/mmod_front_and_rear_end_vehicle_detector.dat.bz2"
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/mmod_human_face_detector.dat.bz2"
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/mmod_rear_end_vehicle_detector.dat.bz2"
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/resnet34_1000_imagenet_classifier.dnn.bz2"
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/shape_predictor_5_face_landmarks.dat.bz2"
+Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/shape_predictor_68_face_landmarks.dat.bz2"
 WriteLog "DLIB source code downloaded" 
 
 WriteLog "Creating batch files"
-echo cd c:\git\dlib > c:\git\bash\buildDLIB.bat
-echo mkdir build >> c:\git\bash\buildDLIB.bat
-echo cd build >> c:\git\bash\buildDLIB.bat
-echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. >> c:\git\bash\buildDLIB.bat
-echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release >> c:\git\bash\buildDLIB.bat
+New-Item c:\git\bash\buildDLIB.bat -type file -force -value @'
+cd c:\git\dlib
+mkdir build
+cd build
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. 
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release
+'@
 
-echo cd c:\git\dlib\examples > c:\git\bash\buildDLIBCPPSamples.bat
-echo mkdir build >> c:\git\bash\buildDLIBCPPSamples.bat
-echo cd build >> c:\git\bash\buildDLIBCPPSamples.bat
-echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. >> c:\git\bash\buildDLIBCPPSamples.bat
-echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build .  >> c:\git\bash\buildDLIBCPPSamples.bat
 
-echo cd c:\git\dlib > c:\git\bash\buildDLIBPythonSamples.bat
-echo python setup.py install >> c:\git\bash\buildDLIBPythonSamples.bat
+New-Item c:\git\bash\buildDLIBCPPSamples.bat -type file -force -value @'
+cd c:\git\dlib\examples
+mkdir build
+cd build
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. 
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . 
+'@
 
-echo cd c:\git\dlib\dlib\test > c:\git\bash\runDLIBTests.bat
-echo mkdir build >> c:\git\bash\runDLIBTests.bat
-echo cd build >> c:\git\bash\runDLIBTests.bat
-echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. >> c:\git\bash\runDLIBTests.bat
-echo c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release >> c:\git\bash\runDLIBTests.bat
-echo dtest.exe --runall >> c:\git\bash\runDLIBTests.bat
-WriteLog "Batch files created"
+
+New-Item c:\git\bash\buildDLIBPythonSamples.bat -type file -force -value @'
+cd c:\git\dlib
+python setup.py install
+'@
+
+
+New-Item c:\git\bash\runDLIBTests.bat -type file -force -value @'
+cd c:\git\dlib\test
+mkdir build
+cd build
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. 
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release
+'@
+
+
 
 
 WriteLog "Initialization completed !" 
