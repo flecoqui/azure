@@ -330,8 +330,8 @@ while ((!(Test-Path "C:\Program Files\Git\bin\git.exe"))-and($count -lt 20)) { S
 WriteLog "git Installed" 
 
 WriteLog "Installing VS" 
-Start-Process -FilePath "c:\git\bash\vs_community.exe" -Wait -ArgumentList "--quiet","--norestart","--wait","--add","Microsoft.VisualStudio.Workload.NativeCrossPlat","--add","Microsoft.VisualStudio.Workload.NativeDesktop","--add","Microsoft.VisualStudio.Workload.Python"
-
+Start-Process -FilePath "c:\git\bash\vs_community.exe" -Wait -ArgumentList "--quiet","--norestart","--wait","--add","Microsoft.VisualStudio.Workload.NativeCrossPlat","--add","Microsoft.VisualStudio.Workload.NativeDesktop","--add","Microsoft.VisualStudio.Workload.Python","--includeRecommended","--includeOptional"
+Start-Process -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  -Wait -ArgumentList "x64"
 WriteLog "VS Installed" 
 
 WriteLog "Downloading DLIB source code"
@@ -351,35 +351,35 @@ WriteLog "DLIB source code downloaded"
 
 WriteLog "Creating batch files"
 New-Item c:\git\bash\buildDLIB.bat -type file -force -value @'
-cd c:\git\dlib
-mkdir build
-cd build
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. 
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release
+cd c:\git\dlib `r`n
+mkdir build`r`n
+cd build`r`n
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. `r`n
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release`r`n
 '@
 
 
 New-Item c:\git\bash\buildDLIBCPPSamples.bat -type file -force -value @'
-cd c:\git\dlib\examples
-mkdir build
-cd build
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. 
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . 
+cd c:\git\dlib\examples`r`n
+mkdir build`r`n
+cd build`r`n
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. `r`n
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . `r`n
 '@
 
 
 New-Item c:\git\bash\buildDLIBPythonSamples.bat -type file -force -value @'
-cd c:\git\dlib
-python setup.py install
+cd c:\git\dlib`r`n
+python setup.py install`r`n
 '@
 
 
 New-Item c:\git\bash\runDLIBTests.bat -type file -force -value @'
-cd c:\git\dlib\test
-mkdir build
-cd build
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. 
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release
+cd c:\git\dlib\test`r`n
+mkdir build`r`n
+cd build`r`n
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. `r`n
+c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release`r`n
 '@
 
 
