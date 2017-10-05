@@ -127,21 +127,22 @@ else
 	$webClient.DownloadFile($url,$sourcebash + "\Git-2.14.2-64-bit.exe" )  
 	WriteLog "git downloaded"  
 }
-
+WriteLog "Downloading visual studio" 
 $url = 'https://aka.ms/vs/15/release/vs_community.exe' 
 if (($EditionId -eq "ServerStandardNano") -or
     ($EditionId -eq "ServerDataCenterNano") -or
     ($EditionId -eq "NanoServer") -or
     ($EditionId -eq "ServerTuva")) {
 	Download $url $sourcebash 
-	WriteLog "git downloaded" 
+	WriteLog "visual studio downloaded" 
 }
 else
 {
 	$webClient = New-Object System.Net.WebClient  
 	$webClient.DownloadFile($url,$sourcebash + "\vs_community.exe" )  
-	WriteLog "git downloaded"  
+	WriteLog "visual studio downloaded"  
 }
+WriteLog "Downloading bzip2" 
 $url = 'https://github.com/philr/bzip2-windows/releases/download/v1.0.6/bzip2-1.0.6-win-x64.zip'
 if (($EditionId -eq "ServerStandardNano") -or
     ($EditionId -eq "ServerDataCenterNano") -or
@@ -158,21 +159,24 @@ else
 	Expand-ZIPFile -file "$sourcebash\bzip2-1.0.6-win-x64.zip" -destination $sourcebash 
 	WriteLog "bzip2 downloaded"  
 }
+
+WriteLog "Downloading msvcr120.dll" 
 $url = 'https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/msvcr120.dll' 
 if (($EditionId -eq "ServerStandardNano") -or
     ($EditionId -eq "ServerDataCenterNano") -or
     ($EditionId -eq "NanoServer") -or
     ($EditionId -eq "ServerTuva")) {
 	Download $url $sourcebash 
-	WriteLog "git downloaded" 
+	WriteLog "msvcr120.dll downloaded" 
 }
 else
 {
 	$webClient = New-Object System.Net.WebClient  
 	$webClient.DownloadFile($url,$sourcebash + "\msvcr120.dll" )  
-	WriteLog "git downloaded"  
+	WriteLog "msvcr120.dll downloaded"  
 }
 
+WriteLog "Downloading cmake" 
 $url = 'https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.zip'
 if (($EditionId -eq "ServerStandardNano") -or
     ($EditionId -eq "ServerDataCenterNano") -or
@@ -311,20 +315,24 @@ $content = $content -replace "\{3\}",$ExternalIP
 
 $content | Out-File -FilePath C:\inetpub\wwwroot\index.html -Encoding utf8
 WriteLog "Creating Home Page done" 
+
 WriteLog "Starting IIS" 
 net start w3svc
 
 WriteLog "Installing git" 
-c:\git\bash\Git-2.14.2-64-bit.exe /SILENT
+c:\git\bash\Git-2.14.2-64-bit.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /NOCANCEL /SP- /LOG
+$count=0
+while ((!(Test-Path "C:\Program Files\Git\bin\git.exe"))-and($count -lt 20)) { Start-Sleep 10; $count++}
 WriteLog "git Installed" 
+
 WriteLog "Installing VS" 
 c:\git\bash\vs_community.exe --quiet --norestart --wait --add Microsoft.VisualStudio.Workload.NativeCrossPlat --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.Python 
 WriteLog "VS Installed" 
 
 WriteLog "Downloading DLIB source code"
 cd c:\git
-"C:\Program Files\Git\bin\git.exe" clone https://github.com/davisking/dlib.git
-"C:\Program Files\Git\bin\git.exe"  clone https://github.com/davisking/dlib-models.git 
+& 'C:\Program Files\Git\bin\git.exe' clone https://github.com/davisking/dlib.git
+& 'C:\Program Files\Git\bin\git.exe'  clone https://github.com/davisking/dlib-models.git 
 #uncompress models
 c:\git\bash\bzip2.exe -d /git/dlib-models/dlib_face_recognition_resnet_model_v1.dat.bz2
 c:\git\bash\bzip2.exe -d /git/dlib-models/mmod_dog_hipsterizer.dat.bz2
