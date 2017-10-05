@@ -10,7 +10,10 @@ param
 
 #Create C:\var\log folder
 $sourcevar = 'C:\var' 
-If (!(Test-Path -Path $sourcevar -PathType Container)) {New-Item -Path $sourcevar -ItemType Directory | Out-Null} 
+If (!(Test-Path -Path $sourcevar -PathType Container)) 
+{New-Item -Path $sourcevar -ItemType Directory | Out-Null}
+Else
+{ Exit }
 $sourcelog = 'C:\var\log' 
 If (!(Test-Path -Path $sourcelog -PathType Container)) {New-Item -Path $sourcelog -ItemType Directory | Out-Null} 
 #Create C:\git folder
