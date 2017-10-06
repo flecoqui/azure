@@ -212,14 +212,15 @@ Enter the dns name of your server :</p>
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty4.jpg)
 
 
-The server is already configured to support X11 over SSH:
-The file /etc/ssh/ssh_config has been updated:</p>
-ForwardAgent yes</p>
-ForwardX11 yes</p>
-ForwardX11Trusted yes </p>
+The server is already configured to support X11 over SSH, and the file /etc/ssh/ssh_config has been updated:
 
-The file /etc/ssh/sshd_config has been updated:</p>
-X11Forwarding yes</p>
++ ForwardAgent yes</p>
++ ForwardX11 yes</p>
++ ForwardX11Trusted yes </p>
+
+The file /etc/ssh/sshd_config has been updated:
+
++ X11Forwarding yes</p>
 
 
 Before launching Putty to open an SSH session with your VM check that XMing is running on your local Windows Machine:
@@ -230,9 +231,9 @@ Once you are connected with Putty,
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/putty5.png)
 
-Enter the following commands: </p>
-gnome-session </p>
-xclock </p>
+Enter the following commands to test if X11 is running: </p>
+
++ xclock </p>
 
 The Clock should be displayed on your Windows machine:
 
@@ -240,7 +241,8 @@ The Clock should be displayed on your Windows machine:
 
 Now you can test the python samples requiring GUI:</p>
 For instance under /git/dlib/python_examples run the following command:</p>
- ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
+
+     python ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
 
  and check that the picture is displayed on your local machine:</p>
 
