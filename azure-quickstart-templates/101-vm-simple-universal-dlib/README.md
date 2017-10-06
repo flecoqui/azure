@@ -141,17 +141,17 @@ For Windows Server VM:
 
 
 </p>
-For Windows Virtual Machine, once you are connected in the RDP session from C:\GIT\BASH you can launch the following commands: </p>
+For Windows Virtual Machine, once you are connected in the RDP session from C:\GIT\BASH you can launch the following commands files: </p>
 
-+ buildDLIB.bat: to build DLIB library with VC++ 2017</p> 
-+ buildDLIBCPPSamples.bat: to build DLIB C++ samples with VC++ 2017</p> 
-+ buildBoostForPython.bat: to build BOOST library with VC++ 2017 (not necessary for the tests)</p>
-+ buildDLIBPythonSamples.bat: to build DLIB Python samples with VC++ 2017 (won't work: VC++ bug while compiling dnn component) </p> 
++ buildDLIB.bat: to build DLIB library with Visual C++ 2017</p> 
++ buildDLIBCPPSamples.bat: to build DLIB C++ samples with Visual C++ 2017 (this batch file will fail when compiling dnn_face_recognition_ex.cpp: Visual C++ issue)</p> 
++ buildBoostForPython.bat: to build boost library if you want to try to generate the DLIB Library for Python. So far the issue with Visual C++ prevents the generation of DLIB library for python.
++ buildDLIBPythonSamples.bat: to build DLIB Python samples with VC++ 2017 (this batch file will fail when compiling dnn_face_recognition_ex.cpp: Visual C++ issue)  </p> 
     As it's not possible to generate the python library, by default the DLIB library is imported with Anaconda3 x64 </p> 
-+ bash runDLIBTests.bat: to run DLIB tests </p> 
++ runDLIBTests.bat: to run DLIB tests (this batch file will fail when compiling dnn_face_recognition_ex.cpp: Visual C++ issue) </p> 
 
 </p>
-To test DLIB, change directory under /git/dlib/python_examples and run for instance the following commands:</p>
+To test DLIB with python scripts, you don't need to generate DLIB Library (buildDLIB.bat) nor DLIB Library for python, the DLIB Library for python is imported with conda. Change directory c:\git\dlib\python_examples and run for instance the following commands:</p>
 Test not requiring a UI:
 
       python ./svm_rank.py
@@ -173,7 +173,11 @@ By default the bash files are available under /git/bash folder.</p>
 
 </p>
 If you want to test DLIB with the python samples, you'll find under /git/dish/python_examples several python files.
-You can for instance run the following sample ./svm_rank.py to check the python configuration.
+You can for instance run the following sample script:
+
+       python ./svm_rank.py 
+
+to check the python configuration.
 Keep in mind before running this test, you need to build the DLIB library (bash buildDLIB.sh) and the python samples (bash buildDLIBPythonSamples.sh).
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/test1.png)
@@ -242,7 +246,7 @@ The Clock should be displayed on your Windows machine:
 Now you can test the python samples requiring GUI:</p>
 For instance under /git/dlib/python_examples run the following command:</p>
 
-     python ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
+     python ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces
 
  and check that the picture is displayed on your local machine:</p>
 

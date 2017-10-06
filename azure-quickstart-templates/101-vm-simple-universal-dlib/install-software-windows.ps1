@@ -413,7 +413,7 @@ cd C:\git\boost_1_65_1\tools\build
 bootstrap.bat
 .\b2 --prefix=C:\boost-build-engine\bin install
 cd C:\git\boost_1_65_1
-.\b2 -a --with-python address-model=64 toolset=msvc runtime-link=static
+C:\boost-build-engine\bin\bin\b2 -a --with-python address-model=64 toolset=msvc runtime-link=static
 "@
 
 New-Item c:\git\bash\buildDLIBPythonSamples.bat -type file -force -value @"
@@ -427,7 +427,7 @@ python setup.py install
 
 New-Item c:\git\bash\runDLIBTests.bat -type file -force -value @"
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
-cd c:\git\dlib\test
+cd c:\git\dlib\dlib\test
 mkdir build
 cd build
 cmake.exe .. 
