@@ -316,10 +316,14 @@ $content = @'
     <p>Launch the following command line from your client to open an RDP session: </p>
     <p>     mstsc /admin /v:{0}  </p>
 	<p>Launch the following commands in the RDP session from C:\GIT\BASH : </p>
-    <p>     bash buildDLIB.sh: to build DLIB library </p> 
-    <p>     bash buildDLIBCPPSamples.sh: to build DLIB C++ samples </p> 
-    <p>     bash buildDLIBPythonSamples.sh: to build DLIB Python samples </p> 
-    <p>     bash runDLIBTests.sh: to run DLIB tests </p> 
+    <p>     buildDLIB.bat: to build DLIB library with VC++ 2017</p> 
+    <p>     buildDLIBCPPSamples.bat: to build DLIB C++ samples with VC++ 2017</p> 
+	<p>     buildBoostForPython.bat: to build BOOST library with VC++ 2017 (not necessary for the tests)</p>
+    <p>     bash buildDLIBPythonSamples.bat: to build DLIB Python samples with VC++ 2017 (won't work: VC++ bug while compiling dnn component) </p> 
+    <p>          As it's not possible to generate the python library, by default the DLIB library is imported with Anaconda3 x64 </p> 
+    <p>     bash runDLIBTests.bat: to run DLIB tests </p> 
+	<p>To test DLIB, change directory under /git/dlib/python_examples and run the following command:</p>
+	<p>      ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
     <ul>
       <li>To <a href="http://www.microsoft.com">Microsoft</a>
       <li>To <a href="https://portal.azure.com">Azure</a>

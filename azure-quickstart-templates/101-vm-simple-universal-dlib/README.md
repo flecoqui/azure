@@ -117,7 +117,19 @@ For Nano Server VM:
      Enter-PSSession -ComputerName vmnanos001.eastus2.cloudapp.azure.com </p>
 
 </p>
-Once you are connected with ssh, you can use the following bash files under /git/bash to: </p>
+For Windows Virtual Machine, once you are connected in the RDP session from C:\GIT\BASH you can launch the following commands: </p>
+- buildDLIB.bat: to build DLIB library with VC++ 2017</p> 
+- buildDLIBCPPSamples.bat: to build DLIB C++ samples with VC++ 2017</p> 
+- buildBoostForPython.bat: to build BOOST library with VC++ 2017 (not necessary for the tests)</p>
+- buildDLIBPythonSamples.bat: to build DLIB Python samples with VC++ 2017 (won't work: VC++ bug while compiling dnn component) </p> 
+    As it's not possible to generate the python library, by default the DLIB library is imported with Anaconda3 x64 </p> 
+- bash runDLIBTests.bat: to run DLIB tests </p> 
+</p>
+To test DLIB, change directory under /git/dlib/python_examples and run the following command:</p>
+      ./svm_rank.py</p>
+      ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
+</p>
+For Linux Virtual Machines, once you are connected with ssh, you can use the following bash files under /git/bash to: </p>
 - buildDLIB.sh: build DLIB library(C++),</p>
 - buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),</p>
 - buildDLIBPythonSamples.sh: build DLIB Python samples (Python),</p>
