@@ -202,15 +202,13 @@ if (($EditionId -eq "ServerStandardNano") -or
     ($EditionId -eq "ServerDataCenterNano") -or
     ($EditionId -eq "NanoServer") -or
     ($EditionId -eq "ServerTuva")) {
-	DownloadAndUnzip $url $sourcegit 
+	Download $url $sourcegit 
 	WriteLog "boost downloaded" 
 }
 else
 {
 	$webClient = New-Object System.Net.WebClient  
 	$webClient.DownloadFile($url,$sourcegit + "\boost_1_65_1.zip" )  
-	# Function to unzip file contents 
-	Expand-ZIPFile -file "$sourcebash\boost_1_65_1.zip" -destination $sourcegit 
 	WriteLog "boost downloaded"  
 }
 function Install-IIS
@@ -317,7 +315,7 @@ $content = @'
     <p>     mstsc /admin /v:{0}  </p>
 	<p>Launch the following commands in the RDP session from C:\GIT\BASH : </p>
     <p>     buildDLIB.bat: to build DLIB library with VC++ 2017</p> 
-    <p>     buildDLIBCPPSamples.bat: to build DLIB C++ samples with VC++ 2017</p> 
+    <p>     buildDLIBCPPSamples.bat: to build DLIB C++ samples with VC++ 2017 (won't work: will fail when compiling dnn_face_recognition_ex.cpp )</p> 
 	<p>     buildBoostForPython.bat: to build BOOST library with VC++ 2017 (not necessary for the tests)</p>
     <p>     bash buildDLIBPythonSamples.bat: to build DLIB Python samples with VC++ 2017 (won't work: VC++ bug while compiling dnn component) </p> 
     <p>          As it's not possible to generate the python library, by default the DLIB library is imported with Anaconda3 x64 </p> 
@@ -350,7 +348,7 @@ while ((!(Test-Path "C:\Program Files\Git\bin\git.exe"))-and($count -lt 20)) { S
 WriteLog "git Installed" 
 
 WriteLog "Installing VS" 
-Start-Process -FilePath "c:\git\bash\vs_community.exe" -Wait -ArgumentList "--quiet","--norestart","--wait","--add","Microsoft.VisualStudio.Workload.NativeCrossPlat","--add","Microsoft.VisualStudio.Workload.NativeDesktop","--add","Microsoft.VisualStudio.Workload.Python","--includeRecommended"
+Start-Process -FilePath "c:\git\bash\vs_community.exe" -Wait -ArgumentList "--quiet","--norestart","--wait","--add","Microsoft.VisualStudio.Workload.NativeCrossPlat","--add","Microsoft.VisualStudio.Workload.NativeDesktop","--add","Microsoft.VisualStudio.Workload.Python","--add","Component.Anaconda3.x64","--includeRecommended"
 Start-Process -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  -Wait -ArgumentList "x64"
 WriteLog "VS Installed" 
 
@@ -383,11 +381,14 @@ WriteLog "Installing scikit-image"
 Start-Process -FilePath "C:\Program Files\Anaconda3\Scripts\pip.exe" -Wait -ArgumentList   "scikit-image"
 WriteLog "scikit-image installed"
 
-
+WriteLog "Extracting boost source code"
+Add-Type -A System.IO.Compression.FileSystem
+[IO.Compression.ZipFile]::ExtractToDirectory('C:\git\boost_1_65_1.zip', 'C:\git')
+WriteLog "boost source code unzipped"
 
 WriteLog "Creating batch files"
 New-Item c:\git\bash\buildDLIB.bat -type file -force -value @"
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
 cd c:\git\dlib 
 mkdir build
 cd build
@@ -397,7 +398,7 @@ cmake.exe --build . --config Release
 
 
 New-Item c:\git\bash\buildDLIBCPPSamples.bat -type file -force -value @"
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
 cd c:\git\dlib\examples
 mkdir build
 cd build
@@ -407,7 +408,7 @@ cmake.exe --build .
 
 
 New-Item c:\git\bash\buildBoostForPython.bat -type file -force -value @"
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
 cd C:\git\boost_1_65_1\tools\build
 bootstrap.bat
 .\b2 --prefix=C:\boost-build-engine\bin install
@@ -416,7 +417,7 @@ cd C:\git\boost_1_65_1
 "@
 
 New-Item c:\git\bash\buildDLIBPythonSamples.bat -type file -force -value @"
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
 set BOOST_ROOT=C:\git\boost_1_65_1
 set BOOST_LIBRARYDIR=C:\git\boost_1_65_1\stage\lib
 cd c:\git\dlib
@@ -425,7 +426,7 @@ python setup.py install
 
 
 New-Item c:\git\bash\runDLIBTests.bat -type file -force -value @"
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
 cd c:\git\dlib\test
 mkdir build
 cd build

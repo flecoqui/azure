@@ -28,11 +28,10 @@
         "ubuntu",
         "centos",
         "redhat",
-        "nanoserver2016",
         "windowsserver2016"
       ],
       "metadata": {
-        "description": "The Operating System to be installed on the VM. Default value debian. Allowed values: debian,ubuntu,centos,redhat,nanoserver2016,windowsserver2016"
+        "description": "The Operating System to be installed on the VM. Default value debian. Allowed values: debian,ubuntu,centos,redhat,windowsserver2016"
       }
     },
     "configurationSize": {
@@ -157,29 +156,10 @@
         "remoteCommand": "[concat('mstsc /admin /v:', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
         "logInformation": "type c:\\source\\install.log",
         "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
-        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
-        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
-        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
-      },
-      "nanoserver2016": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2016-Nano-Server",
-        "version": "latest",
-        "installScriptUrl": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/install-software-windows.ps1",
-        "installScriptFileName": "install-software-windows.ps1",
-        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File install-software-windows.ps1 \"',  parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com','\"  ', parameters('adminUsername') )]",
-        "extensionPublisher": "Microsoft.Compute",
-        "extensionType": "CustomScriptExtension",
-        "extensionTypeHandlerVersion": "1.7",
-        "remoteCommand": "[concat('Set-Item WSMan:\\localhost\\Client\\TrustedHosts ', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com',' Enter-PSSession -ComputerName  \"', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com', '\"  -Credential ', parameters('adminUsername') )]",
-        "logInformation": "type c:\\source\\install.log",
-        "httpUrl": "[concat('http://', parameters('dnsLabelPrefix'), '.', resourceGroup().location, '.cloudapp.azure.com')]",
-        "buildDLIB": "'cd /git/bash' and 'bash buildDLIB.sh'",
-        "buildDLIBCPPSamples": "'cd /git/bash' and 'bash buildDLIBCPPSamples.sh'",
-        "buildDLIBPythonSamples": "'cd /git/bash' and 'bash buildDLIBPythonSamples.sh'",
-        "runDLIBTests": "'cd /git/bash' and 'bash runDLIBTests.sh'"
+        "buildDLIB": "'cd c:\\git\\bash' and 'buildDLIB.bat'",
+        "buildDLIBCPPSamples": "'cd c:\\git\\bash' and 'buildDLIBCPPSamples.bat'",
+        "buildDLIBPythonSamples": "'cd c:\\git\\bash' and 'buildDLIBPythonSamples.bat'",
+        "runDLIBTests": "'cd c:\\git\\bash' and 'runDLIBTests.bat'"
       }
     },
     "configurationSize": "[variables(concat('configurationSize', parameters('configurationSize')))]",
