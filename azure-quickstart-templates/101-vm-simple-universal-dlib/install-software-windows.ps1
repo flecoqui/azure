@@ -374,7 +374,7 @@ $LocalPath = [Environment]::GetEnvironmentVariable("Path","Machine")
 WriteLog "Setting done"
 
 WriteLog "Installing DLIB for python Anaconda3"
-Start-Process -FilePath "c:\Program Files (x86)\Anaconda3\Scripts\conda.exe" -Wait -ArgumentList   "install","-y","-c","conda-forge","dlib=19.4"
+Start-Process -FilePath "c:\Program Files\Anaconda3\Scripts\conda.exe" -Wait -ArgumentList   "install","-y","-c","conda-forge","dlib=19.4"
 WriteLog "DLIB for python Anaconda3 installed"
 
 WriteLog "Installing scikit-image"

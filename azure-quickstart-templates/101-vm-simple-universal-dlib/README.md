@@ -7,26 +7,37 @@
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-The objective of this template is to automate the creation of a VM (Linux or Windows) to generate DLIB components. </p>
+The objective of this template is to automate the creation of a VM (Linux or Windows) to generate DLIB components and to test those components from a python script. </p>
 Once the VM is deployed the DLIB source code is avaialble under:</p>
-/git/dlib  (Linux)</p>
-c:\git\dlib (Windows)</p>
-So far this template allows you to deploy a simple VM running: </p>
-#### Debian: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-#### Ubuntu: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-#### Centos: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-#### Red Hat: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-The objective is to support soon : </p>
-#### Windows Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-#### Nano Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python)
-This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.</p>
-So far only the Debian and Ubuntu version have been tested.
-Once the VM is deployed you can use the following bash files under /git/bash: </p>
-#### buildDLIB.sh: build DLIB library(C++),
-#### buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),
-#### buildDLIBPythonSamples.sh: build DLIB Python samples (Python),
-#### runTests.sh: run unit tests (C++,Python)
+### Linux
+```bash
+/git/dlib
+```
 </p>
+### Windows
+```bash
+c:\git\dlib
+```
+So far this template allows you to deploy a simple VM running: </p>
+1. **Debian**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+2. **Ubuntu**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+3. **Centos**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+4. **Red Hat**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+5. **Windows** Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.</p>
+Once the VM is deployed you can use the following bash files for Linux VM under /git/bash: </p>
++ **buildDLIB.sh**: build DLIB library(C++),
++ **buildDLIBCPPSamples.sh**: build DLIB C++ samples (C++),
++ **buildDLIBPythonSamples.sh**: build DLIB Python samples (Python),
++ **runTests.sh**: run unit tests (C++,Python)
+For Windows VM, you can use the following bat files under C:\git\bash: </p>
++ **buildDLIB.bat**: build DLIB library(C++),
++ **buildDLIBCPPSamples.bat**: build DLIB C++ samples (C++),
++ **buildDLIBPythonSamples.bat**: build DLIB Python samples (Python),
++ **runTests.bat**: run unit tests (C++,Python)
+</p>
+The diagnostic information after the installation are available under C:\var\log\install.log (Windows VM) or under /var/log/install.log (Linux VM) : </p>
+
 With Azure CLI you can deploy this VM with 2 command lines:
 
 
