@@ -196,7 +196,23 @@ else
 	Expand-ZIPFile -file "$sourcebash\cmake-3.9.3-win64-x64.zip" -destination $sourcebash 
 	WriteLog "cmake downloaded"  
 }
-
+WriteLog "Downloading boost source code" 
+$url = 'https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.zip'
+if (($EditionId -eq "ServerStandardNano") -or
+    ($EditionId -eq "ServerDataCenterNano") -or
+    ($EditionId -eq "NanoServer") -or
+    ($EditionId -eq "ServerTuva")) {
+	DownloadAndUnzip $url $sourcegit 
+	WriteLog "boost downloaded" 
+}
+else
+{
+	$webClient = New-Object System.Net.WebClient  
+	$webClient.DownloadFile($url,$sourcegit + "\boost_1_65_1.zip" )  
+	# Function to unzip file contents 
+	Expand-ZIPFile -file "$sourcebash\boost_1_65_1.zip" -destination $sourcegit 
+	WriteLog "boost downloaded"  
+}
 function Install-IIS
 {
 WriteLog "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force"
@@ -330,7 +346,7 @@ while ((!(Test-Path "C:\Program Files\Git\bin\git.exe"))-and($count -lt 20)) { S
 WriteLog "git Installed" 
 
 WriteLog "Installing VS" 
-Start-Process -FilePath "c:\git\bash\vs_community.exe" -Wait -ArgumentList "--quiet","--norestart","--wait","--add","Microsoft.VisualStudio.Workload.NativeCrossPlat","--add","Microsoft.VisualStudio.Workload.NativeDesktop","--add","Microsoft.VisualStudio.Workload.Python","--includeRecommended","--includeOptional"
+Start-Process -FilePath "c:\git\bash\vs_community.exe" -Wait -ArgumentList "--quiet","--norestart","--wait","--add","Microsoft.VisualStudio.Workload.NativeCrossPlat","--add","Microsoft.VisualStudio.Workload.NativeDesktop","--add","Microsoft.VisualStudio.Workload.Python","--includeRecommended"
 Start-Process -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  -Wait -ArgumentList "x64"
 WriteLog "VS Installed" 
 
@@ -349,38 +365,69 @@ Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/d
 Start-Process -FilePath "c:\git\bash\bzip2.exe" -Wait -ArgumentList "-d","/git/dlib-models/shape_predictor_68_face_landmarks.dat.bz2"
 WriteLog "DLIB source code downloaded" 
 
+
+WriteLog "Setting Path for Python3 and cmake"
+$LocalPath = [Environment]::GetEnvironmentVariable("Path","Machine")
+[Environment]::SetEnvironmentVariable("Path", $LocalPath + ";C:\Program Files\Anaconda3;C:\Program Files\Anaconda3\Scripts;c:\git\bash\cmake-3.9.3-win64-x64\bin" , "Machine")
+WriteLog "Setting done"
+
+WriteLog "Installing DLIB for python Anaconda3"
+Start-Process -FilePath "c:\Program Files (x86)\Anaconda3\Scripts\conda.exe" -Wait -ArgumentList   "install","-y","-c","conda-forge","dlib=19.4"
+WriteLog "DLIB for python Anaconda3 installed"
+
+WriteLog "Installing scikit-image"
+Start-Process -FilePath "C:\Program Files\Anaconda3\Scripts\pip.exe" -Wait -ArgumentList   "scikit-image"
+WriteLog "scikit-image installed"
+
+
+
 WriteLog "Creating batch files"
-New-Item c:\git\bash\buildDLIB.bat -type file -force -value @'
-cd c:\git\dlib `r`n
-mkdir build`r`n
-cd build`r`n
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. `r`n
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release`r`n
-'@
+New-Item c:\git\bash\buildDLIB.bat -type file -force -value @"
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+cd c:\git\dlib 
+mkdir build
+cd build
+cmake.exe .. 
+cmake.exe --build . --config Release
+"@
 
 
-New-Item c:\git\bash\buildDLIBCPPSamples.bat -type file -force -value @'
-cd c:\git\dlib\examples`r`n
-mkdir build`r`n
-cd build`r`n
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. `r`n
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . `r`n
-'@
+New-Item c:\git\bash\buildDLIBCPPSamples.bat -type file -force -value @"
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+cd c:\git\dlib\examples
+mkdir build
+cd build
+cmake.exe .. 
+cmake.exe --build . 
+"@
 
 
-New-Item c:\git\bash\buildDLIBPythonSamples.bat -type file -force -value @'
-cd c:\git\dlib`r`n
-python setup.py install`r`n
-'@
+New-Item c:\git\bash\buildBoostForPython.bat -type file -force -value @"
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+cd C:\git\boost_1_65_1\tools\build
+bootstrap.bat
+.\b2 --prefix=C:\boost-build-engine\bin install
+cd C:\git\boost_1_65_1
+.\b2 -a --with-python address-model=64 toolset=msvc runtime-link=static
+"@
+
+New-Item c:\git\bash\buildDLIBPythonSamples.bat -type file -force -value @"
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+set BOOST_ROOT=C:\git\boost_1_65_1
+set BOOST_LIBRARYDIR=C:\git\boost_1_65_1\stage\lib
+cd c:\git\dlib
+python setup.py install
+"@
 
 
-New-Item c:\git\bash\runDLIBTests.bat -type file -force -value @'
-cd c:\git\dlib\test`r`n
-mkdir build`r`n
-cd build`r`n
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe .. `r`n
-c:\git\bash\cmake-3.9.3-win64-x64\bin\cmake.exe --build . --config Release`r`n
-'@
+New-Item c:\git\bash\runDLIBTests.bat -type file -force -value @"
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"  x64
+cd c:\git\dlib\test
+mkdir build
+cd build
+cmake.exe .. 
+cmake.exe --build . --config Release
+"@
 
 
 
