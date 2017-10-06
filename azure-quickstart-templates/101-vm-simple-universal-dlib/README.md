@@ -44,7 +44,16 @@ For Windows VM, you can use the following bat files under C:\git\bash: </p>
 + **runTests.bat**: run unit tests (C++,Python)
 
 </p>
-The diagnostic information after the installation are available under C:\var\log\install.log (Windows VM) or under /var/log/install.log (Linux VM) : </p>
+The diagnostic information after the installation are available under:
+### Linux
+```bash
+/var/log/install.log
+```
+
+### Windows
+```PowerShell
+C:\var\log\install.log
+```
 
 With Azure CLI you can deploy this VM with 2 command lines:
 
@@ -106,12 +115,12 @@ configurationOS (debian, ubuntu, centos, redhat, nano server 2016, windows serve
 ## TEST THE VM:
 Once the VM has been deployed, you can check the Web page hosted on the VM.</p>
 For the Linux VM:</p>
-http://<VM DNS Name>/index.php
+http://DNSName/index.php
 For the Windows VM:</p>
-http://<VM DNS Name>/index.html
+http://DNSName/index.html
 
 </p>
-For instance for Linux VM:
+For instance, for Linux VM:
 
      http://vmubus001.eastus2.cloudapp.azure.com/index.php 
 
@@ -130,35 +139,35 @@ For Windows Server VM:
 
      mstsc /admin /v:vmwins001.eastus2.cloudapp.azure.com
 
-For Nano Server VM:
-
-     Set-Item WSMan:\\localhost\\Client\\TrustedHosts vmnanos001.eastus2.cloudapp.azure.com </p>
-     Enter-PSSession -ComputerName vmnanos001.eastus2.cloudapp.azure.com </p>
 
 </p>
 For Windows Virtual Machine, once you are connected in the RDP session from C:\GIT\BASH you can launch the following commands: </p>
-- buildDLIB.bat: to build DLIB library with VC++ 2017</p> 
-- buildDLIBCPPSamples.bat: to build DLIB C++ samples with VC++ 2017</p> 
-- buildBoostForPython.bat: to build BOOST library with VC++ 2017 (not necessary for the tests)</p>
-- buildDLIBPythonSamples.bat: to build DLIB Python samples with VC++ 2017 (won't work: VC++ bug while compiling dnn component) </p> 
+
++ buildDLIB.bat: to build DLIB library with VC++ 2017</p> 
++ buildDLIBCPPSamples.bat: to build DLIB C++ samples with VC++ 2017</p> 
++ buildBoostForPython.bat: to build BOOST library with VC++ 2017 (not necessary for the tests)</p>
++ buildDLIBPythonSamples.bat: to build DLIB Python samples with VC++ 2017 (won't work: VC++ bug while compiling dnn component) </p> 
     As it's not possible to generate the python library, by default the DLIB library is imported with Anaconda3 x64 </p> 
-- bash runDLIBTests.bat: to run DLIB tests </p> 
++ bash runDLIBTests.bat: to run DLIB tests </p> 
+
 </p>
-To test DLIB, change directory under /git/dlib/python_examples and run the following command:</p>
-      ./svm_rank.py</p>
-      ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
+To test DLIB, change directory under /git/dlib/python_examples and run for instance the following commands:</p>
+      python ./svm_rank.py</p>
+      python ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
 </p>
+
 For Linux Virtual Machines, once you are connected with ssh, you can use the following bash files under /git/bash to: </p>
-- buildDLIB.sh: build DLIB library(C++),</p>
-- buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),</p>
-- buildDLIBPythonSamples.sh: build DLIB Python samples (Python),</p>
-- runTests.sh: run unit tests (C++,Python)</p>
+
++ buildDLIB.sh: build DLIB library(C++),</p>
++ buildDLIBCPPSamples.sh: build DLIB C++ samples (C++),</p>
++ buildDLIBPythonSamples.sh: build DLIB Python samples (Python),</p>
++ runTests.sh: run unit tests (C++,Python)</p>
 </p>
 By default the bash files are available under /git/bash folder.</p>
 
 </p>
 If you want to test DLIB with the python samples, you'll find under /git/dish/python_examples several python files.
-You can for instance run the following sample ./svm_rank.py to check the python configuration:
+You can for instance run the following sample ./svm_rank.py to check the python configuration.
 Keep in mind before running this test, you need to build the DLIB library (bash buildDLIB.sh) and the python samples (bash buildDLIBPythonSamples.sh).
 
 ![](https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-vm-simple-universal-dlib/Docs/test1.png)
