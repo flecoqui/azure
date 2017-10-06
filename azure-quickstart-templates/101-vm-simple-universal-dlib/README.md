@@ -45,6 +45,7 @@ For Windows VM, you can use the following bat files under C:\git\bash: </p>
 
 </p>
 The diagnostic information after the installation are available under:
+
 ### Linux
 ```bash
 /var/log/install.log
