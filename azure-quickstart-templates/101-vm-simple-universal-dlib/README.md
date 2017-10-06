@@ -152,8 +152,14 @@ For Windows Virtual Machine, once you are connected in the RDP session from C:\G
 
 </p>
 To test DLIB, change directory under /git/dlib/python_examples and run for instance the following commands:</p>
-      python ./svm_rank.py</p>
-      python ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces</p>
+Test not requiring a UI:
+
+      python ./svm_rank.py
+
+Test requiring a UI (X11 or Windows):
+
+      python ./face_landmark_detection.py ../../dlib-models/shape_predictor_68_face_landmarks.dat ../examples/faces
+
 </p>
 
 For Linux Virtual Machines, once you are connected with ssh, you can use the following bash files under /git/bash to: </p>
