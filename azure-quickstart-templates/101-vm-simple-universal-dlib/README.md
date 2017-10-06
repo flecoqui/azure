@@ -13,11 +13,12 @@ Once the VM is deployed the DLIB source code is avaialble under:</p>
 ```bash
 /git/dlib
 ```
-</p>
+
 ### Windows
 ```PowerShell
 c:\git\dlib
 ```
+
 </p>
 So far this template allows you to deploy a simple VM running: </p>
 
