@@ -15,7 +15,7 @@ Once the VM is deployed the DLIB source code is avaialble under:</p>
 ```
 </p>
 ### Windows
-```bash
+```PowerShell
 c:\git\dlib
 ```
 </p>
