@@ -20,6 +20,7 @@ c:\git\dlib
 ```
 </p>
 So far this template allows you to deploy a simple VM running: </p>
+
 1. **Debian**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
 2. **Ubuntu**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
 3. **Centos**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
