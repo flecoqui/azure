@@ -116,6 +116,7 @@ configurationOS (debian, ubuntu, centos, redhat, nano server 2016, windows serve
 Once the VM has been deployed, you can check the Web page hosted on the VM.</p>
 For the Linux VM:</p>
 http://DNSName/index.php
+
 For the Windows VM:</p>
 http://DNSName/index.html
 
@@ -184,8 +185,8 @@ Keep in mind before running this test, you need to build the DLIB library (bash 
 
 
 If you want to test python samples which require GUI, you need to install an X11 terminal on your client. If you are using a Windows PC, you could install Putty and XMing to support X11 on your PC:</p>
-PuTTy from http://www.chiark.greenend.org.uk/~sgtatham/putty/ </p>
-Xming from http://sourceforge.net/project/downloading.php?group_id=156984&filename=Xming-6-9-0-31-setup.exe </p>
++ **PuTTy** from http://www.chiark.greenend.org.uk/~sgtatham/putty/ </p>
++ **Xming** from http://sourceforge.net/project/downloading.php?group_id=156984&filename=Xming-6-9-0-31-setup.exe </p>
 
 
 Install Xming following the installation screenshots below:
