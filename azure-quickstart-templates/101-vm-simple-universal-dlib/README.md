@@ -18,23 +18,29 @@ Once the VM is deployed the DLIB source code is avaialble under:</p>
 ```bash
 c:\git\dlib
 ```
+</p>
 So far this template allows you to deploy a simple VM running: </p>
-1. **Debian**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-2. **Ubuntu**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-3. **Centos**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-4. **Red Hat**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
-5. **Windows** Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python),
+1. **Debian**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
+2. **Ubuntu**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
+3. **Centos**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
+4. **Red Hat**: Apache, g++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
+5. **Windows** Server 2016: IIS, VC++, cmake, Anaconda3, DLIB source code and samples (C++,Python).
+
 This will deploy in the region associated with Resource Group and the VM Size is one of the parameter.</p>
 Once the VM is deployed you can use the following bash files for Linux VM under /git/bash: </p>
+
 + **buildDLIB.sh**: build DLIB library(C++),
 + **buildDLIBCPPSamples.sh**: build DLIB C++ samples (C++),
 + **buildDLIBPythonSamples.sh**: build DLIB Python samples (Python),
 + **runTests.sh**: run unit tests (C++,Python)
+
 For Windows VM, you can use the following bat files under C:\git\bash: </p>
+
 + **buildDLIB.bat**: build DLIB library(C++),
 + **buildDLIBCPPSamples.bat**: build DLIB C++ samples (C++),
 + **buildDLIBPythonSamples.bat**: build DLIB Python samples (Python),
 + **runTests.bat**: run unit tests (C++,Python)
+
 </p>
 The diagnostic information after the installation are available under C:\var\log\install.log (Windows VM) or under /var/log/install.log (Linux VM) : </p>
 
