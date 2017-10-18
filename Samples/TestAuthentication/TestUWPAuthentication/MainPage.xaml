@@ -29,17 +29,17 @@
             <TextBox Grid.Row="0" Grid.Column="1"  Margin="0,30,0,0" x:Name="legacyAccountName" ></TextBox>
             <TextBlock Grid.Row="1" Margin="10,0,0,0" >Legacy Account Key:</TextBlock>
             <TextBox Grid.Row="1" Grid.Column="1"  x:Name="legacyAccountNameKey" ></TextBox>
-            <Button Content="Azure Media Services Legacy Authentication" Grid.Row="2" Grid.ColumnSpan="2"   HorizontalAlignment="Left" Height="22" Margin="10,0,0,0" VerticalAlignment="Top" Width="290" Click="LegacyAuthentication_Click"/>
+            <Button Content="Azure Media Services Legacy Authentication" Grid.Row="2" Grid.ColumnSpan="2"   HorizontalAlignment="Left"  Margin="10,0,0,0" VerticalAlignment="Top" Width="380" Click="LegacyAuthentication_Click"/>
             <TextBlock Grid.Row="3" Margin="10,0,0,0" >Azure Region:</TextBlock>
             <TextBox Grid.Row="3" Grid.Column="1"   x:Name="azureRegion" ></TextBox>
             <TextBlock Grid.Row="4" Margin="10,0,0,0" >Azure ADTenant Domain:</TextBlock>
             <TextBox Grid.Row="4" Grid.Column="1"   x:Name="azureActiveDirectoryTenantDomain" ></TextBox>
-            <Button Content="Azure Media Services User Authentication" Grid.Row="5" Grid.ColumnSpan="2"  HorizontalAlignment="Left" Height="22" Margin="10,0,0,0"  VerticalAlignment="Top" Width="290" Click="UserAuthentication_Click"/>
+            <Button Content="Azure Media Services User Authentication" Grid.Row="5" Grid.ColumnSpan="2"  HorizontalAlignment="Left"  Margin="10,0,0,0"  VerticalAlignment="Top" Width="380" Click="UserAuthentication_Click"/>
             <TextBlock Grid.Row="6" Margin="10,0,0,0" >Application ID:</TextBlock>
             <TextBox Grid.Row="6"  Grid.Column="1"   x:Name="applicationID" ></TextBox>
             <TextBlock Grid.Row="7" Margin="10,0,0,0" >Application Key:</TextBlock>
             <TextBox Grid.Row="7" Grid.Column="1"   x:Name="applicationKey" ></TextBox>
-            <Button Content="Azure Media Services Service Principal Authentication" Grid.Row="8" Grid.ColumnSpan="2"   HorizontalAlignment="Left" Height="22" Margin="10,0,0,0" VerticalAlignment="Top" Width="290" Click="ServicePrincipalAuthentication_Click"/>
-
+            <Button Content="Azure Media Services Service Principal Authentication" Grid.Row="8" Grid.ColumnSpan="2"   HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="380" Click="ServicePrincipalAuthentication_Click"/>
+        <WebView x:Name="AuthenticationWebView" Grid.Row="9" Grid.ColumnSpan="2"   ></WebView>
         </Grid>
 </Page>
