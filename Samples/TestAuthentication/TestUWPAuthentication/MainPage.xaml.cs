@@ -178,6 +178,7 @@ namespace TestUWPAuthentication
                         }
                         if (!string.IsNullOrEmpty(s))
                         {
+                            list = new List<string>();
                             int pos = 0;
                             while (pos >= 0)
                             {
@@ -386,13 +387,14 @@ namespace TestUWPAuthentication
             }
             return token;
         }
-        public static async System.Threading.Tasks.Task<string> GetAzureADUserInteractiveToken(string ApplicationID, string tenantDomain)
+        public static async System.Threading.Tasks.Task<string> GetAzureADUserInteractiveTokenUWP(string ApplicationID, string tenantDomain)
         {
             string token = string.Empty;
             string authority = "https://login.microsoftonline.com/" + tenantDomain;
             try
-            { 
-                WebAccountProvider wap = await WebAuthenticationCoreManager.FindAccountProviderAsync("https://login.microsoft.com", authority);
+            {
+//                WebAccountProvider wap = await WebAuthenticationCoreManager.FindAccountProviderAsync("https://login.microsoft.com", authority);
+                WebAccountProvider wap = await WebAuthenticationCoreManager.FindAccountProviderAsync("https://login.microsoftonline.com/", authority);
                 string resource = "https://rest.media.azure.net";
                 WebTokenRequest wtr = new WebTokenRequest(wap, string.Empty, ApplicationID);
                 if (wtr != null)
@@ -417,7 +419,7 @@ namespace TestUWPAuthentication
             }
             return token;
         }
-        public static async System.Threading.Tasks.Task<string> GetAzureADUserInteractiveTokenold(string ApplicationID, string tenantDomain)
+        public static async System.Threading.Tasks.Task<string> GetAzureADUserInteractiveToken(string ApplicationID, string tenantDomain)
         {
             //POST https://wamsprodglobal001acs.accesscontrol.windows.net/v2/OAuth2-13 HTTP/1.1
             //Content - Type: application / x - www - form - urlencoded
@@ -428,6 +430,7 @@ namespace TestUWPAuthentication
             //Accept: application / json
             string resourceUrl = "https://rest.media.azure.net";
             string redirectUri = "https://AzureMediaServicesNativeSDK";
+            //string redirectUri = "testmediaapp://";
             string token = string.Empty;
             try
             {
@@ -615,15 +618,63 @@ namespace TestUWPAuthentication
 
         private async void UserAuthentication_Click(object sender, RoutedEventArgs e)
         {
-            string Token = await GetAzureADUserInteractiveToken(legacyAccountName.Text, azureActiveDirectoryTenantDomain.Text);
-            if (!string.IsNullOrEmpty(Token))
+
+            //string clegacyAccountNameKey = "WXa5wXm86Gp2dr+QyWZMB3y+kA1mEEC8JN7ZSllOric=";
+            //string clegacyAccountName = "weamsaccount";
+            //string cazureRegion = "westeurope";
+            //string ClientID = "d476653d-842c-4f52-862d-397463ada5e7"
+            //string cazureActiveDirectoryTenantDomain = "flecoquihotmail.onmicrosoft.com";
+            //string capplicationID = "c1a69f3e-be7a-414f-ab12-5b51d47a8177";
+            //string capplicationKey = "gkVUkurVEwEp5LUt1es/9hFHlFd8HyyWmVw8sqhSlVs=";
+            string msg = string.Empty;
+            int count = -1;
+            string Token = null;
+            string authority = "https://login.microsoftonline.com/" + azureActiveDirectoryTenantDomain.Text;
+            Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext ac =
+                new Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext(authority);
+            string resourceUrl = "https://rest.media.azure.net";
+            string redirectUri = "https://AzureMediaServicesNativeSDK";
+            Microsoft.IdentityModel.Clients.ActiveDirectory.IPlatformParameters param = new Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters(Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior.Always,false); ;
+            var result = await            ac.AcquireTokenAsync(resourceUrl, "d476653d-842c-4f52-862d-397463ada5e7", new Uri(redirectUri),param);
+            if(result !=null)
             {
+                Token = result.AccessToken;
+                System.Diagnostics.Debug.WriteLine("Token: " + Token);
+                try
+                {
+                    string url = await GetAPIUrl(Token, legacyAccountName.Text, azureRegion.Text);
+                    //if (!string.IsNullOrEmpty(url))
+                    {
+                        List<string> assets = await GetAssetList(Token, legacyAccountName.Text, azureRegion.Text);
+
+                        if (assets != null)
+                        {
+                            count = assets.Count();
+                            foreach (var a in assets)
+                            {
+                                System.Diagnostics.Debug.WriteLine(a);
+                            }
+                            SaveSettings();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    msg = ex.Message;
+                }
+
+            }
+            //string Token = await GetAzureADUserInteractiveToken(legacyAccountName.Text, azureActiveDirectoryTenantDomain.Text);
+            //if (!string.IsNullOrEmpty(Token))
+            //{
              //   await Windows.UI.Xaml.Controls.WebView.ClearTemporaryWebDataAsync();
               //  AuthenticationWebView.Refresh();
-                AuthenticationWebView.Navigate(new Uri(Token));
+              //  AuthenticationWebView.Navigate(new Uri(Token));
+
+                
 
                 //AuthenticationWebView.NavigateToString("\r\n\r\n<!DOCTYPE html><html><head></head><body><button>Click</button>\r\n\r\n</body>\r\n</html>");
-            }
+            //}
 
             //var tokenCredentials = new AzureAdTokenCredentials(azureActiveDirectoryTenantDomain.Text, AzureEnvironments.AzureCloudEnvironment);
             //var tokenProvider = new AzureAdTokenProvider(tokenCredentials);
@@ -654,10 +705,10 @@ namespace TestUWPAuthentication
             //    }
             //}
 
-            //if (count >= 0)
-            //    Show("UserAuthentication successful: " + count.ToString() + " asset(s) found");
-            //else
-            //    Show("UserAuthentication failed" + (string.IsNullOrEmpty(msg) ? "" : ": Exception - " + msg));
+            if (count >= 0)
+                Show("UserAuthentication successful: " + count.ToString() + " asset(s) found");
+            else
+                Show("UserAuthentication failed" + (string.IsNullOrEmpty(msg) ? "" : ": Exception - " + msg));
         }
         private async void ServicePrincipalAuthentication_Click(object sender, RoutedEventArgs e)
         {
