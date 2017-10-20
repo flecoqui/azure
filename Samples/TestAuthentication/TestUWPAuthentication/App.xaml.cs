@@ -30,6 +30,9 @@ namespace TestUWPAuthentication
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            // Initialize Log Message List
+            MessageList = new System.Collections.Concurrent.ConcurrentQueue<string>();
+
         }
 
         /// <summary>
@@ -96,5 +99,25 @@ namespace TestUWPAuthentication
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
+
+
+
+        #region Logs
+        public System.Collections.Concurrent.ConcurrentQueue<String> MessageList;
+        /// <summary>
+        /// Display Message on the application page
+        /// </summary>
+        /// <param name="Message">String to display</param>
+        void LogMessage(string Message)
+        {
+            if (MessageList == null)
+                MessageList = new System.Collections.Concurrent.ConcurrentQueue<string>();
+            string Text = string.Format("{0:d/M/yyyy HH:mm:ss.fff}", DateTime.Now) + " " + Message + "\n";
+            MessageList.Enqueue(Text);
+            System.Diagnostics.Debug.WriteLine(Text);
+        }
+        #endregion
+
+
     }
 }

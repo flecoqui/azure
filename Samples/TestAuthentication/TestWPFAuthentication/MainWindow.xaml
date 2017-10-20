@@ -39,6 +39,7 @@
         <TextBlock Grid.Row="7" Margin="10,0,0,0" >Application Key:</TextBlock>
         <TextBox Grid.Row="7" Grid.Column="1"   x:Name="applicationKey" ></TextBox>
         <Button Content="Azure Media Services Service Principal Authentication" Grid.Row="8" Grid.ColumnSpan="2"   HorizontalAlignment="Left" Height="22" Margin="10,0,0,0" VerticalAlignment="Top" Width="290" Click="ServicePrincipalAuthentication_Click"/>
-
+        <TextBox  x:Name="logs" Grid.Row="9" Grid.ColumnSpan="2" IsTabStop="True" Margin="2,2,2,2"   MaxHeight="640" MinHeight="100"  ScrollViewer.HorizontalScrollBarVisibility="Auto"  ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="NoWrap" AcceptsReturn="True" FontSize="12" IsReadOnly="True"  Visibility="Visible" Text="" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+        </TextBox>
     </Grid>
 </Window>

@@ -92,10 +92,14 @@ namespace TestWPFAuthentication
             TestWPFAuthentication.Properties.Settings.Default.SetValue(nameof(applicationID), applicationID.Text);
             TestWPFAuthentication.Properties.Settings.Default.SetValue(nameof(applicationKey), applicationKey.Text);
         }
+        System.Collections.Concurrent.ConcurrentQueue<string> MessageList;
         public MainWindow()
         {
             InitializeComponent();
             LoadSettings();
+            // Initialize Log Message List
+            MessageList = new System.Collections.Concurrent.ConcurrentQueue<string>();
+
             //legacyAccountNameKey.Text = clegacyAccountNameKey ;
             //legacyAccountName.Text = clegacyAccountName ;
             //azureRegion.Text = cazureRegion;
@@ -113,14 +117,15 @@ namespace TestWPFAuthentication
 
 
 
-        string clegacyAccountNameKey = "WXa5wXm86Gp2dr+QyWZMB3y+kA1mEEC8JN7ZSllOric=";
-        string clegacyAccountName = "weamsaccount";
-        string cazureRegion = "westeurope";
-        string cazureActiveDirectoryTenantDomain = "flecoquihotmail.onmicrosoft.com";
-        string capplicationID = "c1a69f3e-be7a-414f-ab12-5b51d47a8177";
-        string capplicationKey = "gkVUkurVEwEp5LUt1es/9hFHlFd8HyyWmVw8sqhSlVs=";
+        //string clegacyAccountNameKey = "WXa5wXm86Gp2dr+QyWZMB3y+kA1mEEC8JN7ZSllOric=";
+        //string clegacyAccountName = "weamsaccount";
+        //string cazureRegion = "westeurope";
+        //string cazureActiveDirectoryTenantDomain = "flecoquihotmail.onmicrosoft.com";
+        //string capplicationID = "c1a69f3e-be7a-414f-ab12-5b51d47a8177";
+        //string capplicationKey = "gkVUkurVEwEp5LUt1es/9hFHlFd8HyyWmVw8sqhSlVs=";
         private void LegacyAuthentication_Click(object sender, RoutedEventArgs e)
         {
+            LogMessage("Legacy Authentication: Account Name: " + legacyAccountName.Text + " Account Name Key: " + legacyAccountNameKey.Text);
             CloudMediaContext context = new Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext(legacyAccountName.Text, legacyAccountNameKey.Text);
             int count = -1;
             string msg = string.Empty;
@@ -131,29 +136,38 @@ namespace TestWPFAuthentication
                     var assets = context.Assets;
                     if (assets != null)
                     {
+                        LogMessage("Legacy Authentication successful");
                         count = assets.Count();
+                        LogMessage("Getting Media Objects");
                         foreach (var a in assets)
                         {
                             Console.WriteLine(a.Name);
                         }
+                        LogMessage(count.ToString() + " Media Object(s) found...");
+
                         SaveSettings();
                     }
                 }
                 catch (Exception ex)
                 {
-                    msg = ex.Message; 
+                    msg = ex.Message;
+                    LogMessage("Getting Media Objects - Exception: " + msg);
+
                 }
+                if (count >= 0)
+                    MessageBox.Show("LegacyAuthentication successful: " + count.ToString() + " asset(s) found");
+                else
+                    MessageBox.Show("LegacyAuthentication failed" + (string.IsNullOrEmpty(msg) ? "" : ": Exception - " + msg));
             }
-            if(count>=0)
-                MessageBox.Show("LegacyAuthentication successful: " + count.ToString() + " asset(s) found");
             else
-                MessageBox.Show("LegacyAuthentication failed" + (string.IsNullOrEmpty(msg)?"":": Exception - " + msg));
+                MessageBox.Show("LegacyAuthentication failed" );
         }
 
         private void UserAuthentication_Click(object sender, RoutedEventArgs e)
         {
 
 
+            LogMessage("Interactive User Authentication - Azure Tenant: " + azureActiveDirectoryTenantDomain.Text);
             var tokenCredentials = new AzureAdTokenCredentials(azureActiveDirectoryTenantDomain.Text, AzureEnvironments.AzureCloudEnvironment);
             var tokenProvider = new AzureAdTokenProvider(tokenCredentials);
             
@@ -169,26 +183,34 @@ namespace TestWPFAuthentication
                     var assets = context.Assets;
                     if (assets != null)
                     {
+                        LogMessage("Interactive User Authentication successful");
+                        LogMessage("Getting Media Objects");
                         count = assets.Count();
                         foreach (var a in assets)
                         {
                             Console.WriteLine(a.Name);
                         }
+                        LogMessage(count.ToString() + " Media Object(s) found...");
+
                         SaveSettings();
                     }
                 }
                 catch (Exception ex)
                 {
                     msg = ex.Message;
+                    LogMessage("Interactive User Authentication - Exception: " + ex.Message);
                 }
+                if (count >= 0)
+                    MessageBox.Show("UserAuthentication successful: " + count.ToString() + " asset(s) found");
+                else
+                    MessageBox.Show("UserAuthentication failed" + (string.IsNullOrEmpty(msg) ? "" : ": Exception - " + msg));
             }
-            if (count >= 0)
-                MessageBox.Show("UserAuthentication successful: " + count.ToString() + " asset(s) found");
             else
-                MessageBox.Show("UserAuthentication failed" + (string.IsNullOrEmpty(msg) ? "" : ": Exception - " + msg));
+                MessageBox.Show("UserAuthentication failed"  );
         }
         private void ServicePrincipalAuthentication_Click(object sender, RoutedEventArgs e)
         {
+            LogMessage("Service Principal Authentication: ApplicationID: " + applicationID.Text + " ApplicationKey: " + applicationKey.Text + " Azure Tenant: " + azureActiveDirectoryTenantDomain.Text);
             var tokenCredentials = new AzureAdTokenCredentials(azureActiveDirectoryTenantDomain.Text,
                             new AzureAdClientSymmetricKey(applicationID.Text, applicationKey.Text),
                             AzureEnvironments.AzureCloudEnvironment);
@@ -208,23 +230,124 @@ namespace TestWPFAuthentication
                     var assets = context.Assets;
                     if (assets != null)
                     {
+                        LogMessage("Service Principal Authentication successful");
+                        LogMessage("Getting Media Objects");
                         count = assets.Count();
                         foreach (var a in assets)
                         {
                             Console.WriteLine(a.Name);
                         }
+                        LogMessage(count.ToString() + " Media Object(s) found...");
                         SaveSettings();
                     }
                 }
                 catch (Exception ex)
                 {
                     msg = ex.Message;
+                    LogMessage("Getting Media Objects - Exception: " + msg);
                 }
+                if (count >= 0)
+                    MessageBox.Show("ServicePrincipalAuthentication successful: " + count.ToString() + " asset(s) found");
+                else
+                    MessageBox.Show("ServicePrincipalAuthentication failed" + (string.IsNullOrEmpty(msg) ? "" : ": Exception - " + msg));
             }
-            if (count >= 0)
-                MessageBox.Show("ServicePrincipalAuthentication successful: " + count.ToString() + " asset(s) found");
             else
-                MessageBox.Show("ServicePrincipalAuthentication failed" + (string.IsNullOrEmpty(msg) ? "" : ": Exception - " + msg));
+                MessageBox.Show("ServicePrincipalAuthentication failed" );
         }
+
+
+        #region Logs
+        void PushMessage(string Message)
+        {
+            MessageList.Enqueue(Message);
+        }
+        bool PopMessage(out string Message)
+        {
+            Message = string.Empty;
+            return MessageList.TryDequeue(out Message);
+        }
+        /// <summary>
+        /// Display Message on the application page
+        /// </summary>
+        /// <param name="Message">String to display</param>
+        async void LogMessage(string Message)
+        {
+            string Text = string.Format("{0:d/M/yyyy HH:mm:ss.fff}", DateTime.Now) + " " + Message + "\n";
+            PushMessage(Text);
+            System.Diagnostics.Debug.WriteLine(Text);
+            await DisplayLogMessage();
+        }
+        /// <summary>
+        /// Display Message on the application page
+        /// </summary>
+        /// <param name="Message">String to display</param>
+        async System.Threading.Tasks.Task<bool> DisplayLogMessage()
+        {
+            await Dispatcher.InvokeAsync(
+                () =>
+                {
+
+                    string result = string.Empty;
+                    while (PopMessage(out result))
+                    {
+                        logs.Text += result;
+                        if (logs.Text.Length > 16000)
+                        {
+                            string LocalString = logs.Text;
+                            while (LocalString.Length > 12000)
+                            {
+                                int pos = LocalString.IndexOf('\n');
+                                if (pos == -1)
+                                    pos = LocalString.IndexOf('\r');
+
+
+                                if ((pos >= 0) && (pos < LocalString.Length))
+                                {
+                                    LocalString = LocalString.Substring(pos + 1);
+                                }
+                                else
+                                    break;
+                            }
+                            logs.Text = LocalString;
+                        }
+                    }
+                }
+            );
+            return true;
+        }
+        /// <summary>
+        /// This method is called when the content of the Logs TextBox changed  
+        /// The method scroll to the bottom of the TextBox
+        /// </summary>
+        void Logs_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //  logs.Focus(FocusState.Programmatic);
+            // logs.Select(logs.Text.Length, 0);
+            var tbsv = GetFirstDescendantScrollViewer(logs);
+         //   tbsv.ChangeView(null, tbsv.ScrollableHeight, null, true);
+        }
+        /// <summary>
+        /// Retrieve the ScrollViewer associated with a control  
+        /// </summary>
+        ScrollViewer GetFirstDescendantScrollViewer(DependencyObject parent)
+        {
+            var c = VisualTreeHelper.GetChildrenCount(parent);
+
+            for (int i = 0; i < c; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                var sv = child as ScrollViewer;
+                if (sv != null)
+                    return sv;
+                sv = GetFirstDescendantScrollViewer(child);
+                if (sv != null)
+                    return sv;
+            }
+
+            return null;
+        }
+        #endregion
+
+
     }
 }
