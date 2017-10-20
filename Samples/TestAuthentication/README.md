@@ -28,7 +28,7 @@ You can either use the Azure Portal to deploy manually all the Azure Services:
 
 https://portal.azure.com
  
-or you can use directly the Azure Resource Manager template available there to deploy Azure Media Services. along with Azure Media Services this template deploy Azure Search and Azure Cognitive Services:
+or you can use directly the Azure Resource Manager template available there to deploy Azure Media Services. Along with Azure Media Services this template deploys Azure Search and Azure Cognitive Services:
 
 https://github.com/flecoqui/azure/tree/master/azure-quickstart-templates/101-media-search-cognitive
 
