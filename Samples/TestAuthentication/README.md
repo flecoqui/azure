@@ -18,7 +18,7 @@ https://github.com/flecoqui/azure/tree/master/azure-quickstart-templates/101-med
 
 Below further information about Azure Media Services API with Azure AD authentication:
 
-![Azure Media Service Azure AD Authentication](https://docs.microsoft.com/en-us/azure/media-services/media-services-use-aad-auth-to-access-ams-api)
+https://docs.microsoft.com/en-us/azure/media-services/media-services-use-aad-auth-to-access-ams-api
 
 
 ## INSTALLING THE BACKEND SERVICES IN AZURE:
