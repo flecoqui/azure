@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Windows WPF and UWP Applications used to test Azure Media Services Authentication",
+  "description": "Windows WPF and UWP Applications used to test Azure Media Services Authentication",
+  "summary": "Windows WPF Application is based on Microsoft.WindowsAzure.MediaServices.Client library. Windows UWP Application is based on REST API call using HttpClient, the User Interactive Authentication is based on Microsoft.IdentityModel.Clients.ActiveDirectory ADAL Library",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2017-10-20"
+}
