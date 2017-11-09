@@ -5,9 +5,6 @@
     "vmssVmSize": {
       "value": "Standard_E4s_v3"
     },
-    "vmssDebianOSVersion": {
-      "value": "7"
-    },
     "vmssName": {
       "value": "vmsswin"
     },
