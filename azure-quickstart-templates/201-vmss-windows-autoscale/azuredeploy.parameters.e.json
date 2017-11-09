@@ -1,0 +1,45 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmssVmSize": {
+      "value": "Standard_E4s_v3"
+    },
+    "vmssDebianOSVersion": {
+      "value": "7"
+    },
+    "vmssName": {
+      "value": "vmsswin"
+    },
+    "vmssInstanceCount": {
+      "value": 2
+    },
+    "vmssAdminUsername": {
+      "value": "VMAdmin"
+    },
+    "vmssAdminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "vmssFrontEndLBPort": {
+      "value": 80
+    },
+    "vmssBackEndLBPort": {
+      "value": 80
+    },
+    "vmssProbeIntervalInSeconds": {
+      "value": 15
+    },
+    "vmssNumberOfProbes": {
+      "value": 5
+    },
+    "vmssProbeRequestPath": {
+      "value": "/index.html"
+    },
+    "vmssInitscriptUrl": {
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/Z01-vmss-windows-autoscale/install-software-windows.ps1"
+    },
+    "vmssInitScriptFileName": {
+      "value": "install-software-windows.ps1"
+    }
+  }
+}

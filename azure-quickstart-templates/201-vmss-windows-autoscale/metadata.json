@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Deploy a VM Scale set running Windows with IIS components",
+  "description": "This template allows you to deploy a VM scaleset running Windows with IIS components",
+  "summary": "This template takes a minimum amount of parameters and deploys a scaleset of Windows VM, using the latest patched version.",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2017-11-10"
+}
