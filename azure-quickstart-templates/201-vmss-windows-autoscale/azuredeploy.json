@@ -338,10 +338,10 @@
               {
                 "name": "init",
                 "properties": {
-                  "publisher": "Microsoft.Azure.Extensions",
-                  "type": "CustomScript",
-                  "typeHandlerVersion": "2.0",
-                  "autoUpgradeMinorVersion": false,
+                  "publisher": "Microsoft.Compute",
+                  "type": "CustomScriptExtension",
+                  "typeHandlerVersion": "1.7",
+                  "autoUpgradeMinorVersion": true,
                   "settings": {
                     "fileUris": [
                       "[parameters('vmssInitscriptUrl')]"
