@@ -70,25 +70,7 @@ function Expand-ZIPFile($file, $destination)
     } 
 } 
 WriteDateLog
-WriteLog "Downloading iperf3" 
-$url = 'https://iperf.fr/download/windows/iperf-3.1.3-win64.zip' 
-$EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
-if (($EditionId -eq "ServerStandardNano") -or
-    ($EditionId -eq "ServerDataCenterNano") -or
-    ($EditionId -eq "NanoServer") -or
-    ($EditionId -eq "ServerTuva")) {
-	DownloadAndUnzip $url $source 
-	WriteLog "iperf3 Installed" 
-}
-else
-{
-	$webClient = New-Object System.Net.WebClient  
-	$webClient.DownloadFile($url,$source + "\iperf3.zip" )  
-	WriteLog "Installing iperf3"  
-	# Function to unzip file contents 
-	Expand-ZIPFile -file "$source\iperf3.zip" -destination $source 
-	WriteLog "iperf3 Installed" 
-}
+
 function Install-IIS
 {
 WriteLog "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force"
@@ -164,7 +146,7 @@ $osstring = $osstring -replace "\{2\}",$BuildNumber
 }
 else
 {
-$LocalIP = Get-NetIPAddress -InterfaceAlias 'Ethernet 2' -AddressFamily IPv4
+$LocalIP = Get-NetIPAddress -InterfaceAlias 'Ethernet 3' -AddressFamily IPv4
 $OSInfo = Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version, ServicePackMajorVersion, OSArchitecture, CSName, WindowsDirectory, NumberOfUsers, BootDevice
 $osstring = @'
 OS {1} Version {2} Architecture {3}
@@ -212,10 +194,6 @@ WriteLog "Creating Home Page done"
 WriteLog "Starting IIS" 
 net start w3svc
 
-WriteLog "Installing IPERF3 as a service" 
-sc.exe create ipef3 binpath= "cmd.exe /c c:\source\iperf-3.1.3-win64\iperf3.exe -s -D" type= own start= auto DisplayName= "IPERF3"
-WriteLog "IPERF3 Installed" 
 
 WriteLog "Initialization completed !" 
-WriteLog "Rebooting !" 
-Restart-Computer -Force       
+   
