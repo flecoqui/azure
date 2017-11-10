@@ -294,7 +294,8 @@
               ],
               "name": "[variables('osDiskName')]",
               "caching": "ReadWrite",
-              "createOption": "FromImage"
+              "createOption": "FromImage",
+              "osType": "Windows"
             },
             "imageReference": "[variables('imageReference')]"
           },
@@ -380,7 +381,7 @@
             "rules": [
               {
                 "metricTrigger": {
-                  "metricName": "\\Processor\\PercentProcessorTime",
+                  "metricName": "Percentage CPU",
                   "metricNamespace": "",
                   "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('namingInfix'))]",
                   "timeGrain": "PT1M",
@@ -399,7 +400,7 @@
               },
               {
                 "metricTrigger": {
-                  "metricName": "\\Processor\\PercentProcessorTime",
+                  "metricName": "Percentage CPU",
                   "metricNamespace": "",
                   "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('namingInfix'))]",
                   "timeGrain": "PT1M",
@@ -429,11 +430,11 @@
     },
     "sshCommand": {
       "type": "string",
-      "value": "[concat('mstsc /admin /v:', parameters('vmssAdminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com:50000')]"
+      "value": "[concat('mstsc /admin /v:', parameters('vmssAdminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com:5000X')]"
     },
     "resultScript": {
       "type": "string",
-      "value": "sudo cat /var/lib/waagent/custom-script/download/0/stdout" 
+      "value": "type c:/source/install.log" 
     },
     "httpClient": {
       "type": "string",
