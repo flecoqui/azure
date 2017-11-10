@@ -280,7 +280,7 @@
       "properties": {
         "overprovision": "true",
         "upgradePolicy": {
-          "mode": "Manual"
+          "mode": "Automatic"
         },
         "virtualMachineProfile": {
           "storageProfile": {
@@ -293,7 +293,7 @@
                 "[concat('https://', variables('uniqueStringArray')[4], variables('newStorageAccountSuffix'), '.blob.core.windows.net/', variables('vhdContainerName'))]"
               ],
               "name": "[variables('osDiskName')]",
-              "caching": "ReadOnly",
+              "caching": "ReadWrite",
               "createOption": "FromImage"
             },
             "imageReference": "[variables('imageReference')]"

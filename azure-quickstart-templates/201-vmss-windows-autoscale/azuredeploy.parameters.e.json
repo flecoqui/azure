@@ -6,7 +6,7 @@
       "value": "Standard_E4s_v3"
     },
     "vmssName": {
-      "value": "vmsswind"
+      "value": "vmsswindo"
     },
     "vmssInstanceCount": {
       "value": 2
