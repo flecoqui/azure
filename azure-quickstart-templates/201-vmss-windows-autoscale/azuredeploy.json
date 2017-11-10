@@ -72,7 +72,7 @@
     },
     "vmssInitscriptUrl": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/Z01-vmss-windows-autoscale/install-software-windows.ps1"
+      "defaultValue": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-windows-autoscale/install-software-windows.ps1"
     },
     "vmssInitScriptFileName": {
       "type": "string",
@@ -429,7 +429,7 @@
     },
     "sshCommand": {
       "type": "string",
-      "value": "[concat('ssh -p 50000 ', parameters('vmssAdminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('mstsc /admin /v:', parameters('vmssAdminUsername'), '@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com:50000')]"
     },
     "resultScript": {
       "type": "string",

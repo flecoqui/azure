@@ -33,7 +33,7 @@
       "value": "/index.html"
     },
     "vmssInitscriptUrl": {
-      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/Z01-vmss-windows-autoscale/install-software-windows.ps1"
+      "value": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/201-vmss-windows-autoscale/install-software-windows.ps1"
     },
     "vmssInitScriptFileName": {
       "value": "install-software-windows.ps1"
