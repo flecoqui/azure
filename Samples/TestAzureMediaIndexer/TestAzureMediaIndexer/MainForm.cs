@@ -21,6 +21,9 @@ using Microsoft.WindowsAzure.MediaServices.Client;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using TestAzureMediaIndexer;
+using Microsoft.WindowsAzure.MediaServices.Client.ContentKeyAuthorization;
+using Microsoft.WindowsAzure.MediaServices.Client.DynamicEncryption;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace TestAzureMediaIndexer
 {
@@ -42,16 +45,39 @@ namespace TestAzureMediaIndexer
 
         void LoadSettings()
         {
-            string a = string.Empty;
-            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAccountName", out a))
-                textBoxMediaAccountName.Text = a;
+            string a = "GUID";
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAppClientId", out a))
+            {
+                if (string.IsNullOrEmpty(a))
+                    a = "GUID";
+                textBoxAppClientId.Text = a;
+            }
             else
-                textBoxMediaAccountName.Text = a;
+                textBoxAppClientId.Text = a;
             a = string.Empty;
-            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAccountKey", out a))
-                textBoxMediaAccountKey.Text = a;
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAppClientSecret", out a))
+                textBoxAppClientSecret.Text = a;
             else
-                textBoxMediaAccountKey.Text = a;
+                textBoxAppClientSecret.Text = a;
+            a = "<domain>.onmicrosoft.com";
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAppADTenantDomain", out a))
+            {
+                if (string.IsNullOrEmpty(a))
+                    a = "<domain>.onmicrosoft.com";
+                textBoxAppADTenantDomain.Text = a;
+            }
+            else
+                textBoxAppADTenantDomain.Text = a;
+            a = "https://<name>media.restv2.<region>.media.azure.net/API";
+            if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureMediaAppRestAPIEndpoint", out a))
+            {
+                if (string.IsNullOrEmpty(a))
+                    a = "https://<name>media.restv2.<region>.media.azure.net/API";
+                textBoxAppRestAPIEndpoint.Text = a;
+            }
+            else
+                textBoxAppRestAPIEndpoint.Text = a;
+
 
             /*
             a = string.Empty;
@@ -71,9 +97,13 @@ namespace TestAzureMediaIndexer
                 textBoxStorageContainerName.Text = a;
             */
 
-            a = string.Empty;
+            a = "<name>search";
             if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("AzureSearchAccountName", out a))
+            {
+                if (string.IsNullOrEmpty(a))
+                    a = "<name>search";
                 textBoxSearchAccountName.Text = a;
+            }
             else
                 textBoxSearchAccountName.Text = a;
             a = string.Empty;
@@ -90,11 +120,11 @@ namespace TestAzureMediaIndexer
             }
             else
                 textBoxAssetPrefix.Text = a;
-            a = "http://ampdemo.azureedge.net/azuremediaplayer.html";
+            a = "http://<name>web.azurewebsites.net/player.html";
             if (TestAzureMediaIndexer.Properties.Settings.Default.TryGetValue("PlayerUri", out a))
             {
                 if (string.IsNullOrEmpty(a))
-                    a = "http://ampdemo.azureedge.net/azuremediaplayer.html";
+                    a = "http://<name>web.azurewebsites.net/player.html";
                 textBoxPlayerUri.Text = a;
             }
             else
@@ -121,8 +151,10 @@ namespace TestAzureMediaIndexer
         void SaveSettings()
         {
             string a = string.Empty;
-            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAccountName", textBoxMediaAccountName.Text);
-            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAccountKey", textBoxMediaAccountKey.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAppClientId", textBoxAppClientId.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAppClientSecret", textBoxAppClientSecret.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAppADTenantDomain", textBoxAppADTenantDomain.Text);
+            TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureMediaAppRestAPIEndpoint", textBoxAppRestAPIEndpoint.Text);
             /*
             TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureStorageAccountName", textBoxStorageAccountName.Text);
             TestAzureMediaIndexer.Properties.Settings.Default.SetValue("AzureStorageAccountKey", textBoxStorageAccountKey.Text);
@@ -210,8 +242,8 @@ namespace TestAzureMediaIndexer
             richTextBoxLog.Enabled = true;
             if (IsConnected())
             {
-                textBoxMediaAccountKey.Enabled = false;
-                textBoxMediaAccountName.Enabled = false;
+                textBoxAppClientSecret.Enabled = false;
+                textBoxAppClientId.Enabled = false;
                 textBoxSearchAccountKey.Enabled = false;
                 textBoxSearchAccountName.Enabled = false;
                 /*
@@ -312,8 +344,8 @@ namespace TestAzureMediaIndexer
             }
             else
             {
-                textBoxMediaAccountKey.Enabled = true;
-                textBoxMediaAccountName.Enabled = true;
+                textBoxAppClientSecret.Enabled = true;
+                textBoxAppClientId.Enabled = true;
                 textBoxSearchAccountKey.Enabled = true;
                 textBoxSearchAccountName.Enabled = true;
                 /*
@@ -445,7 +477,7 @@ namespace TestAzureMediaIndexer
 
         private async void buttonLogin_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textBoxMediaAccountName.Text)|| string.IsNullOrEmpty(textBoxMediaAccountKey.Text))
+            if (string.IsNullOrEmpty(textBoxAppClientId.Text)|| string.IsNullOrEmpty(textBoxAppClientSecret.Text))
             {
                 MessageBox.Show("The Azure Media Services Account name and key cannot be empty.");
                 return;
@@ -472,7 +504,12 @@ namespace TestAzureMediaIndexer
                 try
                 {
 
-                    _context = new Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext(textBoxMediaAccountName.Text, textBoxMediaAccountKey.Text);
+                    AzureAdClientSymmetricKey clientSymmetricKey = new AzureAdClientSymmetricKey(textBoxAppClientId.Text, textBoxAppClientSecret.Text);
+                    var tokenCredentials2 = new AzureAdTokenCredentials(textBoxAppADTenantDomain.Text, clientSymmetricKey, AzureEnvironments.AzureCloudEnvironment);
+                    AzureAdTokenProvider tokenProvider = new AzureAdTokenProvider(tokenCredentials2);
+                    _context  = new CloudMediaContext(new Uri(textBoxAppRestAPIEndpoint.Text), tokenProvider);
+
+//                _context = new Microsoft.WindowsAzure.MediaServices.Client.CloudMediaContext(textBoxMediaAccountName.Text, textBoxMediaAccountKey.Text);
                     if (_context != null)
                     {
                         _searchContext = new Microsoft.Azure.Search.SearchServiceClient(textBoxSearchAccountName.Text, new Microsoft.Azure.Search.SearchCredentials(textBoxSearchAccountKey.Text));
@@ -512,7 +549,8 @@ namespace TestAzureMediaIndexer
 
                                             SaveSettings();
                                             assetPrefix = textBoxAssetPrefix.Text;
-                                            _context.Credentials.RefreshToken();
+                                            //if(_context.Credentials!=null)
+                                            //    _context.Credentials.RefreshToken();
                                             PopulateInputAssets();
                                             //PopulateInputFiles();
                                             //PopulateOutputAssets();

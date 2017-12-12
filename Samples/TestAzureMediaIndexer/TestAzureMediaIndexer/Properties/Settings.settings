@@ -2,10 +2,16 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TestAzureMediaIndexer.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="AzureMediaAccountName" Type="System.String" Scope="User">
+    <Setting Name="AzureMediaAppClientId" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AzureMediaAccountKey" Type="System.String" Scope="User">
+    <Setting Name="AzureMediaAppClientSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AzureMediaAppADTenantDomain" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AzureMediaAppRestAPIEndpoint" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="AzureStorageAccountName" Type="System.String" Scope="User">

@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.textBoxMediaAccountKey = new System.Windows.Forms.TextBox();
+            this.textBoxAppClientSecret = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBoxMediaAccountName = new System.Windows.Forms.TextBox();
+            this.textBoxAppClientId = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonLogin = new System.Windows.Forms.Button();
             this.pictureBoxJob = new System.Windows.Forms.PictureBox();
@@ -75,6 +75,9 @@
             this.buttonTranslateSubtitile = new System.Windows.Forms.Button();
             this.buttonUpdateSubtitle = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBoxAppADTenantDomain = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -82,6 +85,7 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.buttonPlaySearch = new System.Windows.Forms.Button();
             this.listSearchResult = new System.Windows.Forms.ListBox();
+            this.textBoxAppRestAPIEndpoint = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxJob)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -91,42 +95,42 @@
             this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBoxMediaAccountKey
+            // textBoxAppClientSecret
             // 
-            this.textBoxMediaAccountKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxAppClientSecret.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMediaAccountKey.Location = new System.Drawing.Point(15, 79);
-            this.textBoxMediaAccountKey.Name = "textBoxMediaAccountKey";
-            this.textBoxMediaAccountKey.Size = new System.Drawing.Size(150, 20);
-            this.textBoxMediaAccountKey.TabIndex = 34;
-            this.textBoxMediaAccountKey.UseSystemPasswordChar = true;
+            this.textBoxAppClientSecret.Location = new System.Drawing.Point(15, 79);
+            this.textBoxAppClientSecret.Name = "textBoxAppClientSecret";
+            this.textBoxAppClientSecret.Size = new System.Drawing.Size(150, 20);
+            this.textBoxAppClientSecret.TabIndex = 34;
+            this.textBoxAppClientSecret.UseSystemPasswordChar = true;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 63);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(139, 13);
+            this.label4.Size = new System.Drawing.Size(89, 13);
             this.label4.TabIndex = 36;
-            this.label4.Text = "Media Service Account Key";
+            this.label4.Text = "App Client Secret";
             // 
-            // textBoxMediaAccountName
+            // textBoxAppClientId
             // 
-            this.textBoxMediaAccountName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxAppClientId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMediaAccountName.Location = new System.Drawing.Point(15, 40);
-            this.textBoxMediaAccountName.Name = "textBoxMediaAccountName";
-            this.textBoxMediaAccountName.Size = new System.Drawing.Size(150, 20);
-            this.textBoxMediaAccountName.TabIndex = 33;
+            this.textBoxAppClientId.Location = new System.Drawing.Point(15, 40);
+            this.textBoxAppClientId.Name = "textBoxAppClientId";
+            this.textBoxAppClientId.Size = new System.Drawing.Size(150, 20);
+            this.textBoxAppClientId.TabIndex = 33;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(149, 13);
+            this.label1.Size = new System.Drawing.Size(69, 13);
             this.label1.TabIndex = 35;
-            this.label1.Text = "Media Service Account Name";
+            this.label1.Text = "App Client ID";
             // 
             // buttonLogin
             // 
@@ -157,7 +161,7 @@
             // 
             this.listInputAssets.FormattingEnabled = true;
             this.listInputAssets.HorizontalScrollbar = true;
-            this.listInputAssets.Location = new System.Drawing.Point(15, 248);
+            this.listInputAssets.Location = new System.Drawing.Point(15, 342);
             this.listInputAssets.Name = "listInputAssets";
             this.listInputAssets.Size = new System.Drawing.Size(352, 121);
             this.listInputAssets.TabIndex = 44;
@@ -166,7 +170,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 229);
+            this.label2.Location = new System.Drawing.Point(12, 323);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(134, 13);
             this.label2.TabIndex = 45;
@@ -176,7 +180,7 @@
             // 
             this.listInputFiles.FormattingEnabled = true;
             this.listInputFiles.HorizontalScrollbar = true;
-            this.listInputFiles.Location = new System.Drawing.Point(15, 391);
+            this.listInputFiles.Location = new System.Drawing.Point(15, 485);
             this.listInputFiles.Name = "listInputFiles";
             this.listInputFiles.Size = new System.Drawing.Size(352, 69);
             this.listInputFiles.TabIndex = 46;
@@ -184,7 +188,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(392, 230);
+            this.label3.Location = new System.Drawing.Point(392, 324);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(110, 13);
             this.label3.TabIndex = 47;
@@ -217,7 +221,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 375);
+            this.label5.Location = new System.Drawing.Point(12, 469);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(124, 13);
             this.label5.TabIndex = 50;
@@ -226,7 +230,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(387, 375);
+            this.label6.Location = new System.Drawing.Point(387, 469);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(105, 13);
             this.label6.TabIndex = 53;
@@ -236,7 +240,7 @@
             // 
             this.listOutputFiles.FormattingEnabled = true;
             this.listOutputFiles.HorizontalScrollbar = true;
-            this.listOutputFiles.Location = new System.Drawing.Point(390, 391);
+            this.listOutputFiles.Location = new System.Drawing.Point(390, 485);
             this.listOutputFiles.Name = "listOutputFiles";
             this.listOutputFiles.Size = new System.Drawing.Size(352, 69);
             this.listOutputFiles.TabIndex = 52;
@@ -245,7 +249,7 @@
             // 
             this.listOutputAssets.FormattingEnabled = true;
             this.listOutputAssets.HorizontalScrollbar = true;
-            this.listOutputAssets.Location = new System.Drawing.Point(388, 251);
+            this.listOutputAssets.Location = new System.Drawing.Point(388, 345);
             this.listOutputAssets.Name = "listOutputAssets";
             this.listOutputAssets.Size = new System.Drawing.Size(352, 121);
             this.listOutputAssets.TabIndex = 51;
@@ -277,7 +281,7 @@
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Location = new System.Drawing.Point(15, 605);
+            this.richTextBoxLog.Location = new System.Drawing.Point(15, 699);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.Size = new System.Drawing.Size(727, 184);
             this.richTextBoxLog.TabIndex = 56;
@@ -286,7 +290,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 589);
+            this.label7.Location = new System.Drawing.Point(12, 683);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(33, 13);
             this.label7.TabIndex = 57;
@@ -549,6 +553,10 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.textBoxAppRestAPIEndpoint);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.textBoxAppADTenantDomain);
+            this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.pictureBoxJob);
             this.groupBox1.Controls.Add(this.label16);
             this.groupBox1.Controls.Add(this.buttonLogin);
@@ -557,16 +565,43 @@
             this.groupBox1.Controls.Add(this.textBoxAssetPrefix);
             this.groupBox1.Location = new System.Drawing.Point(12, 9);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(734, 102);
+            this.groupBox1.Size = new System.Drawing.Size(734, 197);
             this.groupBox1.TabIndex = 90;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "1. Connection";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(3, 135);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(105, 13);
+            this.label11.TabIndex = 88;
+            this.label11.Text = "REST API End Point";
+            // 
+            // textBoxAppADTenantDomain
+            // 
+            this.textBoxAppADTenantDomain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxAppADTenantDomain.Location = new System.Drawing.Point(6, 112);
+            this.textBoxAppADTenantDomain.Name = "textBoxAppADTenantDomain";
+            this.textBoxAppADTenantDomain.Size = new System.Drawing.Size(303, 20);
+            this.textBoxAppADTenantDomain.TabIndex = 85;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(3, 96);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(98, 13);
+            this.label12.TabIndex = 87;
+            this.label12.Text = "AD Tenant Domain";
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.buttonRemoveAsset);
             this.groupBox2.Controls.Add(this.buttonAddAsset);
-            this.groupBox2.Location = new System.Drawing.Point(12, 118);
+            this.groupBox2.Location = new System.Drawing.Point(12, 212);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(149, 85);
             this.groupBox2.TabIndex = 91;
@@ -579,7 +614,7 @@
             this.groupBox3.Controls.Add(this.comboBoxLanguages);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.buttonDisplayJobs);
-            this.groupBox3.Location = new System.Drawing.Point(167, 118);
+            this.groupBox3.Location = new System.Drawing.Point(167, 212);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(148, 124);
             this.groupBox3.TabIndex = 92;
@@ -591,7 +626,7 @@
             this.groupBox4.Controls.Add(this.label17);
             this.groupBox4.Controls.Add(this.buttonTranslateSubtitile);
             this.groupBox4.Controls.Add(this.comboBoxTranslateLanguages);
-            this.groupBox4.Location = new System.Drawing.Point(583, 118);
+            this.groupBox4.Location = new System.Drawing.Point(583, 212);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(163, 109);
             this.groupBox4.TabIndex = 93;
@@ -605,7 +640,7 @@
             this.groupBox5.Controls.Add(this.buttonPlayAudioSubtitle);
             this.groupBox5.Controls.Add(this.buttonOpenSubtitle);
             this.groupBox5.Controls.Add(this.buttonDonwloadSubtitle);
-            this.groupBox5.Location = new System.Drawing.Point(321, 115);
+            this.groupBox5.Location = new System.Drawing.Point(321, 209);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(256, 112);
             this.groupBox5.TabIndex = 94;
@@ -621,7 +656,7 @@
             this.groupBox6.Controls.Add(this.buttonDeleteIndex);
             this.groupBox6.Controls.Add(this.textBoxSearch);
             this.groupBox6.Controls.Add(this.buttonPopulateIndex);
-            this.groupBox6.Location = new System.Drawing.Point(12, 466);
+            this.groupBox6.Location = new System.Drawing.Point(12, 560);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(730, 120);
             this.groupBox6.TabIndex = 95;
@@ -649,13 +684,21 @@
             this.listSearchResult.Size = new System.Drawing.Size(342, 95);
             this.listSearchResult.TabIndex = 96;
             this.listSearchResult.SelectedIndexChanged += new System.EventHandler(this.listSearchResult_SelectedIndexChanged);
-
+            // 
+            // textBoxAppRestAPIEndpoint
+            // 
+            this.textBoxAppRestAPIEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxAppRestAPIEndpoint.Location = new System.Drawing.Point(6, 151);
+            this.textBoxAppRestAPIEndpoint.Name = "textBoxAppRestAPIEndpoint";
+            this.textBoxAppRestAPIEndpoint.Size = new System.Drawing.Size(456, 20);
+            this.textBoxAppRestAPIEndpoint.TabIndex = 89;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(758, 803);
+            this.ClientSize = new System.Drawing.Size(758, 893);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.textBoxTranslatorAPIKey);
@@ -673,9 +716,9 @@
             this.Controls.Add(this.listInputFiles);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.listInputAssets);
-            this.Controls.Add(this.textBoxMediaAccountKey);
+            this.Controls.Add(this.textBoxAppClientSecret);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBoxMediaAccountName);
+            this.Controls.Add(this.textBoxAppClientId);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
@@ -702,9 +745,9 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBoxMediaAccountKey;
+        private System.Windows.Forms.TextBox textBoxAppClientSecret;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBoxMediaAccountName;
+        private System.Windows.Forms.TextBox textBoxAppClientId;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonLogin;
         private System.Windows.Forms.PictureBox pictureBoxJob;
@@ -755,6 +798,10 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Button buttonPlaySearch;
         private System.Windows.Forms.ListBox listSearchResult;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBoxAppADTenantDomain;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox textBoxAppRestAPIEndpoint;
     }
 }
 

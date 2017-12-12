@@ -12,7 +12,7 @@ namespace TestAzureMediaIndexer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,24 +26,48 @@ namespace TestAzureMediaIndexer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AzureMediaAccountName {
+        public string AzureMediaAppClientId {
             get {
-                return ((string)(this["AzureMediaAccountName"]));
+                return ((string)(this["AzureMediaAppClientId"]));
             }
             set {
-                this["AzureMediaAccountName"] = value;
+                this["AzureMediaAppClientId"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AzureMediaAccountKey {
+        public string AzureMediaAppClientSecret {
             get {
-                return ((string)(this["AzureMediaAccountKey"]));
+                return ((string)(this["AzureMediaAppClientSecret"]));
             }
             set {
-                this["AzureMediaAccountKey"] = value;
+                this["AzureMediaAppClientSecret"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AzureMediaAppADTenantDomain {
+            get {
+                return ((string)(this["AzureMediaAppADTenantDomain"]));
+            }
+            set {
+                this["AzureMediaAppADTenantDomain"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AzureMediaAppRestAPIEndpoint {
+            get {
+                return ((string)(this["AzureMediaAppRestAPIEndpoint"]));
+            }
+            set {
+                this["AzureMediaAppRestAPIEndpoint"] = value;
             }
         }
         

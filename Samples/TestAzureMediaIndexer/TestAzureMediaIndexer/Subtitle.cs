@@ -216,7 +216,7 @@ namespace TestAzureMediaIndexer
                     {
                         TextBoxLogWriteLine("Original Subtitles parsed");
                         translatedContent += "\xFEFF";
-                        translatedContent += "WEBVTT\r\n";
+                        translatedContent += "WEBVTT\r\n\r\n";
                         SubtitileItem newItem = new SubtitileItem("", "", "");
                         bool bError = false;
                         foreach (SubtitileItem item in SubtitleList)
