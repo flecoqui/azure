@@ -251,5 +251,5 @@ azure group delete "ResourceGroupName" "DataCenterName"
 
 For instance:
 
-    azure group delete attachgrp
+    azure group delete imagegrp
 
