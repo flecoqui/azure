@@ -1,9 +1,17 @@
-# Create a simple VM (Windows or Linux) from an existing VHD file in a storage account in the same region
+# Create a simple VM (Windows) from an existing inmage VHD file in a storage account 
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeploy.json" target="_blank">
+Deploy the Storage Account to store the Image file:
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeploystorage.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeployvm.json" target="_blank">
+    <img src="http://armviz.io/visualizebutton.png"/>
+</a>
+Deploy the Virtual Machine using Image file stored in the Storage Account:
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeployvm.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeployvm.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
@@ -47,30 +55,136 @@ First you need to create the Windows Image from an existing Azure Imagerunning i
 
 Once the image is created, you are ready to deploy the service associated with these ARM templates.
 
+With Azure CLI you can create this VM with the following 5 command lines:
+
+## CREATE RESOURCE GROUP:
+azure group create "ResourceGroupName" "DataCenterName"
+
+For instance:
+
+    azure group create imagegrp eastus2
+
+## DEPLOY THE STORAGE ACCOUNT:
+azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploystorage.json -e azuredeploystorage.parameters.json
+
+For instance:
+
+    azure group deployment create imagegrp -f azuredeploystorage.json -e azuredeploystorage.parameters.json -vv
+
 
 Using the following parameters:
 
 Storage Account Name where the VHD file is stored:
 
-    "userImageStorageAccountName": {
+    "sourceImageStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the storage account where the image is stored"
+      }
+    },
+
+Container Name where the VHD file is stored:
+
+    "sourceImageStorageContainerName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the container in the storage account where the image is stored"
+      }
+    },
+
+VHD file Name:
+
+    "sourceImageVhdName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the the customized VHD"
+      }
+    },
+
+New Storage Account Name where the VHD file is stored:
+
+    "newImageStorageAccountName": {
       "type": "string",
       "metadata": {
         "description": "This is the name of the your storage account"
       }
     },
 
-Container Name where the VHD file is stored:
+New Container Name where the VHD file is stored:
 
-    "userImageStorageContainerName": {
+    "newImageStorageContainerName": {
       "type": "string",
       "metadata": {
         "description": "This is the name of the container in your storage account"
       }
     },
 
+New VHD file Name:
+
+    "newImageVhdName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the your customized VHD"
+      }
+    }
+
+
+## CREATE THE CONTAINER IN THE NEW STORAGE ACCOUNT:
+You can create the container with tool like Storage Explorer
+You can also use Azure CLI:
+
+    azure storage container create –a  <newImageStorageAccountName> -k <Key> <newImageStorageContainerName> 
+
+You can also use Azure CLI v2:
+
+    az storage container create --account-name  <ewImageStorageAccountName> --account-key  <DestKey> -n <newImageStorageContainerName> 
+
+
+## COPY THE IMAGE IN THE CONTAINER IN THE NEW STORAGE ACCOUNT:
+You can copy the image VHD file in the new container with tool like Storage Explorer
+You can also use Azure CLI:
+
+    azure storage blob copy start --account-name  <sourceImageStorageAccountName> --account-key  <SourceKey> --source-container <sourceImageStorageContainerName> --source-blob <sourceImageVhdName> --dest-account-name  <newImageStorageAccountName> --dest-account-key  <DestKey> --dest-container <newImageStorageContainerName> --dest-blob <newImageVhdName> 
+
+You can also use Azure CLI v2:
+
+    az storage blob copy start --source-account-name  <sourceImageStorageAccountName> --source-account-key  <SourceKey> --source-container <sourceImageStorageContainerName> --source-blob <sourceImageVhdName> --account-name  <newImageStorageAccountName> --account-key  <DestKey> --destination-container <newImageStorageContainerName> --destination-blob <newImageVhdName> 
+
+
+## DEPLOY THE VM:
+You can now deploy the VM using the image on your storage account 
+
+azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeployvm.json -e azuredeployvm.parameters.json
+
+For instance:
+
+    azure group deployment create imagegrp -f azuredeployvm.json -e azuredeployvm.parameters.json -vv
+
+Using the following parameters:
+
+Storage Account Name where the VHD file is stored:
+
+    "newImageStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the your storage account"
+      }
+    },
+
+
+Container Name where the VHD file is stored:
+
+    "newImageStorageContainerName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the container in your storage account"
+      }
+    },
+
+
 VHD file Name:
 
-    "userImageVhdName": {
+    "newImageVhdName": {
       "type": "string",
       "metadata": {
         "description": "This is the name of the your customized VHD"
@@ -99,29 +213,30 @@ OS Type (Windows or linux):
       }
 
 
-With Azure CLI you can create this VM with the following 5 command lines:
+VM Size:
 
-## CREATE RESOURCE GROUP:
-azure group create "ResourceGroupName" "DataCenterName"
-
-For instance:
-
-    azure group create imagegrp eastus2
-
-## DEPLOY THE STORAGE ACCOUNT:
-azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploystorage.json -e azuredeploystorage.parameters.json
-
-For instance:
-
-    azure group deployment create imagegrp -f azuredeploystorage.json -e azuredeploystorage.parameters.json -vv
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the size of your VM"
+      }
+    },
 
 
-## DEPLOY THE VM:
-azure group deployment create "ResourceGroupName" "DeploymentName"  -f azuredeploy.json -e azuredeploy.parameters.json
+Admin Account:
 
-For instance:
+    "adminUserName": {
+      "type": "string"
+    },
 
-    azure group deployment create attachgrp -f azuredeploy.json -e azuredeploy.parameters.json -vv
+
+Admin Password:
+
+    "adminPassword": {
+      "type": "securestring"
+    }
+
+
 
 ## DELETE THE RESOURCE GROUP:
 azure group delete "ResourceGroupName" "DataCenterName"

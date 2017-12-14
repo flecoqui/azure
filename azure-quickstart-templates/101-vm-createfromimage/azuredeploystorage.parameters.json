@@ -2,13 +2,22 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "userImageStorageAccountName": {
+    "sourceImageStorageAccountName": {
       "value": "blobstoragebackup"
     },
-    "userImageStorageContainerName": {
+    "sourceImageStorageContainerName": {
       "value": "vmws2012iisimage"
     },
-    "userImageVhdName": {
+    "sourceImageVhdName": {
+      "value": "vmws2012iisimage.vhd"
+    },
+    "newImageStorageAccountName": {
+      "value": "imagestorage"
+    },
+    "newImageStorageContainerName": {
+      "value": "vmws2012iisimage"
+    },
+    "newImageVhdName": {
       "value": "vmws2012iisimage.vhd"
     },
     "dnsNameForPublicIP": {
