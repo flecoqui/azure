@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Create a simple VM (Windows or Linux) from an existing VHD file in a storage account in the same region",
+  "description": "This template allows you to create a simple VM (Windows or Linux) from an existing VHD file in a storage account in the same region",
+  "summary": "This template takes a minimum amount of parameters and create a simple VM (Windows or Linux) from an existing VHD file in a storage account in the same region.",
+  "githubUsername": "flecoqui",
+  "dateUpdated": "2016-05-16"
+}

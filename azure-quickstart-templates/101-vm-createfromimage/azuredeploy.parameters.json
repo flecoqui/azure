@@ -1,0 +1,30 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "userImageStorageAccountName": {
+      "value": "blobstoragebackup"
+    },
+    "userImageStorageContainerName": {
+      "value": "vmws2012iisimage"
+    },
+    "userImageVhdName": {
+      "value": "vmws2012iisimage.vhd"
+    },
+    "dnsNameForPublicIP": {
+      "value": "vmws2012iisdns"
+    },
+    "osType": {
+      "value": "windows"
+    },
+    "vmSize": {
+      "value": "Standard_F1"
+    },
+    "adminUserName": {
+      "value": "VMAdmin"
+    },
+    "adminPassword": {
+      "value": "VMP@ssw0rd"
+    }
+  }
+}
