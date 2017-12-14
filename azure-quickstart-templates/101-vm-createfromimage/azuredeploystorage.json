@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "userImageStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the your storage account"
+      }
+    },
+    "userImageStorageContainerName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the container in your storage account"
+      }
+    },
+    "userImageVhdName": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the name of the your customized VHD"
+      }
+    },
+    "dnsNameForPublicIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+      }
+    }
+  },
+  "variables": {
+    "storageAccountName": "[concat(parameters('dnsNameForPublicIP'), 'storage')]",
+    "storageAccountType": "Standard_LRS",
+    "storageAccountContainerName": "vhds",
+
+    "apiVersion": "2017-03-30"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
+      }
+    }
+  ],
+  "outputs": {
+    "createContainerCommand": {
+      "type": "string",
+      "value": "[concat('azure storage container create –a  ', variables('storageAccountName') , ' -k <Key> ',variables('storageAccountContainerName') )]"
+    },
+    "createContainerCommandV2": {
+      "type": "string",
+      "value": "[concat('az storage container create --account-name  ', variables('storageAccountName') , ' --account-key  <DestKey> -n ',variables('storageAccountContainerName') )]"
+    },
+    "copyCommand": {
+      "type": "string",
+      "value": "[concat('azure storage blob copy start --account-name  ', parameters('userImageStorageAccountName') , ' --account-key  <SourceKey> --source-container ',parameters('userImageStorageContainerName'), ' --source-blob ', parameters('userImageVhdName'),' --dest-account-name  ', parameters('userImageStorageAccountName') , ' --dest-account-key  <DestKey> --dest-container ',variables('storageAccountContainerName'), ' --dest-blob ', parameters('userImageVhdName'))]"
+    },
+    "copyCommandV2": {
+      "type": "string",
+      "value": "[concat('az storage blob copy start --source-account-name  ', parameters('userImageStorageAccountName') , ' --source-account-key  <SourceKey> --source-container ',parameters('userImageStorageContainerName'), ' --source-blob ', parameters('userImageVhdName'),' --account-name  ', parameters('userImageStorageAccountName') , ' --account-key  <DestKey> --destination-container ',variables('storageAccountContainerName'), ' --destination-blob ', parameters('userImageVhdName'))]"
+    }
+  }
+
+}
