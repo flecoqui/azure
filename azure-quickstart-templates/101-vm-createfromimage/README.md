@@ -1,13 +1,14 @@
-# Create a simple VM (Windows) from an existing inmage VHD file in a storage account 
+# Create a simple VM (Windows) from an existing image VHD file in a storage account 
 
-Deploy the Storage Account to store the Image file:
+Deploy the Storage Account to store the Image file:</p>
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeploystorage.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 <a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeployvm.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
-Deploy the Virtual Machine using Image file stored in the Storage Account:
+</p>
+Deploy the Virtual Machine using Image file stored in the Storage Account:</p>
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fflecoqui%2Fazure%2Fmaster%2Fazure-quickstart-templates%2F101-vm-createfromimage%2Fazuredeployvm.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
@@ -33,25 +34,32 @@ First you need to create the Windows Image from an existing Azure Imagerunning i
 2. Stop the existing VM
 3. Run the following powershell command to initialize the variable
 
+
      $rgName = "testvm2012grp"
      $location = "EastUS2"
      $snapshotName = "vm2012iisSnapshot"
      $imageName = "vm2012iisImage"
 
 
+
 4. Run the following powershell command to generalize the image 
+
 
     Set-AzureRmVm -ResourceGroupName testvm2012grp -Name testvm2012vm -Generalized
 
 
 5. Run the following powershell commands to check the generalization of  the image 
 
+
     $vm = Get-AzureRmVM -ResourceGroupName testvm2012grp -Name testvm2012vm -Status
     $vm.Statuses
 
+
 6. Run the following powershell commands to create the image in the same storage account as the one used by the existing VM 
 
+
     Save-AzureRmVMImage -ResourceGroupName testvm2012grp -Name testvm2012vm  -DestinationContainerName image -VHDNamePrefix vm2012iis    -Path C:\temp\vm2012iisimage.json
+
 
 Once the image is created, you are ready to deploy the service associated with these ARM templates.
 
