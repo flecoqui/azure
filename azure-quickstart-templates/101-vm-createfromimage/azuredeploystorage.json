@@ -41,7 +41,7 @@
   },
   "variables": {
     "storageAccountType": "Standard_LRS",
-    "apiVersion": "2017-03-30"
+    "apiVersion": "2015-06-15"
   },
   "resources": [
     {
