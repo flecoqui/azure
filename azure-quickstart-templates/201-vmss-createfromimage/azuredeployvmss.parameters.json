@@ -13,7 +13,7 @@
     },
 
     "vmssName": {
-      "value": "vmws2012iis"
+      "value": "vmws2012"
     },
     "vmssInstanceCount": {
       "value": 2
