@@ -293,15 +293,15 @@
   "outputs": {
     "hostname": {
       "type": "string",
-      "value": "[concat(parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat(parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "sshCommand": {
       "type": "string",
-      "value": "[concat('ssh [AdminAccount]@', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('ssh [AdminAccount]@', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "rdpCommand": {
       "type": "string",
-      "value": "[concat('mstsc /admin /v:', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+      "value": "[concat('mstsc /admin /v:', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
     },
     "resultScript": {
       "type": "string",
@@ -309,7 +309,7 @@
     },
     "httpClient": {
       "type": "string",
-      "value": "[concat('http://', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com/')]"
+      "value": "[concat('http://', parameters('vmssName'), '.', resourceGroup().location, '.cloudapp.azure.com/')]"
     }
   }
 

@@ -11,12 +11,9 @@
     "newImageVhdName": {
       "value": "vmws2012iisimage.vhd"
     },
-    "osType": {
-      "value": "windows"
-    },
 
     "vmssName": {
-      "value": "vmsswin"
+      "value": "vmws2012iis"
     },
     "vmssInstanceCount": {
       "value": 2
