@@ -141,7 +141,7 @@ New VHD file Name:
 You can create the container with tool like Storage Explorer
 You can also use Azure CLI:
 
-    azure storage container create –a  <newImageStorageAccountName> -k <Key> <newImageStorageContainerName> 
+    azure storage container create --account-name  <newImageStorageAccountName> --account-key <Key> --container  <newImageStorageContainerName> 
 
 You can also use Azure CLI v2:
 

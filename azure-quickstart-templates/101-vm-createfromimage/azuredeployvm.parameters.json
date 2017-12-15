@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "newImageStorageAccountName": {
-      "value": "blobstoragebackup"
+      "value": "imagewmws2012storage"
     },
     "newImageStorageContainerName": {
       "value": "vmws2012iisimage"

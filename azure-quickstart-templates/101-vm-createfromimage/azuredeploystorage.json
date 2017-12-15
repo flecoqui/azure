@@ -57,7 +57,7 @@
   "outputs": {
     "createContainerCommand": {
       "type": "string",
-      "value": "[concat('azure storage container create –a  ', parameters('newImageStorageAccountName') , ' -k <Key> ',parameters('newImageStorageContainerName') )]"
+      "value": "[concat('azure storage container create --account-name ', parameters('newImageStorageAccountName') , ' --account-key <DestKey>  --container ',parameters('newImageStorageContainerName') )]"
     },
     "createContainerCommandV2": {
       "type": "string",
