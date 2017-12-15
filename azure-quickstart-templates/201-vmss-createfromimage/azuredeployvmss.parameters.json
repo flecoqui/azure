@@ -1,0 +1,49 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newImageStorageAccountName": {
+      "value": "imagewmws2012storage"
+    },
+    "newImageStorageContainerName": {
+      "value": "vmws2012iisimage"
+    },
+    "newImageVhdName": {
+      "value": "vmws2012iisimage.vhd"
+    },
+    "osType": {
+      "value": "windows"
+    },
+
+    "vmssName": {
+      "value": "vmsswin"
+    },
+    "vmssInstanceCount": {
+      "value": 2
+    },
+    "vmssSize": {
+      "value": "Standard_F1"
+    },
+    "vmssAdminUsername": {
+      "value": "VMAdmin"
+    },
+    "vmssAdminPassword": {
+      "value": "VMP@ssw0rd"
+    },
+    "vmssFrontEndLBPort": {
+      "value": 80
+    },
+    "vmssBackEndLBPort": {
+      "value": 80
+    },
+    "vmssProbeIntervalInSeconds": {
+      "value": 15
+    },
+    "vmssNumberOfProbes": {
+      "value": 5
+    },
+    "vmssProbeRequestPath": {
+      "value": "/default.htm"
+    }
+  }
+}

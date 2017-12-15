@@ -1,0 +1,24 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sourceImageStorageAccountName": {
+      "value": "blobstoragebackup"
+    },
+    "sourceImageStorageContainerName": {
+      "value": "vmws2012iisimage"
+    },
+    "sourceImageVhdName": {
+      "value": "vmws2012iisimage.vhd"
+    },
+    "newImageStorageAccountName": {
+      "value": "imagewmws2012storage"
+    },
+    "newImageStorageContainerName": {
+      "value": "vmws2012iisimage"
+    },
+    "newImageVhdName": {
+      "value": "vmws2012iisimage.vhd"
+    }
+  }
+}
