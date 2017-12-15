@@ -12,7 +12,7 @@
       "value": "vmws2012iisimage.vhd"
     },
     "dnsNameForPublicIP": {
-      "value": "vmws2012iisdns"
+      "value": "vmws2012iis"
     },
     "osType": {
       "value": "windows"

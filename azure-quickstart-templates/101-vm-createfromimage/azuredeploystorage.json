@@ -70,6 +70,14 @@
     "copyCommandV2": {
       "type": "string",
       "value": "[concat('az storage blob copy start --source-account-name  ', parameters('sourceImageStorageAccountName') , ' --source-account-key  <SourceKey> --source-container ',parameters('sourceImageStorageContainerName'), ' --source-blob ', parameters('sourceImageVhdName'),' --account-name  ', parameters('newImageStorageAccountName') , ' --account-key  <DestKey> --destination-container ',parameters('newImageStorageContainerName'), ' --destination-blob ', parameters('newImageVhdName'))]"
+    },
+    "copyShowCommand": {
+      "type": "string",
+      "value": "[concat('azure storage blob copy show --account-name  ', parameters('newImageStorageAccountName') , ' --account-key  <DestKey> --container ',parameters('newImageStorageContainerName'), ' --blob ', parameters('newImageVhdName'))]"
+    },
+    "copyShowCommandV2": {
+      "type": "string",
+      "value": "[concat('az storage blob copy show --source-account-name  ', parameters('newImageStorageAccountName') , ' --account-key  <DestKey> --container ',parameters('newImageStorageContainerName'), ' --blob ', parameters('newImageVhdName'))]"
     }
   }
 

@@ -19,12 +19,13 @@ Deploy the Virtual Machine using Image file stored in the Storage Account:</p>
 
 This template allows you to deploy create a simple VM (Windows) from an existing custom image VHD file in a storage account in the same region.
 This template is useful if you need to create a VM in Azure from an existing image stored in the same storage account in the same region.
-It's actually a 5 steps installation:
+It's actually a 6 steps installation:
 1. You create first the resource group (Azure CLI command)
 2. Then the Storage Account associated with the resource group (Azure CLI command to deploy the resource)
 3. Create a container for the image file in the new storage account (Azure CLI command)
 4. Copy the image VHD file in the new container (Azure CLI command)
-5. Deploy the VM and the network (Azure CLI command to deploy the resources)
+5. Wait for the end of the copy of the image VHD file in the new container (Azure CLI command)
+6. Deploy the VM and the network (Azure CLI command to deploy the resources)
 
 ## USING THIS TEMPLATE:
 
@@ -158,6 +159,15 @@ You can also use Azure CLI v2:
 
     az storage blob copy start --source-account-name  <sourceImageStorageAccountName> --source-account-key  <SourceKey> --source-container <sourceImageStorageContainerName> --source-blob <sourceImageVhdName> --account-name  <newImageStorageAccountName> --account-key  <DestKey> --destination-container <newImageStorageContainerName> --destination-blob <newImageVhdName> 
 
+## WAIT FOR THE END OF THE COPY IN THE NEW STORAGE ACCOUNT:
+You can check the copy status in the new container with tool like Storage Explorer
+You can also use Azure CLI:
+
+    azure storage blob copy show --account-name  <newImageStorageAccountName> --account-key  <DestKey> --container <sourceImageStorageContainerName> --blob <sourceImageVhdName>  
+
+You can also use Azure CLI v2:
+
+    az storage blob copy show --account-name  <newImageStorageAccountName> --account-key  <DestKey> --container <sourceImageStorageContainerName> --blob <sourceImageVhdName>  
 
 ## DEPLOY THE VM:
 You can now deploy the VM using the image on your storage account 
