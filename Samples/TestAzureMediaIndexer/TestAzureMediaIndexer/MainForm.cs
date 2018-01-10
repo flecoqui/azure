@@ -645,10 +645,17 @@ namespace TestAzureMediaIndexer
         void PopulateOutputFiles(string id)
         {
             listOutputFiles.Items.Clear();
-            foreach (var file in _context.Files)
+            try
             {
-                if (id == file.Asset.Id)
-                    listOutputFiles.Items.Add("FILE: " + file.Name + " SIZE: " + file.ContentFileSize.ToString() + " ASSET-ID " + file.Asset.Id );
+                foreach (var file in _context.Files)
+                {
+                    if (id == file.Asset.Id)
+                        listOutputFiles.Items.Add("FILE: " + file.Name + " SIZE: " + file.ContentFileSize.ToString() + " ASSET-ID " + file.Asset.Id);
+                }
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception while populating Output file list: " + ex.Message);
             }
             if (listOutputFiles.Items.Count > 0)
                 listOutputFiles.SelectedIndex = 0;

@@ -179,7 +179,7 @@ namespace TestAzureMediaIndexer
                         {
                             case System.Net.HttpStatusCode.OK:
                                 var b = await hrm.Content.ReadAsByteArrayAsync();
-                                string result = System.Text.UTF8Encoding.UTF8.GetString(b);
+                                    string result = System.Text.UTF8Encoding.UTF8.GetString(b);
                                 if (!string.IsNullOrEmpty(result))
                                 {
                                     System.Xml.Linq.XNamespace ns = ArrayNamespace;
