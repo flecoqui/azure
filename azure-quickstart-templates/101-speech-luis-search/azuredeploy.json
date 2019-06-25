@@ -1,0 +1,311 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Service name prefix must only contain lowercase letters, digits or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and is limited between 2 and 50 characters in length."
+      }
+    },
+    "storageSku": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "This is  Storage Account SKU is used to store audio files and transcript files"
+      }
+    },
+    "searchSku": {
+      "type": "string",
+      "defaultValue": "free",
+      "allowedValues": [
+        "free",
+        "basic",
+        "standard",
+        "standard2",
+        "standard3"
+      ],
+      "metadata": {
+        "description": "The SKU of the search service you want to create. E.g. free or standard"
+      }
+    },
+    "customSpeechSku": {
+      "type": "string",
+      "defaultValue": "Free",
+      "allowedValues": [
+        "F0",
+        "S0"
+      ],
+      "metadata": {
+        "description": "The SKU for Custom Speech. E.g. free or standard"
+      }
+    },
+    "luisSku": {
+      "type": "string",
+      "defaultValue": "Free",
+      "allowedValues": [
+        "F0",
+        "S0"
+      ],
+      "metadata": {
+        "description": "The SKU for Custom Speech. E.g. free or standard"
+      }
+    },
+    "webAppSku": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "Y1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "The SKU of the Web service you want to create."
+      }
+    },
+    "azFunctionAppSku": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "Y1"
+      ],
+      "metadata": {
+        "description": "The SKU of the Azure Function you want to create."
+      }
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "storageName": "[concat(parameters('namePrefix'), 'storage')]",
+    "searchName": "[concat(parameters('namePrefix'), 'search')]",
+    "speechName": "[concat(parameters('namePrefix'), 'speech')]",
+    "luisName": "[concat(parameters('namePrefix'), 'luis')]",
+    "azFunctionPlanName": "[concat(parameters('namePrefix'), 'functplan')]",
+    "azFunctionName": "[concat(parameters('namePrefix'), 'web')]",
+    "appServicePlanName": "[concat(parameters('namePrefix'), 'webplan')]",
+    "webAppName": "[concat(parameters('namePrefix'), 'web')]",
+    "replicaCount": "1",
+    "partitionCount": "1",
+    "hostingMode": "default"
+  },
+  "resources": [
+    {
+      "comments": "Storage used by Media Service",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "[parameters('storageSku')]"
+      },
+      "kind": "Storage",
+      "name": "[variables('storageName')]",
+      "apiVersion": "2016-01-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {
+        "cors": {
+          "allowedHeaders": [ "*" ],
+          "allowedMethods": [ "get", "post", "put" ],
+          "allowedOrigins": [ "*" ],
+          "exposedHeaders": [ "*" ],
+          "maximumAge": 5
+        }
+
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+
+      "type": "Microsoft.Search/searchServices",
+      "name": "[concat(parameters('namePrefix'),'search')]",
+      "apiVersion": "2015-08-19",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "replicaCount": "[variables('replicaCount')]",
+        "partitionCount": "[variables('partitionCount')]",
+        "hostingMode": "[variables('hostingMode')]"
+      },
+      "sku": {
+        "name": "[toLower(parameters('searchSku'))]"
+      }
+    },
+    {
+      "apiVersion": "2016-02-01-preview",
+      "name": "[concat(parameters('namePrefix'),'cognitive')]",
+      "type": "Microsoft.CognitiveServices/accounts",
+      "sku": {
+        "name": "[parameters('customSpeechSku')]"
+      },
+      "kind": "SpeechServices",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {}
+    },
+    {
+      "apiVersion": "2016-02-01-preview",
+      "name": "[concat(parameters('namePrefix'),'cognitive')]",
+      "type": "Microsoft.CognitiveServices/accounts",
+      "sku": {
+        "name": "[parameters('customSpeechSku')]"
+      },
+      "kind": "LUIS",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "[toLower(parameters('azFunctionAppSku'))]",
+        "capacity": 1
+      },
+      "kind": "app",
+      "name": "[variables('azFunctionPlanName')]",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('azFunctionPlanName')]",
+        "numberOfWorkers": 0
+      },
+      "dependsOn": []
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "name": "[variables('azFunctionName')]",
+      "location": "North Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]"
+      ],
+      "kind": "functionapp",
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('azFunctionName'), '.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('azFunctionName'), '.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('azFunctionPlanName'))]",
+        "reserved": false,
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": false,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 1536,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "[toLower(parameters('webAppSku'))]",
+        "capacity": 1
+      },
+      "kind": "app",
+      "name": "[variables('appServicePlanName')]",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('appServicePlanName')]",
+        "numberOfWorkers": 0
+      },
+      "dependsOn": []
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "kind": "WebApp",
+      "name": "[variables('webAppName')]",
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('webAppName')]",
+        "hostNames": [
+          "[concat(variables('webAppName'),'.azurewebsites.net')]"
+        ],
+        "enabledHostNames": [
+          "[concat(variables('webAppName'),'.azurewebsites.net')]",
+          "[concat(variables('webAppName'),'.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('webAppName'),'.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          },
+          {
+            "name": "[concat(variables('webAppName'),'.scm.azurewebsites.net')]",
+            "sslState": 0,
+            "thumbprint": null,
+            "ipBasedSslState": 0
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      },
+      "resources": [
+        {
+          "name": "MSDeploy",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2016-03-01",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('webAppName'))]"
+          ],
+          "tags": {
+            "displayName": "webDeploy"
+          },
+          "properties": {
+            "packageUri": "https://raw.githubusercontent.com/flecoqui/azure/master/azure-quickstart-templates/101-speech-luis-search/website.zip",
+            "dbType": "None",
+            "connectionString": "",
+            "setParameters": {
+              "IIS Web Application Name": "[variables('webAppName')]"
+            }
+          }
+        }
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "searchServicesAccountName": {
+      "type": "string",
+      "value": "[variables('searchName')]"
+    },
+    "speechServiceName": {
+      "type": "string",
+      "value": "[variables('speechName')]"
+    },
+    "playerUrl": {
+      "type": "string",
+      "value": "[concat('http://',variables('webAppName'),'.azurewebsites.net/player.html')]"
+    }
+  }
+}
