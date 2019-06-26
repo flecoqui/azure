@@ -15,10 +15,10 @@
       "value": "S0"
     },
     "luisSku": {
-      "value": "S1"
+      "value": "S0"
     },
     "azFunctionAppSku": {
-      "value": "S1"
+      "value": "F1"
     },
     "webAppSku": {
       "value": "F1"

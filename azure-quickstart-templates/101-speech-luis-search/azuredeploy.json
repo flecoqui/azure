@@ -99,7 +99,7 @@
     "speechName": "[concat(parameters('namePrefix'), 'speech')]",
     "luisName": "[concat(parameters('namePrefix'), 'luis')]",
     "azFunctionPlanName": "[concat(parameters('namePrefix'), 'functplan')]",
-    "azFunctionName": "[concat(parameters('namePrefix'), 'web')]",
+    "azFunctionName": "[concat(parameters('namePrefix'), 'function')]",
     "appServicePlanName": "[concat(parameters('namePrefix'), 'webplan')]",
     "webAppName": "[concat(parameters('namePrefix'), 'web')]",
     "replicaCount": "1",
@@ -148,7 +148,7 @@
     },
     {
       "apiVersion": "2016-02-01-preview",
-      "name": "[concat(parameters('namePrefix'),'cognitive')]",
+      "name": "[variables('speechName')]",
       "type": "Microsoft.CognitiveServices/accounts",
       "sku": {
         "name": "[parameters('customSpeechSku')]"
@@ -160,7 +160,7 @@
     },
     {
       "apiVersion": "2016-02-01-preview",
-      "name": "[concat(parameters('namePrefix'),'cognitive')]",
+      "name": "[variables('luisName')]",
       "type": "Microsoft.CognitiveServices/accounts",
       "sku": {
         "name": "[parameters('customSpeechSku')]"
